@@ -25,6 +25,7 @@ public class Engine extends Applet implements Runnable, KeyListener{
 		engineNumberOfBusinesses = 0;
 		engineYear = 0;
 	}
+
 	@Override
 	public void init(){
 		setSize(800,480);
@@ -42,23 +43,43 @@ public class Engine extends Applet implements Runnable, KeyListener{
 		engineImages = new Vector<Image>();
 		engineImages.addElement(getImage(engineUrlBase,"data/titlescreen.png"));
 	}
-		@Override
+
+	@Override
 	public void keyPressed(KeyEvent e){
-		
+		switch(engineRunMode){
+		case 0:
+			switch(e.getKeyCode()){
+			case KeyEvent.VK_ESCAPE:
+				this.engineRunMode = 1;
+			}
+		}
 	}	
+		
 	@Override
 	public void keyReleased(KeyEvent e){
 		
 	}
-		@Override
+	
+	@Override
 	public void keyTyped(KeyEvent e){
 	}
+	
 	@Override
 	public void run(){
-		repaint();
-	}	@Override
+		while(this.engineRunMode < 3){
+			repaint();
+			try{
+				Thread.sleep(33);
+			}catch(InterruptedException e){
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	@Override
 	public void start(){	
 	}
+	
 	@Override
 	public void paint(Graphics g){
 		g.drawImage(engineImages.elementAt(0), 0, 0, engineImages.elementAt(0).getWidth(this), engineImages.elementAt(0).getHeight(this), this);

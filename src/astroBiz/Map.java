@@ -9,26 +9,30 @@ public class Map {
 	private int mapY;							// Map height
 
 	Map(int y, int x, int numloc){
-		mapLocations = new Vector<Location>();
-		mapNumLocations = numloc;
-		mapY = y;
-		mapX = x;
+		this.mapLocations = new Vector<Location>();
+		this.mapNumLocations = numloc;
+		this.mapY = y;
+		this.mapX = x;
 		for(int i = 0; i < numloc; i++){
 			Location l = new Location();
 			l.generateLocation(mapY, mapX);
-			mapLocations.addElement(l);
+			this.mapLocations.addElement(l);
 		}
 	}
+	
 	Location getMapLocation(int index){
-		return mapLocations.elementAt(index);
+		return this.mapLocations.elementAt(index);
 	}
+	
 	int getMapNumLocations(){
-		return mapNumLocations;
+		return this.mapNumLocations;
 	}
+	
 	int getMapX(){
-		return mapX;
+		return this.mapX;
 	}
+	
 	int getMapY(){
-		return mapY;
+		return this.mapY;
 	}
 }
