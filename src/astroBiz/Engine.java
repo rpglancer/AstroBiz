@@ -10,11 +10,12 @@ import java.net.URL;
 import java.util.Vector;
 
 public class Engine extends Applet implements Runnable, KeyListener{
-
+	
 	private Vector<Image> engineImages;
 	private Business engineActiveBusiness;
 	private Vector<Business> engineBusinesses;
 	private int engineNumberOfBusinesses;
+	private int engineRunMode;
 	private URL engineUrlBase;
 	private int engineYear;
 	
@@ -24,7 +25,6 @@ public class Engine extends Applet implements Runnable, KeyListener{
 		engineNumberOfBusinesses = 0;
 		engineYear = 0;
 	}
-	
 	@Override
 	public void init(){
 		setSize(800,480);
@@ -38,34 +38,27 @@ public class Engine extends Applet implements Runnable, KeyListener{
 		} catch(Exception e){
 			// TODO: handle exception
 		}
+		engineRunMode = 0;
 		engineImages = new Vector<Image>();
 		engineImages.addElement(getImage(engineUrlBase,"data/titlescreen.png"));
 	}
-	
-	@Override
+		@Override
 	public void keyPressed(KeyEvent e){
 		
-	}
-	
+	}	
 	@Override
 	public void keyReleased(KeyEvent e){
 		
 	}
-	
-	@Override
+		@Override
 	public void keyTyped(KeyEvent e){
 	}
-	
 	@Override
 	public void run(){
 		repaint();
+	}	@Override
+	public void start(){	
 	}
-
-	@Override
-	public void start(){
-		
-	}
-
 	@Override
 	public void paint(Graphics g){
 		g.drawImage(engineImages.elementAt(0), 0, 0, engineImages.elementAt(0).getWidth(this), engineImages.elementAt(0).getHeight(this), this);
