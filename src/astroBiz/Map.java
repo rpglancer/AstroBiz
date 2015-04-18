@@ -8,6 +8,8 @@ public class Map {
 	private int mapX;							// Map width
 	private int mapY;							// Map height
 
+	Map(){
+	}
 	Map(int y, int x, int numloc){
 		this.mapLocations = new Vector<Location>();
 		this.mapNumLocations = numloc;
