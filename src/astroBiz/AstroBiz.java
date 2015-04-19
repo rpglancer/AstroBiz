@@ -3,8 +3,10 @@ package astroBiz;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 
@@ -14,11 +16,29 @@ public class AstroBiz extends Canvas implements Runnable{
 	public static final int WIDTH = 800;
 	public static final int HEIGHT = 480;
 	public final String TITLE = "AstroBiz";
+
 	
 	private boolean running = false;
 	private Thread thread;
 	
 	private BufferedImage image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
+	private BufferedImage spriteSheet = null;
+
+	private BufferedImage player;		// temp
+	
+	public void init(){
+		BufferedImageLoader loader = new BufferedImageLoader();
+		try{
+			spriteSheet = loader.loadImage("../data/astrobizbuttons.png");
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+		
+		//temp
+		SpriteSheet ss = new SpriteSheet(spriteSheet);
+		player = ss.grabImage(1, 1, 96, 64);
+		
+	}
 	
 	private synchronized void start(){
 		if(running){
@@ -44,6 +64,7 @@ public class AstroBiz extends Canvas implements Runnable{
 	}
 	
 	public void run(){
+		init();
 		long lastTime = System.nanoTime();
 		final double amountOfTicks = 60.0;
 		double ns = 1000000000 / amountOfTicks;
@@ -75,7 +96,7 @@ public class AstroBiz extends Canvas implements Runnable{
 	}
 	
 	private void tick(){
-		
+		// Everything updated in the game world is updated on a tick?
 	}
 	
 	private void render(){
@@ -88,9 +109,29 @@ public class AstroBiz extends Canvas implements Runnable{
 		
 		// Stuff to render goes here
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
-		
+
+		g.drawImage(player, 100, 100, this);		// temp
+
 		g.dispose();
 		bs.show();
+	}
+	
+	public void keyPressed(KeyEvent e){
+		int key = e.getKeyCode();
+		switch(key){
+		default:
+			break;
+		}
+		
+	}
+	
+	public void keyReleased(KeyEvent e){
+		int key = e.getKeyCode();
+		switch(key){
+		default:
+			break;
+		}
+		
 	}
 	
 	public static void main(String[] args){
