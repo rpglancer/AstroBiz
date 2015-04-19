@@ -28,6 +28,18 @@ public class AstroBiz extends Canvas implements Runnable{
 	private BufferedImage player;		// temp
 	private BufferedImage region;
 	
+	private MainMenu mainMenu;
+	
+	// The enums should probably be moved to their own class
+	// and utilized with getters and setters, this is just
+	// a bit of a proof of concept.
+	public static enum STATE{
+		MENU,
+		GAME
+	};
+	
+	public static STATE State = STATE.MENU;
+	
 	public void init(){
 		BufferedImageLoader loader = new BufferedImageLoader();
 		try{
@@ -36,7 +48,8 @@ public class AstroBiz extends Canvas implements Runnable{
 		}catch(IOException e){
 			e.printStackTrace();
 		}
-		
+		mainMenu = new MainMenu();
+		this.addMouseListener(new MouseInput());
 		//temp
 		SpriteSheet ss = new SpriteSheet(spriteSheet);
 		SpriteSheet wm = new SpriteSheet(worldMap);
@@ -102,6 +115,12 @@ public class AstroBiz extends Canvas implements Runnable{
 	}
 	
 	private void tick(){
+		switch(State){
+		case MENU:
+			break;
+		case GAME:
+			break;
+		}
 		// Everything updated in the game world is updated on a tick?
 	}
 	
@@ -115,8 +134,17 @@ public class AstroBiz extends Canvas implements Runnable{
 		
 		// Stuff to render goes here
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
-		g.drawImage(region, 32, 32, this);
-		g.drawImage(player, 704, 0, this);		// temp
+		
+		switch(State){
+		case GAME:
+			g.drawImage(region, 32, 32, this);
+			g.drawImage(player, 704, 0, this);
+			break;
+		case MENU:
+			mainMenu.render(g);
+			break;
+		}
+		// temp
 
 		g.dispose();
 		bs.show();
