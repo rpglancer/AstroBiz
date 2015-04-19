@@ -5,40 +5,16 @@ package astroBiz;
  * @author Matt Bangert
  *
  */
-public class Route {
+public class Route{
 
-	/**
-	 * The SpaceCraft currently employed on this Route.
-	 */
 	private SpaceCraft routeCraft;
-	
 	private int routeDistance;
-	
-	/**
-	 * The number of SpaceCraft currently employed on this Route.
-	 */
 	private int routeCraftNumber;
-	
 	private int routeFlightsPerWeek;
-	
-	/**
-	 * The Location to which this route is destined.
-	 */
 	private Location routeDestination;
-	
-	/**
-	 * The per ticket fare of this Route.
-	 */
 	private int routeFare;
-	
-	/** 
-	 * The Location from which this route departed.
-	 */
 	private Location routeHome;
 	
-	/**
-	 * Default constructor for this Route.
-	 */
 	Route(){
 		routeCraft = null;
 		routeCraftNumber = 0;
@@ -86,42 +62,24 @@ public class Route {
 		}
 		
 	}
-	
-	/**
-	 * A Method to get the type of SpaceCraft currently employed on this Route.
-	 * @return The type of SpaceCraft employed on this Route.
-	 */
 	SpaceCraft getRouteCraft(){
 		return routeCraft;
-	}
-	
-	/**
-	 * A Method to get the number of currently employed SpaceCraft on this Route.
-	 * @return The number of SpaceCraft currently employed on this Route.
-	 */
+	}	
 	int getRouteCraftNumber(){
 		return routeCraftNumber;
 	}
-	
-	/**
-	 * A Method to get the destination Location of this Route.
-	 * @return The destination of this Route.
-	 */
+
 	Location getRouteDestination(){
 		return routeDestination;
 	}
 	
-	/**
-	 * A Method to get the per ticket fare of this Route.
-	 * @return The per ticket fare of this Route.
-	 */
 	int getRouteFare(){
 		return routeFare;
 	}
+
 	Location getRouteHome(){
 		return routeHome;
 	}
-
 	
 	void setRouteCraft(SpaceCraft sc){
 		routeCraft = sc;

@@ -1,8 +1,9 @@
 package astroBiz;
 
+import java.awt.Graphics;
 import java.util.Vector;
 
-public class Map {
+public class Map implements Entity {
 	private Vector<Location> mapLocations;
 	private int mapNumLocations;
 	private int mapX;							// Map width
@@ -36,5 +37,21 @@ public class Map {
 	
 	int getMapY(){
 		return this.mapY;
+	}
+	public void tick() {
+		// TODO Auto-generated method stub
+		
+	}
+	public void render(Graphics g) {
+		// TODO Auto-generated method stub
+		
+	}
+	public void getX() {
+		// TODO Auto-generated method stub
+		
+	}
+	public void getY() {
+		// TODO Auto-generated method stub
+		
 	}
 }

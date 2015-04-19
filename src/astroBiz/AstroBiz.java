@@ -23,20 +23,26 @@ public class AstroBiz extends Canvas implements Runnable{
 	
 	private BufferedImage image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
 	private BufferedImage spriteSheet = null;
+	private BufferedImage worldMap = null;
 
 	private BufferedImage player;		// temp
+	private BufferedImage region;
 	
 	public void init(){
 		BufferedImageLoader loader = new BufferedImageLoader();
 		try{
 			spriteSheet = loader.loadImage("../data/astrobizbuttons.png");
+			worldMap = loader.loadImage("../data/temp_worldMap.png");
 		}catch(IOException e){
 			e.printStackTrace();
 		}
 		
 		//temp
 		SpriteSheet ss = new SpriteSheet(spriteSheet);
+		SpriteSheet wm = new SpriteSheet(worldMap);
 		player = ss.grabImage(1, 1, 96, 64);
+		region = wm.grabImage(1, 1, 736, 288);
+		
 		
 	}
 	
@@ -109,8 +115,8 @@ public class AstroBiz extends Canvas implements Runnable{
 		
 		// Stuff to render goes here
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
-
-		g.drawImage(player, 100, 100, this);		// temp
+		g.drawImage(region, 32, 32, this);
+		g.drawImage(player, 704, 0, this);		// temp
 
 		g.dispose();
 		bs.show();
@@ -143,13 +149,12 @@ public class AstroBiz extends Canvas implements Runnable{
 		
 		JFrame frame = new JFrame(astrobiz.TITLE);
 		frame.add(astrobiz);
-		frame.pack();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
+		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		astrobiz.start();
-		
 	}
 	
 }

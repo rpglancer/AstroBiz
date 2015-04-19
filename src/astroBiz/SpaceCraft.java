@@ -6,15 +6,17 @@ package astroBiz;
  *
  */
 public class SpaceCraft {
-	int craftAge;				// Age of craft
-	int craftCapacity;			// Passenger Capacity of craft
-	int craftCondition;			// Current condition of craft
-	int craftFuel;				// Fuel cost of craft
-	int craftMaintenanceCost;	// Maintenance cost of craft
-	int craftRange;				// Range of craft
-	int craftSpeed;
-	int craftReliability;		// Reliability of craft
-	String craftType;			// Type of craft
+	private int craftAge;				// Age of craft
+	private int craftCapacity;			// Passenger Capacity of craft
+	private int craftCondition;			// Current condition of craft
+	private int craftFuel;				// Fuel cost of craft
+	private int craftMaintenanceCost;	// Maintenance cost of craft
+	private int craftRange;				// Range of craft
+	private int craftSpeed;				// The speed at which the craft travels.
+	private int craftReliability;		// Reliability of craft
+	private int craftYearIntroduced;	// The year the craft was introduced by the Manufacturer.
+	private int craftYearRetired;		// The year production of the craft was ceased by the Manufacturer.
+	private String craftType;			// Type of craft
 	
 	SpaceCraft(String type){
 		switch(type){
