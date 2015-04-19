@@ -12,10 +12,14 @@ public class Route {
 	 */
 	private SpaceCraft routeCraft;
 	
+	private int routeDistance;
+	
 	/**
 	 * The number of SpaceCraft currently employed on this Route.
 	 */
 	private int routeCraftNumber;
+	
+	private int routeFlightsPerWeek;
 	
 	/**
 	 * The Location to which this route is destined.
@@ -39,6 +43,7 @@ public class Route {
 		routeCraft = null;
 		routeCraftNumber = 0;
 		routeDestination = null;
+		routeFlightsPerWeek = 0;
 		routeFare = 0;
 		routeHome = null;
 	}
@@ -57,6 +62,29 @@ public class Route {
 		routeCraft = craft;
 		routeCraftNumber = num;
 		routeFare = fare;
+		routeDistance = calcRouteDistance(this);
+	}
+	
+	int calcRouteDistance(Route r){
+		int d = 0;
+		if(r.routeHome == null || r.routeDestination == null){
+			return 0;
+		}
+		else{
+			int x, y;
+			x = r.routeHome.getLocationX() - r.routeDestination.getLocationX();
+			y = r.routeHome.getLocationY() - r.routeDestination.getLocationY();
+			if(y < 0){
+				y = -y;
+			}
+			if(x < 0){
+				x = -x;
+			}
+			d = (x*x) + (y*y);
+			d = (int) Math.sqrt(d);
+			return d;
+		}
+		
 	}
 	
 	/**
@@ -93,6 +121,8 @@ public class Route {
 	Location getRouteHome(){
 		return routeHome;
 	}
+
+	
 	void setRouteCraft(SpaceCraft sc){
 		routeCraft = sc;
 	}

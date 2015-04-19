@@ -12,6 +12,7 @@ public class SpaceCraft {
 	int craftFuel;				// Fuel cost of craft
 	int craftMaintenanceCost;	// Maintenance cost of craft
 	int craftRange;				// Range of craft
+	int craftSpeed;
 	int craftReliability;		// Reliability of craft
 	String craftType;			// Type of craft
 	
@@ -54,7 +55,6 @@ public class SpaceCraft {
 			craftRange = 27500;
 			break;
 		}
-//		return sc;
 	}
 	
 	public int getCraftCapacity(SpaceCraft sc){

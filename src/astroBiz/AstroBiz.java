@@ -1,46 +1,114 @@
 package astroBiz;
 
-import java.awt.Color;
+import java.awt.Canvas;
+import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
-public class AstroBiz extends JPanel{
+public class AstroBiz extends Canvas implements Runnable{
+	private static final long serialVersionUID = 1477754103243231171L;
 	
-	int y = 0;
-	int x = 0;
+	public static final int WIDTH = 800;
+	public static final int HEIGHT = 480;
+	public final String TITLE = "AstroBiz";
 	
-	private void moveObj(){
-		x = x + 1;
-		y = y + 1;
+	private boolean running = false;
+	private Thread thread;
+	
+	private BufferedImage image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
+	
+	private synchronized void start(){
+		if(running){
+			return;
+		}
+		running = true;
+		thread = new Thread(this);
+		thread.start();
+	}
+	
+	private synchronized void stop(){
+		if(!running){
+			return;
+		}
+		running = false;
+		try {
+			thread.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.exit(1);
+	}
+	
+	public void run(){
+		long lastTime = System.nanoTime();
+		final double amountOfTicks = 60.0;
+		double ns = 1000000000 / amountOfTicks;
+		double delta = 0;
+		int updates = 0;
+		int frames = 0;
+		long timer = System.currentTimeMillis();
+		
+		while(running){
+			long now = System.nanoTime();
+			delta += (now - lastTime) / ns;
+			lastTime = now;
+			if(delta >= 1){
+				tick();
+				updates++;
+				delta--;
+			}
+			render();
+			frames++;
+			
+			if(System.currentTimeMillis() - timer > 1000){
+				timer += 1000;
+				System.out.println(updates + " Ticks, FPS " + frames);
+				updates = 0;
+				frames = 0;
+			}
+		}
+		stop();
+	}
+	
+	private void tick(){
+		
+	}
+	
+	private void render(){
+		BufferStrategy bs = this.getBufferStrategy();
+		if(bs == null){
+			createBufferStrategy(3);
+			return;
+		}
+		Graphics g = bs.getDrawGraphics();
+		
+		// Stuff to render goes here
+		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
+		
+		g.dispose();
+		bs.show();
 	}
 	
 	public static void main(String[] args){
-		JFrame frame = new JFrame("AstroBiz");
-		AstroBiz Game = new AstroBiz();
-		frame.add(Game);
-		frame.setSize(800, 480);
-		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		AstroBiz astrobiz = new AstroBiz();
 		
-		while(true){
-			Game.moveObj();
-			Game.repaint();
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		astrobiz.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		astrobiz.setMaximumSize(new Dimension(WIDTH, HEIGHT));
+		astrobiz.setMinimumSize(new Dimension(HEIGHT, WIDTH));
+		
+		JFrame frame = new JFrame(astrobiz.TITLE);
+		frame.add(astrobiz);
+		frame.pack();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setResizable(false);
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+		astrobiz.start();
+		
 	}
 	
-	public void paint(Graphics g){
-		super.paint(g);
-		Graphics blit = (Graphics2D) g;
-		blit.setColor(Color.RED);
-		blit.fillRect(x, y, 10, 10);
-	}
 }
