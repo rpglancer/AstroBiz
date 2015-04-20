@@ -64,7 +64,7 @@ public class MouseInput implements MouseListener{
 				if(current.getLocationRegion() == regionID){
 					if(mx >= current.getLocationX() && mx <= current.getLocationX() + 16){
 						if(my >= current.getLocationY() && my <= current.getLocationY() + 16){
-							System.out.println("CLICK!");
+							System.out.println(current.getLocationName() + " @ " + current.getLocationRegion());
 							// TODO: Code to display location.
 						}
 					}

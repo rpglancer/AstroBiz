@@ -13,6 +13,8 @@ public class RegionView {
 	private static final int REGIONHEIGHT = 288;
 	private static final int SPRITEHEIGHT = 16;
 	private static final int SPRITEWIDTH = 16;
+	private static final int BUTTONHEIGHT = 64;
+	private static final int BUTTONWIDTH = 96;
 
 	private String[] regionName = {"Mercury", "Venus", "Earth", "Luna", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"};
 	private Vector<Location> mapLocations = new Vector<Location>();
@@ -21,14 +23,26 @@ public class RegionView {
 	
 	private BufferedImage map;			// Contains the entirety of the map
 	private BufferedImage region;		// Contains the displayed region of the map
+	private BufferedImage[] buttons;	// Contains the buttons displayed on the regional map.
 
-	
 	public RegionView(AstroBiz astrobiz){
 		SpriteSheet wm = new SpriteSheet(astrobiz.getWorldMap());
-		SpriteSheet ss = new SpriteSheet(astrobiz.getSpriteSheet());	// Will also need access to the SpriteSheet ;_;
+		SpriteSheet ss = new SpriteSheet(astrobiz.getSpriteSheet());
+		SpriteSheet rb = new SpriteSheet(astrobiz.getRegionButtons());
+		System.out.println(rb);
 		map = wm.grabImage(1, 1, MAPWIDTH, MAPHEIGHT);
 		region = wm.grabImage((int)regionX, (int)regionY, REGIONWIDTH, REGIONHEIGHT);
 		region = map.getSubimage(regionX * REGIONWIDTH - REGIONWIDTH, regionY * REGIONHEIGHT - REGIONHEIGHT, REGIONWIDTH, REGIONHEIGHT);getClass();
+		buttons = new BufferedImage[12];
+		
+		int i = 0;
+		for(int y = 1; y <= 4; y++){
+			for(int x = 1; x <= 3; x++){
+				buttons[i] = rb.grabImage(x, y, BUTTONWIDTH, BUTTONHEIGHT);
+				System.out.println(buttons[i]);
+				i++;
+			}
+		}
 
 // TODO: Find a way of populating the regions with locations that doesn't involve manual creation of every one.
 		Location testCity = new Location(ss.grabImage(1, 1, SPRITEWIDTH, SPRITEHEIGHT));
@@ -55,6 +69,17 @@ public class RegionView {
 		for(int i = 0; i < mapLocations.size(); i++){
 			if(mapLocations.elementAt(i).getLocationRegion() == getRegionID(regionX, regionY)){
 				g.drawImage(mapLocations.elementAt(i).getSprite() , mapLocations.elementAt(i).getLocationX(), mapLocations.elementAt(i).getLocationY(), null);
+			}
+		}
+		// Prototype Render Buttons
+		int x = 192;
+		int y = 320;
+		for(int i = 0; i < buttons.length; i++){
+			g.drawImage(buttons[i], x, y, null);
+			x += BUTTONWIDTH;
+			if(x > 672){
+				x = 192;
+				y += BUTTONHEIGHT;
 			}
 		}
 		// TODO: Render Routes.

@@ -23,6 +23,7 @@ public class AstroBiz extends Canvas implements Runnable{
 	private BufferedImage image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
 	private BufferedImage spriteSheet = null;
 	private BufferedImage worldMap = null;
+	private BufferedImage regionButtons = null;
 	private MainMenu mainMenu;
 	private RegionView regionView;
 	
@@ -41,6 +42,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		try{
 			spriteSheet = loader.loadImage("../data/astrobizworldicons.png");
 			worldMap = loader.loadImage("../data/astrobizmap.png");
+			regionButtons = loader.loadImage("../data/astrobizbuttons.png");
 		}catch(IOException e){
 			e.printStackTrace();
 		}
@@ -187,6 +189,10 @@ public class AstroBiz extends Canvas implements Runnable{
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		astrobiz.start();
+	}
+	
+	public BufferedImage getRegionButtons(){
+		return regionButtons;
 	}
 	
 	public BufferedImage getSpriteSheet(){
