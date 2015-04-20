@@ -4,7 +4,6 @@ import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -24,11 +23,6 @@ public class AstroBiz extends Canvas implements Runnable{
 	private BufferedImage image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
 	private BufferedImage spriteSheet = null;
 	private BufferedImage worldMap = null;
-	private BufferedImage player;		// temp
-	private BufferedImage region;
-	private SpriteSheet ss = null;
-	private SpriteSheet wm = null;
-	
 	private MainMenu mainMenu;
 	private RegionView regionView;
 	
@@ -40,7 +34,6 @@ public class AstroBiz extends Canvas implements Runnable{
 		GAME,
 		REGIONVIEW,
 	};
-	
 	public static STATE State = STATE.MENU;
 	
 	public void init(){
@@ -54,12 +47,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		mainMenu = new MainMenu();
 		regionView = new RegionView(this);
 		addKeyListener(new KeyInput(this));
-		this.addMouseListener(new MouseInput());
-		//temp
-		ss = new SpriteSheet(spriteSheet);
-		wm = new SpriteSheet(worldMap);
-		player = ss.grabImage(1, 1, 96, 64);
-		region = wm.grabImage(1, 1, 736, 288);		
+		this.addMouseListener(new MouseInput(this));	
 	}
 	
 	private synchronized void start(){
@@ -207,5 +195,9 @@ public class AstroBiz extends Canvas implements Runnable{
 	
 	public BufferedImage getWorldMap(){
 		return worldMap;
+	}
+	
+	public RegionView getRegion(){
+		return this.regionView;
 	}
 }

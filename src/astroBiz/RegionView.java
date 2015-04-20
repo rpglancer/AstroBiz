@@ -15,12 +15,13 @@ public class RegionView {
 	private static final int SPRITEWIDTH = 16;
 
 	private String[] regionName = {"Mercury", "Venus", "Earth", "Luna", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"};
-	private Vector<Location> earthLocations = new Vector<Location>();
+	private Vector<Location> mapLocations = new Vector<Location>();
 	private byte regionX = 3;	// Default Sector
 	private byte regionY = 1;	// Default Sector
 	
-	private BufferedImage map;
-	private BufferedImage region;
+	private BufferedImage map;			// Contains the entirety of the map
+	private BufferedImage region;		// Contains the displayed region of the map
+
 	
 	public RegionView(AstroBiz astrobiz){
 		SpriteSheet wm = new SpriteSheet(astrobiz.getWorldMap());
@@ -28,9 +29,14 @@ public class RegionView {
 		map = wm.grabImage(1, 1, MAPWIDTH, MAPHEIGHT);
 		region = wm.grabImage((int)regionX, (int)regionY, REGIONWIDTH, REGIONHEIGHT);
 		region = map.getSubimage(regionX * REGIONWIDTH - REGIONWIDTH, regionY * REGIONHEIGHT - REGIONHEIGHT, REGIONWIDTH, REGIONHEIGHT);getClass();
+
+// TODO: Find a way of populating the regions with locations that doesn't involve manual creation of every one.
 		Location testCity = new Location(ss.grabImage(1, 1, SPRITEWIDTH, SPRITEHEIGHT));
-		testCity.generateLocation(100, 100);
-		earthLocations.addElement(testCity);
+		Location testCity2 = new Location(ss.grabImage(1, 1, SPRITEWIDTH, SPRITEHEIGHT));
+		testCity.generateLocation(100, 100, 2);
+		testCity2.generateLocation(62, 531, 3);
+		mapLocations.addElement(testCity);
+		mapLocations.addElement(testCity2);
 	}
 	
 	public void tick(){
@@ -42,20 +48,36 @@ public class RegionView {
 		Font sectorfont = new Font("arial", Font.BOLD, 15);
 		g.setFont(sectorfont);
 		g.setColor(Color.WHITE);
-		g.drawString("Region: " + regionName[(regionY - 1) * 3 + (regionX - 1)], 32, 25);
-		for(int i = 0; i < earthLocations.size(); i++){
-			g.drawImage(earthLocations.elementAt(i).getSprite() , earthLocations.elementAt(i).getLocationX(), earthLocations.elementAt(i).getLocationY(), null);
+		g.drawString("Region: " + regionName[getRegionID(regionX, regionY)], 32, 25);
+		g.drawString("ID: " + getRegionID(regionX, regionY), 400, 25);
+		
+		// Prototype Render Locations
+		for(int i = 0; i < mapLocations.size(); i++){
+			if(mapLocations.elementAt(i).getLocationRegion() == getRegionID(regionX, regionY)){
+				g.drawImage(mapLocations.elementAt(i).getSprite() , mapLocations.elementAt(i).getLocationX(), mapLocations.elementAt(i).getLocationY(), null);
+			}
 		}
-		// TODO: Render Locations.
 		// TODO: Render Routes.
 	}
-	
+	public byte getRegionID(int x, int y){
+		int id = 0;
+		if(x < 0 || x > 64)
+			return (byte)id;
+		if(y < 0 || y > 64)
+			return (byte)id;
+		
+		id = (y - 1) * 3 + (x - 1);
+		return (byte)id;
+	}
 	public byte getRegionX(){
 		return this.regionX;
 	}
 	public byte getRegionY(){
 		return this.regionY;
-	}	
+	}
+	public Vector<Location> getLocationVector(){
+		return this.mapLocations;
+	}
 	public void setRegionX(int x){
 		if(x < 1) 
 			x = 3;

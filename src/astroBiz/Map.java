@@ -24,9 +24,9 @@ public class Map implements Entity {
 		this.mapY = y;
 		this.mapX = x;
 		for(int i = 0; i < numloc; i++){
-			Location l = new Location();
-			l.generateLocation(mapY, mapX);
-			this.mapLocations.addElement(l);
+//			Location l = new Location();
+//			l.generateLocation(mapY, mapX);
+//			this.mapLocations.addElement(l);
 		}
 	}
 	

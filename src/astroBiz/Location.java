@@ -18,6 +18,7 @@ public class Location {
 	private int locationSlotAvailable;
 	private int locationSlotCost;
 	private int locationSlotTotal;
+	private int locationRegion;
 	private int locationX;
 	private int locationY;
 	
@@ -30,20 +31,21 @@ public class Location {
 		this.locationSprite = sprite;
 	}
 
-	void generateLocation(int y, int x){
+	void generateLocation(int y, int x, int r){
 		Random rand = new Random();
-		setLocationCategory(rand.nextInt(5));
-		setLocationDemandBusiness(rand.nextInt(255));
-		setLocationDemandTourism(rand.nextInt(255));
-		setLocationDemandIndustry(rand.nextInt(255));
-		setLocationDevelopment((getLocationDemandBusiness() + getLocationDemandTourism() + getLocationDemandIndustry())/3);
-		setLocationName("TODO: Name generator");
-		setLocationSize(getLocationDevelopment() * 10);
-		setLocationSlotTotal(locationDevelopment / 10);
-		setLocationSlotAvailable(getLocationSlotTotal());
-		setLocationSlotCost(500);
-		setLocationX(x);
-		setLocationY(y);
+		this.locationCategory = rand.nextInt(5);
+		this.locationDemandBusiness = rand.nextInt(255);
+		this.locationDemandIndustry = rand.nextInt(255);
+		this.locationDemandTourism = rand.nextInt(255);
+		this.locationDevelopment = (this.locationDemandBusiness + this.locationDemandIndustry + this.getLocationDemandTourism()) / 3;
+		this.locationName = "TODO: Names Generator";
+		this.locationSize = this.locationDevelopment * 10;
+		this.locationSlotTotal = this.locationDevelopment / 10;
+		this.locationSlotAvailable = this.locationSlotTotal;
+		this.locationSlotCost = 500;
+		this.locationX = x;
+		this.locationY = y;
+		this.locationRegion = r;
 	}
 	
 	BufferedImage getSprite(){
@@ -96,6 +98,10 @@ public class Location {
 
 	int getLocationY(){
 		return locationY;
+	}
+	
+	int getLocationRegion(){
+		return this.locationRegion;
 	}
 
 	void setLocationCategory(int category){
