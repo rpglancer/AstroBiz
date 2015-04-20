@@ -9,8 +9,7 @@ public class KeyInput extends KeyAdapter{
 	
 	public KeyInput(AstroBiz astrobiz){
 		this.astrobiz = astrobiz;
-	}
-	
+	}	
 	
 	public void keyPressed(KeyEvent e){
 		astrobiz.keyPressed(e);

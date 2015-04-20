@@ -16,7 +16,6 @@ public class AstroBiz extends Canvas implements Runnable{
 	public static final int WIDTH = 800;
 	public static final int HEIGHT = 480;
 	public final String TITLE = "AstroBiz";
-
 	
 	private boolean running = false;
 	private Thread thread;
@@ -24,18 +23,21 @@ public class AstroBiz extends Canvas implements Runnable{
 	private BufferedImage image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
 	private BufferedImage spriteSheet = null;
 	private BufferedImage worldMap = null;
-
 	private BufferedImage player;		// temp
 	private BufferedImage region;
+	private SpriteSheet ss = null;
+	private SpriteSheet wm = null;
 	
 	private MainMenu mainMenu;
+	private RegionView regionView;
 	
 	// The enums should probably be moved to their own class
 	// and utilized with getters and setters, this is just
 	// a bit of a proof of concept.
 	public static enum STATE{
 		MENU,
-		GAME
+		GAME,
+		REGIONVIEW,
 	};
 	
 	public static STATE State = STATE.MENU;
@@ -44,19 +46,18 @@ public class AstroBiz extends Canvas implements Runnable{
 		BufferedImageLoader loader = new BufferedImageLoader();
 		try{
 			spriteSheet = loader.loadImage("../data/astrobizbuttons.png");
-			worldMap = loader.loadImage("../data/temp_worldMap.png");
+			worldMap = loader.loadImage("../data/astrobizmap.png");
 		}catch(IOException e){
 			e.printStackTrace();
 		}
 		mainMenu = new MainMenu();
+		regionView = new RegionView(this);
 		this.addMouseListener(new MouseInput());
 		//temp
-		SpriteSheet ss = new SpriteSheet(spriteSheet);
-		SpriteSheet wm = new SpriteSheet(worldMap);
+		ss = new SpriteSheet(spriteSheet);
+		wm = new SpriteSheet(worldMap);
 		player = ss.grabImage(1, 1, 96, 64);
-		region = wm.grabImage(1, 1, 736, 288);
-		
-		
+		region = wm.grabImage(1, 1, 736, 288);		
 	}
 	
 	private synchronized void start(){
@@ -120,6 +121,8 @@ public class AstroBiz extends Canvas implements Runnable{
 			break;
 		case GAME:
 			break;
+		case REGIONVIEW:
+			break;
 		}
 		// Everything updated in the game world is updated on a tick?
 	}
@@ -131,20 +134,20 @@ public class AstroBiz extends Canvas implements Runnable{
 			return;
 		}
 		Graphics g = bs.getDrawGraphics();
-		
-		// Stuff to render goes here
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
 		
 		switch(State){
 		case GAME:
-			g.drawImage(region, 32, 32, this);
-			g.drawImage(player, 704, 0, this);
+//			g.drawImage(region, 32, 32, this);
+//			g.drawImage(player, 704, 0, this);
 			break;
 		case MENU:
 			mainMenu.render(g);
 			break;
+		case REGIONVIEW:
+			regionView.render(g);
+			break;
 		}
-		// temp
 
 		g.dispose();
 		bs.show();
@@ -185,4 +188,11 @@ public class AstroBiz extends Canvas implements Runnable{
 		astrobiz.start();
 	}
 	
+	public BufferedImage getSpriteSheet(){
+		return spriteSheet;
+	}
+	
+	public BufferedImage getWorldMap(){
+		return worldMap;
+	}
 }

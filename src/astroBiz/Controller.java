@@ -3,6 +3,14 @@ package astroBiz;
 import java.awt.Graphics;
 import java.util.LinkedList;
 
+/**
+ * <b>Linked List Controller</b>
+ * <br>
+ * <br>Easily render all Entities without having to loop
+ * <br>through individual lists with a tangle of for loops.
+ * @author Matt Bangert
+ *
+ */
 public class Controller{
 	
 	private LinkedList<Entity> e = new LinkedList<Entity>();

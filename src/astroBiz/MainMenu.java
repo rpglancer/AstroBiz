@@ -6,14 +6,18 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
+/**
+ * Displays the Main Menu at the start of the game.
+ * @author Matt Bangert
+ *
+ */
 public class MainMenu {
 	
 	public Rectangle newGameButton = new Rectangle(AstroBiz.WIDTH/2 - 50, 150, 100, 50);
 	public Rectangle loadGameButton = new Rectangle(AstroBiz.WIDTH/2 - 50, 225, 100, 50);
 	public Rectangle quitGameButton = new Rectangle(AstroBiz.WIDTH/2 - 50, 300, 100, 50);
 	
-	public void render(Graphics g){
-		
+	public void render(Graphics g){	
 		Graphics2D g2d = (Graphics2D) g;
 		Font fnt0 = new Font("arial", Font.BOLD, 50);
 		g.setFont(fnt0);

@@ -1,6 +1,5 @@
 package astroBiz;
 
-import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -36,7 +35,8 @@ public class MouseInput implements MouseListener{
 			if(mx >= AstroBiz.WIDTH / 2 - 50 && mx <= AstroBiz.WIDTH / 2 - 50 + 100){
 				if(my >= 150 && my <= 200){
 					// Pressed Play
-					AstroBiz.State = AstroBiz.STATE.GAME;
+		//			AstroBiz.State = AstroBiz.STATE.GAME;
+					AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
 				}
 			}
 			
@@ -49,6 +49,9 @@ public class MouseInput implements MouseListener{
 			}
 			break;
 		case GAME:
+			break;
+			
+		case REGIONVIEW:
 			break;
 		}
 	}
