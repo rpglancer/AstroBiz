@@ -4,6 +4,7 @@ import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -52,6 +53,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		}
 		mainMenu = new MainMenu();
 		regionView = new RegionView(this);
+		addKeyListener(new KeyInput(this));
 		this.addMouseListener(new MouseInput());
 		//temp
 		ss = new SpriteSheet(spriteSheet);
@@ -122,6 +124,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		case GAME:
 			break;
 		case REGIONVIEW:
+			regionView.tick();
 			break;
 		}
 		// Everything updated in the game world is updated on a tick?
@@ -137,9 +140,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
 		
 		switch(State){
-		case GAME:
-//			g.drawImage(region, 32, 32, this);
-//			g.drawImage(player, 704, 0, this);
+		case GAME:			// Game was really a prototyping state and probably will be cut sooner or later. Don't use it.
 			break;
 		case MENU:
 			mainMenu.render(g);
@@ -156,6 +157,18 @@ public class AstroBiz extends Canvas implements Runnable{
 	public void keyPressed(KeyEvent e){
 		int key = e.getKeyCode();
 		switch(key){
+		case KeyEvent.VK_UP:
+			regionView.setRegionY(regionView.getRegionY() - 1);
+			break;
+		case KeyEvent.VK_DOWN:
+			regionView.setRegionY(regionView.getRegionY() + 1);
+			break;
+		case KeyEvent.VK_RIGHT:
+			regionView.setRegionX(regionView.getRegionX() + 1);
+			break;
+		case KeyEvent.VK_LEFT:
+			regionView.setRegionX(regionView.getRegionX() - 1);
+			break;
 		default:
 			break;
 		}
