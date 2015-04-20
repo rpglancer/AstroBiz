@@ -3,6 +3,13 @@ package astroBiz;
 import java.awt.Graphics;
 import java.util.Vector;
 
+/**
+ * This class has probably been obsoleted by RegionView.
+ * <br>
+ * It is pending deletion. Do not use anything from this Class.
+ * @author Matt Bangert
+ *
+ */
 public class Map implements Entity {
 	private Vector<Location> mapLocations;
 	private int mapNumLocations;

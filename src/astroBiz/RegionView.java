@@ -12,8 +12,8 @@ public class RegionView {
 	private static final int REGIONHEIGHT = 288;
 
 	private String[] regionName = {"Mercury", "Venus", "Earth", "Luna", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"};
-	private byte regionX = 1;
-	private byte regionY = 1;
+	private byte regionX = 3;	// Default Sector
+	private byte regionY = 1;	// Default Sector
 	
 	private BufferedImage map;
 	private BufferedImage region;
@@ -36,8 +36,8 @@ public class RegionView {
 		g.setFont(sectorfont);
 		g.setColor(Color.WHITE);
 		g.drawString("Region: " + regionName[(regionY - 1) * 3 + (regionX - 1)], 32, 25);
-		// TODO: Render destinations
-		// TODO: Render active routes
+		// TODO: Render Locations.
+		// TODO: Render Routes.
 	}
 	
 	public byte getRegionX(){
