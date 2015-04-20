@@ -4,14 +4,18 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.Vector;
 
 public class RegionView {
 	private static final int MAPWIDTH = 2208;
 	private static final int MAPHEIGHT = 864;
 	private static final int REGIONWIDTH = 736;
 	private static final int REGIONHEIGHT = 288;
+	private static final int SPRITEHEIGHT = 16;
+	private static final int SPRITEWIDTH = 16;
 
 	private String[] regionName = {"Mercury", "Venus", "Earth", "Luna", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"};
+	private Vector<Location> earthLocations = new Vector<Location>();
 	private byte regionX = 3;	// Default Sector
 	private byte regionY = 1;	// Default Sector
 	
@@ -23,7 +27,10 @@ public class RegionView {
 		SpriteSheet ss = new SpriteSheet(astrobiz.getSpriteSheet());	// Will also need access to the SpriteSheet ;_;
 		map = wm.grabImage(1, 1, MAPWIDTH, MAPHEIGHT);
 		region = wm.grabImage((int)regionX, (int)regionY, REGIONWIDTH, REGIONHEIGHT);
-		region = map.getSubimage(regionX * REGIONWIDTH - REGIONWIDTH, regionY * REGIONHEIGHT - REGIONHEIGHT, REGIONWIDTH, REGIONHEIGHT);
+		region = map.getSubimage(regionX * REGIONWIDTH - REGIONWIDTH, regionY * REGIONHEIGHT - REGIONHEIGHT, REGIONWIDTH, REGIONHEIGHT);getClass();
+		Location testCity = new Location(ss.grabImage(1, 1, SPRITEWIDTH, SPRITEHEIGHT));
+		testCity.generateLocation(100, 100);
+		earthLocations.addElement(testCity);
 	}
 	
 	public void tick(){
@@ -36,6 +43,9 @@ public class RegionView {
 		g.setFont(sectorfont);
 		g.setColor(Color.WHITE);
 		g.drawString("Region: " + regionName[(regionY - 1) * 3 + (regionX - 1)], 32, 25);
+		for(int i = 0; i < earthLocations.size(); i++){
+			g.drawImage(earthLocations.elementAt(i).getSprite() , earthLocations.elementAt(i).getLocationX(), earthLocations.elementAt(i).getLocationY(), null);
+		}
 		// TODO: Render Locations.
 		// TODO: Render Routes.
 	}

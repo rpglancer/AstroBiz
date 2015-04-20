@@ -1,4 +1,5 @@
 package astroBiz;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 
 /**
@@ -20,22 +21,13 @@ public class Location {
 	private int locationX;
 	private int locationY;
 	
+	private BufferedImage locationSprite;
+	
 	/**
 	 * Default constructor for a Location.
 	 */
-	Location(){
-		locationCategory = 0;
-		locationDemandBusiness = 0;
-		locationDemandTourism = 0;
-		locationDemandIndustry = 0;
-		locationDevelopment = 0;
-		locationName = "";
-		locationSize = 0;
-		locationSlotAvailable = 0;
-		locationSlotCost = 0;
-		locationSlotTotal = 0;
-		locationX = 0;
-		locationY = 0;
+	Location(BufferedImage sprite){
+		this.locationSprite = sprite;
 	}
 
 	void generateLocation(int y, int x){
@@ -50,8 +42,12 @@ public class Location {
 		setLocationSlotTotal(locationDevelopment / 10);
 		setLocationSlotAvailable(getLocationSlotTotal());
 		setLocationSlotCost(500);
-		setLocationX(rand.nextInt(x));
-		setLocationY(rand.nextInt(y));
+		setLocationX(x);
+		setLocationY(y);
+	}
+	
+	BufferedImage getSprite(){
+		return locationSprite;
 	}
 
 	int getLocationCategory(){

@@ -46,7 +46,7 @@ public class AstroBiz extends Canvas implements Runnable{
 	public void init(){
 		BufferedImageLoader loader = new BufferedImageLoader();
 		try{
-			spriteSheet = loader.loadImage("../data/astrobizbuttons.png");
+			spriteSheet = loader.loadImage("../data/astrobizworldicons.png");
 			worldMap = loader.loadImage("../data/astrobizmap.png");
 		}catch(IOException e){
 			e.printStackTrace();
