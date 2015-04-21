@@ -33,6 +33,8 @@ public class MouseInput implements MouseListener{
 		int mx = e.getX();
 		int my = e.getY();
 		switch(AstroBiz.State){
+		case LOCATIONVIEW:
+			break;
 		case MENU:
 			// Play Button
 			if(mx >= AstroBiz.WIDTH / 2 - 50 && mx <= AstroBiz.WIDTH / 2 - 50 + 100){
@@ -51,6 +53,7 @@ public class MouseInput implements MouseListener{
 			}
 			break;
 		case GAME:
+			// Don't use this. Legacy from prototyping and testing things.
 			break;
 			
 		case REGIONVIEW:
@@ -65,6 +68,8 @@ public class MouseInput implements MouseListener{
 					if(mx >= current.getLocationX() && mx <= current.getLocationX() + 16){
 						if(my >= current.getLocationY() && my <= current.getLocationY() + 16){
 							System.out.println(current.getLocationName() + " @ " + current.getLocationRegion());
+							astrobiz.getLocationView().setLocationView(current);
+							AstroBiz.State = AstroBiz.STATE.LOCATIONVIEW;
 							// TODO: Code to display location.
 						}
 					}

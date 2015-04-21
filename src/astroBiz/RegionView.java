@@ -45,12 +45,11 @@ public class RegionView {
 		}
 
 // TODO: Find a way of populating the regions with locations that doesn't involve manual creation of every one.
-		Location testCity = new Location(ss.grabImage(1, 1, SPRITEWIDTH, SPRITEHEIGHT));
-		Location testCity2 = new Location(ss.grabImage(1, 1, SPRITEWIDTH, SPRITEHEIGHT));
-		testCity.generateLocation(100, 100, 2);
-		testCity2.generateLocation(62, 531, 3);
-		mapLocations.addElement(testCity);
-		mapLocations.addElement(testCity2);
+		for(int l = 0; l < 8; l++){
+			Location location = new Location(ss.grabImage(1, 1, SPRITEWIDTH, SPRITEHEIGHT));
+			location.generateEarthLocation(l);
+			mapLocations.addElement(location);
+		}
 	}
 	
 	public void tick(){
@@ -71,6 +70,9 @@ public class RegionView {
 				g.drawImage(mapLocations.elementAt(i).getSprite() , mapLocations.elementAt(i).getLocationX(), mapLocations.elementAt(i).getLocationY(), null);
 			}
 		}
+		
+		// TODO: Render Routes.
+		
 		// Prototype Render Buttons
 		int x = 192;
 		int y = 320;
@@ -82,7 +84,6 @@ public class RegionView {
 				y += BUTTONHEIGHT;
 			}
 		}
-		// TODO: Render Routes.
 	}
 	public byte getRegionID(int x, int y){
 		int id = 0;

@@ -24,6 +24,7 @@ public class AstroBiz extends Canvas implements Runnable{
 	private BufferedImage spriteSheet = null;
 	private BufferedImage worldMap = null;
 	private BufferedImage regionButtons = null;
+	private LocationView locationView;
 	private MainMenu mainMenu;
 	private RegionView regionView;
 	
@@ -34,6 +35,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		MENU,
 		GAME,
 		REGIONVIEW,
+		LOCATIONVIEW,
 	};
 	public static STATE State = STATE.MENU;
 	
@@ -47,6 +49,7 @@ public class AstroBiz extends Canvas implements Runnable{
 			e.printStackTrace();
 		}
 		mainMenu = new MainMenu();
+		locationView = new LocationView(null);
 		regionView = new RegionView(this);
 		addKeyListener(new KeyInput(this));
 		this.addMouseListener(new MouseInput(this));	
@@ -111,6 +114,8 @@ public class AstroBiz extends Canvas implements Runnable{
 		switch(State){
 		case MENU:
 			break;
+		case LOCATIONVIEW:
+			break;
 		case GAME:
 			break;
 		case REGIONVIEW:
@@ -131,6 +136,8 @@ public class AstroBiz extends Canvas implements Runnable{
 		
 		switch(State){
 		case GAME:			// Game was really a prototyping state and probably will be cut sooner or later. Don't use it.
+			break;
+		case LOCATIONVIEW:
 			break;
 		case MENU:
 			mainMenu.render(g);
@@ -201,6 +208,10 @@ public class AstroBiz extends Canvas implements Runnable{
 	
 	public BufferedImage getWorldMap(){
 		return worldMap;
+	}
+	
+	public LocationView getLocationView(){
+		return this.locationView;
 	}
 	
 	public RegionView getRegion(){
