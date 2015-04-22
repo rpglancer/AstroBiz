@@ -15,7 +15,11 @@ public class AstroBiz extends Canvas implements Runnable{
 	
 	public static final int WIDTH = 800;
 	public static final int HEIGHT = 480;
-	public final String TITLE = "AstroBiz";
+	public static final int VERSION = 0;
+	public static final int MAJOR = 0;
+	public static final int MINOR = 1;
+	public static final int PATCH = 0;
+	public final String TITLE = "AstroBiz Prototype version " + VERSION + "." + MAJOR + "." + MINOR + "." + PATCH;
 	
 	private boolean running = false;
 	private Thread thread;
@@ -138,6 +142,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		case GAME:			// Game was really a prototyping state and probably will be cut sooner or later. Don't use it.
 			break;
 		case LOCATIONVIEW:
+			locationView.render(g);
 			break;
 		case MENU:
 			mainMenu.render(g);

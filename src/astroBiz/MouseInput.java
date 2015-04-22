@@ -34,6 +34,11 @@ public class MouseInput implements MouseListener{
 		int my = e.getY();
 		switch(AstroBiz.State){
 		case LOCATIONVIEW:
+			if(mx >= 736 && mx <= 736+32){
+				if(my >= 32 && my <= 32 + 32){
+					AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
+				}
+			}
 			break;
 		case MENU:
 			// Play Button
