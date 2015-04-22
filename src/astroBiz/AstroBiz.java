@@ -31,6 +31,7 @@ public class AstroBiz extends Canvas implements Runnable{
 	private LocationView locationView;
 	private MainMenu mainMenu;
 	private RegionView regionView;
+	private ScenarioView scenarioView;
 	
 	// The enums should probably be moved to their own class
 	// and utilized with getters and setters, this is just
@@ -39,6 +40,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		MENU,
 		GAME,
 		REGIONVIEW,
+		SCENARIOVIEW,
 		LOCATIONVIEW,
 	};
 	public static STATE State = STATE.MENU;
@@ -55,6 +57,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		mainMenu = new MainMenu();
 		locationView = new LocationView(null);
 		regionView = new RegionView(this);
+		scenarioView = new ScenarioView(this);
 		addKeyListener(new KeyInput(this));
 		this.addMouseListener(new MouseInput(this));	
 	}
@@ -149,6 +152,9 @@ public class AstroBiz extends Canvas implements Runnable{
 			break;
 		case REGIONVIEW:
 			regionView.render(g);
+			break;
+		case SCENARIOVIEW:
+			scenarioView.render(g);
 			break;
 		}
 

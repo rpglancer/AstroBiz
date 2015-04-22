@@ -11,6 +11,8 @@ public class Business {
 	boolean businessIsPlayerOwned;
 	double businessOperatingCosts;
 	private	Vector<SpaceCraft> businessHangar;
+	private Location businessHQ;
+	private Vector<Location> businessHubs;
 	String businessName;
 	Vector<Route> businessRoutes;
 	
@@ -40,6 +42,10 @@ public class Business {
 	
 	SpaceCraft getCraft(int index){
 		return businessHangar.get(index);
+	}
+	
+	void setBusinessHQ(Location hq){
+		this.businessHQ = hq;
 	}
 	
 	void subBusinessAccountBalance(int amount){

@@ -39,13 +39,15 @@ public class MouseInput implements MouseListener{
 					AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
 				}
 			}
-			break;
+			break;		// End LOCATIONVIEW
+			
 		case MENU:
 			// Play Button
 			if(mx >= AstroBiz.WIDTH / 2 - 50 && mx <= AstroBiz.WIDTH / 2 - 50 + 100){
 				if(my >= 150 && my <= 200){
 					// Pressed Play
-					AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
+					//AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
+					AstroBiz.State = AstroBiz.STATE.SCENARIOVIEW;
 				}
 			}
 			
@@ -56,10 +58,11 @@ public class MouseInput implements MouseListener{
 					System.exit(1);
 				}
 			}
-			break;
+			break;		// End MENU
+			
 		case GAME:
 			// Don't use this. Legacy from prototyping and testing things.
-			break;
+			break;		// End Game
 			
 		case REGIONVIEW:
 			RegionView rv = astrobiz.getRegion();
@@ -80,6 +83,37 @@ public class MouseInput implements MouseListener{
 					}
 				}
 			}
+			break;		// End REGIONVIEW
+			
+		case SCENARIOVIEW:
+			if(mx >= 32 && mx <= 32 + ScenarioView.SBWIDTH){
+				if(my >= 32 && my <= 32 + ScenarioView.SBHEIGHT){
+					// Scenario 1
+					AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
+				}
+			}
+			
+			if(mx >= 32 && mx <= 32 + ScenarioView.SBWIDTH){
+				if(my >= 144 && my <= 32 + ScenarioView.SBHEIGHT){
+					// Scenario 2
+					AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
+				}
+			}
+			
+			if(mx >= 32 && mx <= 32 + ScenarioView.SBWIDTH){
+				if(my >= 256 && my <= 32 + ScenarioView.SBHEIGHT){
+					// Scenario 3
+					AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
+				}
+			}
+			
+			if(mx >= 32 && mx <= 32 + ScenarioView.SBWIDTH){
+				if(my >= 368 && my <= 32 + ScenarioView.SBHEIGHT){
+					// Scenario 4
+					AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
+				}
+			}		
+			break;		// End SCENARIOVIEW
 		}
 	}
 
