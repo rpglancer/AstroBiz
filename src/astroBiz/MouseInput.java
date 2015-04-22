@@ -89,6 +89,7 @@ public class MouseInput implements MouseListener{
 			if(mx >= 32 && mx <= 32 + ScenarioView.SBWIDTH){
 				if(my >= 32 && my <= 32 + ScenarioView.SBHEIGHT){
 					// Scenario 1
+					astrobiz.getScenario().setScenario(0);
 					AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
 				}
 			}
@@ -96,6 +97,7 @@ public class MouseInput implements MouseListener{
 			if(mx >= 32 && mx <= 32 + ScenarioView.SBWIDTH){
 				if(my >= 144 && my <= 32 + ScenarioView.SBHEIGHT){
 					// Scenario 2
+					astrobiz.getScenario().setScenario(1);
 					AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
 				}
 			}
@@ -103,6 +105,7 @@ public class MouseInput implements MouseListener{
 			if(mx >= 32 && mx <= 32 + ScenarioView.SBWIDTH){
 				if(my >= 256 && my <= 32 + ScenarioView.SBHEIGHT){
 					// Scenario 3
+					astrobiz.getScenario().setScenario(2);
 					AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
 				}
 			}
@@ -110,6 +113,7 @@ public class MouseInput implements MouseListener{
 			if(mx >= 32 && mx <= 32 + ScenarioView.SBWIDTH){
 				if(my >= 368 && my <= 32 + ScenarioView.SBHEIGHT){
 					// Scenario 4
+					astrobiz.getScenario().setScenario(3);
 					AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
 				}
 			}		

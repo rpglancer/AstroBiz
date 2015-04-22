@@ -11,8 +11,11 @@ import java.io.IOException;
 import javax.swing.JFrame;
 
 public class AstroBiz extends Canvas implements Runnable{
-	private static final long serialVersionUID = 1477754103243231171L;
-	
+
+	/**
+	 * Constants
+	 */
+	private static final long serialVersionUID = 1477754103243231171L;	
 	public static final int WIDTH = 800;
 	public static final int HEIGHT = 480;
 	public static final int VERSION = 0;
@@ -20,14 +23,18 @@ public class AstroBiz extends Canvas implements Runnable{
 	public static final int MINOR = 1;
 	public static final int PATCH = 0;
 	public final String TITLE = "AstroBiz Prototype version " + VERSION + "." + MAJOR + "." + MINOR + "." + PATCH;
-	
-	private boolean running = false;
-	private Thread thread;
-	
+
+	/**
+	 * Buffered Images
+	 */
 	private BufferedImage image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
 	private BufferedImage spriteSheet = null;
 	private BufferedImage worldMap = null;
 	private BufferedImage regionButtons = null;
+
+	/**
+	 * Views
+	 */
 	private LocationView locationView;
 	private MainMenu mainMenu;
 	private RegionView regionView;
@@ -43,7 +50,18 @@ public class AstroBiz extends Canvas implements Runnable{
 		SCENARIOVIEW,
 		LOCATIONVIEW,
 	};
+
+	/**
+	 * Game State information
+	 */
+	private Scenario activeScenario;
+	
+	/**
+	 * Operatonal Variables
+	 */
 	public static STATE State = STATE.MENU;
+	private boolean running = false;
+	private Thread thread;
 	
 	public void init(){
 		BufferedImageLoader loader = new BufferedImageLoader();
@@ -58,6 +76,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		locationView = new LocationView(null);
 		regionView = new RegionView(this);
 		scenarioView = new ScenarioView(this);
+		activeScenario = new Scenario();
 		addKeyListener(new KeyInput(this));
 		this.addMouseListener(new MouseInput(this));	
 	}
@@ -227,5 +246,9 @@ public class AstroBiz extends Canvas implements Runnable{
 	
 	public RegionView getRegion(){
 		return this.regionView;
+	}
+
+	public Scenario getScenario(){
+		return this.activeScenario;
 	}
 }

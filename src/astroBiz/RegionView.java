@@ -29,10 +29,8 @@ public class RegionView {
 		SpriteSheet wm = new SpriteSheet(astrobiz.getWorldMap());
 		SpriteSheet ss = new SpriteSheet(astrobiz.getSpriteSheet());
 		SpriteSheet rb = new SpriteSheet(astrobiz.getRegionButtons());
-		System.out.println(rb);
 		map = wm.grabImage(1, 1, MAPWIDTH, MAPHEIGHT);
-		region = wm.grabImage((int)regionX, (int)regionY, REGIONWIDTH, REGIONHEIGHT);
-		region = map.getSubimage(regionX * REGIONWIDTH - REGIONWIDTH, regionY * REGIONHEIGHT - REGIONHEIGHT, REGIONWIDTH, REGIONHEIGHT);getClass();
+		region = map.getSubimage(regionX * REGIONWIDTH - REGIONWIDTH, regionY * REGIONHEIGHT - REGIONHEIGHT, REGIONWIDTH, REGIONHEIGHT);
 		buttons = new BufferedImage[12];
 		
 		int i = 0;
@@ -87,11 +85,14 @@ public class RegionView {
 	}
 	public byte getRegionID(int x, int y){
 		int id = 0;
-		if(x < 0 || x > 64)
+		if(x < 0 || x > 64){
+			System.out.println("Region X coordinate (" + x + ") is invalid, returning " + id + ".");
 			return (byte)id;
-		if(y < 0 || y > 64)
+		}
+		if(y < 0 || y > 64){
+			System.out.println("Region Y coordinate (" + y + ") is invalid, returning " + id + ".");
 			return (byte)id;
-		
+		}
 		id = (y - 1) * 3 + (x - 1);
 		return (byte)id;
 	}
