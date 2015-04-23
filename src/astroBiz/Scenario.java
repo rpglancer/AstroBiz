@@ -1,5 +1,10 @@
 package astroBiz;
 
+/**
+ * Contains the information about the currently active scenario.
+ * @author Matt Bangert
+ *
+ */
 public class Scenario {
 	
 	Scenario(){

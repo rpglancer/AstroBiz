@@ -121,11 +121,13 @@ public class Location {
 	int getLocationRegion(){
 		return this.locationRegion;
 	}
-/*
+
+	/*
 	void setLocationCategory(int category){
 		locationCategory = category;
 	}
 */
+	
 	void setLocationDemandBusiness(int demand){
 		locationDemandBusiness = demand;
 	}

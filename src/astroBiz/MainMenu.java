@@ -16,15 +16,16 @@ public class MainMenu {
 	public Rectangle newGameButton = new Rectangle(AstroBiz.WIDTH/2 - 50, 150, 100, 50);
 	public Rectangle loadGameButton = new Rectangle(AstroBiz.WIDTH/2 - 50, 225, 100, 50);
 	public Rectangle quitGameButton = new Rectangle(AstroBiz.WIDTH/2 - 50, 300, 100, 50);
+	Font fnt0 = new Font("arial", Font.BOLD, 50);
+	Font fnt1 = new Font("arial", Font.BOLD, 15);
+	Graphics2D g2d;
 	
 	public void render(Graphics g){	
-		Graphics2D g2d = (Graphics2D) g;
-		Font fnt0 = new Font("arial", Font.BOLD, 50);
+		g2d = (Graphics2D) g;
+
 		g.setFont(fnt0);
 		g.setColor(Color.WHITE);
 		g.drawString("AstroBiz", 300, 100);
-		
-		Font fnt1 = new Font("arial", Font.BOLD, 15);
 		g.setFont(fnt1);
 		g.drawString("New Game", newGameButton.x + 14, newGameButton.y + 32);
 		g2d.draw(newGameButton);

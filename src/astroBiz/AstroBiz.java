@@ -27,10 +27,16 @@ public class AstroBiz extends Canvas implements Runnable{
 	/**
 	 * Buffered Images
 	 */
+	//	TODO: Convert to SpriteSheets
 	private BufferedImage image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
 	private BufferedImage spriteSheet = null;
 	private BufferedImage worldMap = null;
 	private BufferedImage regionButtons = null;
+	
+	/**
+	 * Sprite Sheets
+	 */
+	private SpriteSheet employeeSprites = null;
 
 	/**
 	 * Views
@@ -47,6 +53,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		MENU,
 		GAME,
 		REGIONVIEW,
+		SCENARIOCONFIRM,
 		SCENARIOVIEW,
 		LOCATIONVIEW,
 	};
@@ -57,7 +64,7 @@ public class AstroBiz extends Canvas implements Runnable{
 	private Scenario activeScenario;
 	
 	/**
-	 * Operatonal Variables
+	 * Operational Variables
 	 */
 	public static STATE State = STATE.MENU;
 	private boolean running = false;
@@ -66,9 +73,12 @@ public class AstroBiz extends Canvas implements Runnable{
 	public void init(){
 		BufferedImageLoader loader = new BufferedImageLoader();
 		try{
+			BufferedImage temp = loader.loadImage("../data/astrobizEmployeeSprites.png");
+			employeeSprites = new SpriteSheet(temp);
 			spriteSheet = loader.loadImage("../data/astrobizworldicons.png");
 			worldMap = loader.loadImage("../data/astrobizmap.png");
 			regionButtons = loader.loadImage("../data/astrobizbuttons.png");
+//			employeeSprites = loader.loadImage("../data/astrobizEmployeeSprites.png");
 		}catch(IOException e){
 			e.printStackTrace();
 		}
@@ -120,11 +130,13 @@ public class AstroBiz extends Canvas implements Runnable{
 			lastTime = now;
 			if(delta >= 1){
 				tick();
+				render();		// Tick Limited FPS
+				frames++;		// Tick Limited FPS
 				updates++;
 				delta--;
 			}
-			render();
-			frames++;
+//			render();			// Processor Limited FPS
+//			frames++;			// Processor Limited FPS
 			
 			if(System.currentTimeMillis() - timer > 1000){
 				timer += 1000;
@@ -146,6 +158,8 @@ public class AstroBiz extends Canvas implements Runnable{
 			break;
 		case REGIONVIEW:
 			regionView.tick();
+			break;
+		default:
 			break;
 		}
 		// Everything updated in the game world is updated on a tick?
@@ -171,6 +185,9 @@ public class AstroBiz extends Canvas implements Runnable{
 			break;
 		case REGIONVIEW:
 			regionView.render(g);
+			break;
+		case SCENARIOCONFIRM:
+			scenarioView.render(g);
 			break;
 		case SCENARIOVIEW:
 			scenarioView.render(g);
@@ -234,6 +251,10 @@ public class AstroBiz extends Canvas implements Runnable{
 	
 	public BufferedImage getSpriteSheet(){
 		return spriteSheet;
+	}
+	
+	public SpriteSheet getEmployeeSprites(){
+		return employeeSprites;
 	}
 	
 	public BufferedImage getWorldMap(){

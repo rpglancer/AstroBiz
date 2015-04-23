@@ -9,10 +9,10 @@ package astroBiz;
  */
 public class ScenarioInformation {
 	public static String[] scenarioInfoName = {
-			"Scenario 1",
-			"Scenario 2",
-			"Scenario 3",
-			"Scenario 4"
+			"Scenario Name Number 1",
+			"Scenario Name Number 2",
+			"Scenario Name Number 3",
+			"Scenario Name Number 4"
 	};
 	
 	public static final String[] scenarioInfoDescription = {

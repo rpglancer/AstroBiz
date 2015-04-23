@@ -37,7 +37,6 @@ public class RegionView {
 		for(int y = 1; y <= 4; y++){
 			for(int x = 1; x <= 3; x++){
 				buttons[i] = rb.grabImage(x, y, BUTTONWIDTH, BUTTONHEIGHT);
-				System.out.println(buttons[i]);
 				i++;
 			}
 		}

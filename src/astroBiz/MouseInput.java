@@ -85,6 +85,9 @@ public class MouseInput implements MouseListener{
 			}
 			break;		// End REGIONVIEW
 			
+		case SCENARIOCONFIRM:
+			break;		// End SCENARIOCONFIRM
+			
 		case SCENARIOVIEW:
 			if(mx >= 32 && mx <= 32 + ScenarioView.SBWIDTH){
 				if(my >= 32 && my <= 32 + ScenarioView.SBHEIGHT){
