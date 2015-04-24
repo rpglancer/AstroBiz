@@ -15,8 +15,8 @@ public class SpriteSheet {
 		return img;
 	}
 	
-	public BufferedImage getImage(){
-		return this.image;				// test
-	}
+//	public BufferedImage getImage(){
+//		return this.image;				// test
+//	}
 	
 }

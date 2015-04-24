@@ -37,6 +37,7 @@ public class AstroBiz extends Canvas implements Runnable{
 	 * Sprite Sheets
 	 */
 	private SpriteSheet employeeSprites = null;
+	private SpriteSheet regionSprites = null;
 
 	/**
 	 * Views
@@ -75,6 +76,9 @@ public class AstroBiz extends Canvas implements Runnable{
 		try{
 			BufferedImage temp = loader.loadImage("../data/astrobizEmployeeSprites.png");
 			employeeSprites = new SpriteSheet(temp);
+			temp = loader.loadImage("../data/astrobizworldicons.png");
+			regionSprites = new SpriteSheet(temp);
+			
 			spriteSheet = loader.loadImage("../data/astrobizworldicons.png");
 			worldMap = loader.loadImage("../data/astrobizmap.png");
 			regionButtons = loader.loadImage("../data/astrobizbuttons.png");
@@ -88,7 +92,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		scenarioView = new ScenarioView(this);
 		activeScenario = new Scenario();
 		addKeyListener(new KeyInput(this));
-		this.addMouseListener(new MouseInput(this));	
+		this.addMouseListener(new MouseInput(this));
 	}
 	
 	private synchronized void start(){
@@ -159,6 +163,9 @@ public class AstroBiz extends Canvas implements Runnable{
 		case REGIONVIEW:
 			regionView.tick();
 			break;
+		case SCENARIOVIEW:
+			scenarioView.tick();
+			break;
 		default:
 			break;
 		}
@@ -172,6 +179,7 @@ public class AstroBiz extends Canvas implements Runnable{
 			return;
 		}
 		Graphics g = bs.getDrawGraphics();
+		g = bs.getDrawGraphics();
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
 		
 		switch(State){
@@ -200,22 +208,48 @@ public class AstroBiz extends Canvas implements Runnable{
 	
 	public void keyPressed(KeyEvent e){
 		int key = e.getKeyCode();
-		switch(key){
-		case KeyEvent.VK_UP:
-			regionView.setRegionY(regionView.getRegionY() - 1);
-			break;
-		case KeyEvent.VK_DOWN:
-			regionView.setRegionY(regionView.getRegionY() + 1);
-			break;
-		case KeyEvent.VK_RIGHT:
-			regionView.setRegionX(regionView.getRegionX() + 1);
-			break;
-		case KeyEvent.VK_LEFT:
-			regionView.setRegionX(regionView.getRegionX() - 1);
-			break;
-		default:
+		switch(AstroBiz.State){
+		case SCENARIOVIEW:
+			switch(key){
+			case KeyEvent.VK_UP:
+				scenarioView.setY(scenarioView.getY() - 32);
+				if(scenarioView.getY() < 32){
+					scenarioView.setY(128);
+				}
+				break;
+			case KeyEvent.VK_DOWN:
+				scenarioView.setY(scenarioView.getY() + 32);
+				if(scenarioView.getY() > 128){
+					scenarioView.setY(32);
+				}
+				break;
+			default:
+				break;
+			}
+			break;		// End SCENARIOVIEW
+		case REGIONVIEW:
+//			int key = e.getKeyCode();
+			switch(key){
+			case KeyEvent.VK_UP:
+				regionView.setRegionY(regionView.getRegionY() - 1);
+				break;
+			case KeyEvent.VK_DOWN:
+				regionView.setRegionY(regionView.getRegionY() + 1);
+				break;
+			case KeyEvent.VK_RIGHT:
+				regionView.setRegionX(regionView.getRegionX() + 1);
+				break;
+			case KeyEvent.VK_LEFT:
+				regionView.setRegionX(regionView.getRegionX() - 1);
+				break;
+			default:
+				break;
+			}
+			break;		// End REGIONVIEW
+		default: 
 			break;
 		}
+
 		
 	}
 	
@@ -255,6 +289,10 @@ public class AstroBiz extends Canvas implements Runnable{
 	
 	public SpriteSheet getEmployeeSprites(){
 		return employeeSprites;
+	}
+	
+	public SpriteSheet getRegionSprites(){
+		return regionSprites;
 	}
 	
 	public BufferedImage getWorldMap(){
