@@ -33,13 +33,15 @@ public class MouseInput implements MouseListener{
 		int mx = e.getX();
 		int my = e.getY();
 		switch(AstroBiz.State){
+		
 		case LOCATIONVIEW:
 			if(mx >= 736 && mx <= 736+32){
 				if(my >= 32 && my <= 32 + 32){
 					AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
 				}
 			}
-			break;		// End LOCATIONVIEW
+			break;
+		// End LOCATIONVIEW
 			
 		case MENU:
 			// Play Button
@@ -58,11 +60,13 @@ public class MouseInput implements MouseListener{
 					System.exit(1);
 				}
 			}
-			break;		// End MENU
+			break;
+		// End MENU
 			
 		case GAME:
 			// Don't use this. Legacy from prototyping and testing things.
-			break;		// End Game
+			break;
+		// End Game
 			
 		case REGIONVIEW:
 			RegionView rv = astrobiz.getRegion();
@@ -83,44 +87,54 @@ public class MouseInput implements MouseListener{
 					}
 				}
 			}
-			break;		// End REGIONVIEW
+			break;
+		// End REGIONVIEW
 			
 		case SCENARIOCONFIRM:
-			break;		// End SCENARIOCONFIRM
+			break;	
+		// End SCENARIOCONFIRM
 			
 		case SCENARIOVIEW:
-			if(mx >= 32 && mx <= 32 + ScenarioView.SBWIDTH){
-				if(my >= 32 && my <= 32 + ScenarioView.SBHEIGHT){
-					// Scenario 1
+			// Scenario 1
+			if(mx >= 64 && mx <= 64 + ScenarioView.SBWIDTH){
+				if(my >= 48 && my <= 48 + ScenarioView.SBHEIGHT){			
 					astrobiz.getScenario().setScenario(0);
-					AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
+					AstroBiz.State = AstroBiz.STATE.SCENARIOCONFIRM;
 				}
 			}
+			// End Scenario 1
 			
-			if(mx >= 32 && mx <= 32 + ScenarioView.SBWIDTH){
-				if(my >= 144 && my <= 32 + ScenarioView.SBHEIGHT){
+			// Scenario 2
+			if(mx >= 64 && mx <= 64 + ScenarioView.SBWIDTH){
+				if(my >= 112 && my <= 112 + ScenarioView.SBHEIGHT){
 					// Scenario 2
 					astrobiz.getScenario().setScenario(1);
-					AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
+					AstroBiz.State = AstroBiz.STATE.SCENARIOCONFIRM;
 				}
 			}
+			// Scenario 2
 			
-			if(mx >= 32 && mx <= 32 + ScenarioView.SBWIDTH){
-				if(my >= 256 && my <= 32 + ScenarioView.SBHEIGHT){
+			// Scenario 3
+			if(mx >= 64 && mx <= 64 + ScenarioView.SBWIDTH){
+				if(my >= 176 && my <= 176 + ScenarioView.SBHEIGHT){
 					// Scenario 3
 					astrobiz.getScenario().setScenario(2);
-					AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
+					AstroBiz.State = AstroBiz.STATE.SCENARIOCONFIRM;
 				}
 			}
+			// End Scenario 3
 			
-			if(mx >= 32 && mx <= 32 + ScenarioView.SBWIDTH){
-				if(my >= 368 && my <= 32 + ScenarioView.SBHEIGHT){
+			// Scenario 4
+			if(mx >= 64 && mx <= 64 + ScenarioView.SBWIDTH){
+				if(my >= 240 && my <= 240 + ScenarioView.SBHEIGHT){
 					// Scenario 4
 					astrobiz.getScenario().setScenario(3);
-					AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
+					AstroBiz.State = AstroBiz.STATE.SCENARIOCONFIRM;
 				}
-			}		
-			break;		// End SCENARIOVIEW
+			}
+			// End Scenario 4
+			break;
+		// End SCENARIOVIEW
 		}
 	}
 

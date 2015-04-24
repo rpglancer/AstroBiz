@@ -2,21 +2,28 @@ package astroBiz;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 public class ScenarioView {
-	public static final int SBWIDTH = 736;
-	public static final int SBHEIGHT = 80;
+	public static final int SBWIDTH = 672;
+	public static final int SBHEIGHT = 40;
+
+	private final int MAINTEXTWIDTH = 672;
+	private final int MAINTEXTINDENT = 64;
 	
 	private AstroBiz ab;
 	
-	private String textBuffer = "";
-	
 	private BufferedImage employeeSprite;
 	private BufferedImage selectSprite;
-	private int x = 32;
-	private int y = 32;
+	
+	private boolean yesNo = true;
+	private int x = 48;			// Cursor X position
+	private int y = 48;			// Curson Y position
+	
+	private Font sbfont = new Font("sans", Font.BOLD, 16);
+	private Font sbconf	= new Font("sans", Font.BOLD, 32);
 	
 	ScenarioView(AstroBiz astrobiz){
 		this.ab = astrobiz;
@@ -26,8 +33,9 @@ public class ScenarioView {
 	
 	public void tick(){
 		switch(AstroBiz.State){
+		case SCENARIOCONFIRM:
+			break;
 		case SCENARIOVIEW:
-			typeText("Please select a Scenario to play.");
 			break;
 			
 		default:
@@ -35,31 +43,37 @@ public class ScenarioView {
 		}
 	}
 	
-	/**
-	 * Simple textType.
-	 * Problem is it needs a way to deal with multiple strings without
-	 * losing the contents of the buffer.
-	 * @param tt	The string to be typed.
-	 * @return		The currently completed section the string.
-	 */
-	private String typeText(String tt){
-		if(textBuffer.length() < tt.length()){
-			textBuffer += tt.charAt(textBuffer.length());
-		}
-		return textBuffer;
-	}
-	
 	public void render(Graphics g){
-		Font sbfont = new Font("sans", Font.BOLD, 16);
 		switch(AstroBiz.State){
 		case SCENARIOCONFIRM:
+			g.setFont(sbfont);
+			g.setColor(Color.white);
+			g.drawRect(32, 32, 736, 272);
+			textUtilities.drawStringMultiLine(g, sbfont, MAINTEXTINDENT, 64, MAINTEXTWIDTH, ScenarioInformation.scenarioInfoDescription[0]);
+			g.drawImage(this.employeeSprite, 32, 320, null);
+			g.drawString("Is this scenario OK?", 160, 384);
+			g.setFont(sbconf);
+			if(yesNo){
+				g.setColor(Color.red);
+				g.fillRect(192, 416, 64, 32);
+				g.setColor(Color.white);
+				g.drawString("YES", 194, 444);
+				g.setColor(Color.blue);
+				g.fillRect(192+64, 416, 64, 32);
+				g.setColor(Color.gray);
+				g.drawString("NO", 192+73, 444);
+			}
+			else{
+				
+			}
 			// TODO: Come up with a way to type text out.
-			break;
+			break;		// End SCENARIOCONFIRM
+			
 		case SCENARIOVIEW:
 			g.setFont(sbfont);
 			g.setColor(Color.white);
 			g.drawRect(32, 32, 736, 272);
-			
+
 			g.drawString("Scenario 1:  " + ScenarioInformation.scenarioInfoName[0], 64, 64);
 			g.drawString("(" + ScenarioInformation.scenarioInfoStartingYear[0] + " - " + ScenarioInformation.scenarioInfoEndingYear[0] + ")", 96, 64+16);
 			
@@ -74,9 +88,9 @@ public class ScenarioView {
 			
 			g.drawImage(this.selectSprite, x, y, null);
 			g.drawImage(this.employeeSprite, 32, 320, null);
-			g.drawString(textBuffer, 160, 384);
-
-			break;
+			g.drawString("Please select a scenario to play.", 160, 384);
+			break;		// End SCENARIOVIEW
+			
 		default:
 			break;
 		}

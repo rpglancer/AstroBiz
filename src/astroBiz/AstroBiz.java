@@ -212,15 +212,15 @@ public class AstroBiz extends Canvas implements Runnable{
 		case SCENARIOVIEW:
 			switch(key){
 			case KeyEvent.VK_UP:
-				scenarioView.setY(scenarioView.getY() - 32);
-				if(scenarioView.getY() < 32){
-					scenarioView.setY(128);
+				scenarioView.setY(scenarioView.getY() - 64);
+				if(scenarioView.getY() < 48){
+					scenarioView.setY(240);
 				}
 				break;
 			case KeyEvent.VK_DOWN:
-				scenarioView.setY(scenarioView.getY() + 32);
-				if(scenarioView.getY() > 128){
-					scenarioView.setY(32);
+				scenarioView.setY(scenarioView.getY() + 64);
+				if(scenarioView.getY() > 240){
+					scenarioView.setY(48);
 				}
 				break;
 			default:
