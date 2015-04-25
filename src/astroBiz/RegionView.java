@@ -20,31 +20,36 @@ public class RegionView {
 	private Vector<Location> mapLocations = new Vector<Location>();
 	private byte regionX = 3;	// Default Sector
 	private byte regionY = 1;	// Default Sector
-	
+
+	private AstroBiz ab;
 	private BufferedImage map;			// Contains the entirety of the map
 	private BufferedImage region;		// Contains the displayed region of the map
 	private BufferedImage[] buttons;	// Contains the buttons displayed on the regional map.
+	
+	private Font sectorfont = new Font("arial", Font.BOLD, 15);
 
 	public RegionView(AstroBiz astrobiz){
-		SpriteSheet wm = new SpriteSheet(astrobiz.getWorldMap());
-		SpriteSheet ss = new SpriteSheet(astrobiz.getSpriteSheet());
-		SpriteSheet rb = new SpriteSheet(astrobiz.getRegionButtons());
-		map = wm.grabImage(1, 1, MAPWIDTH, MAPHEIGHT);
+		this.ab = astrobiz;
+		map = ab.getWorldMap().grabImage(1, 1, MAPWIDTH, MAPHEIGHT);
 		region = map.getSubimage(regionX * REGIONWIDTH - REGIONWIDTH, regionY * REGIONHEIGHT - REGIONHEIGHT, REGIONWIDTH, REGIONHEIGHT);
 		buttons = new BufferedImage[12];
 		
 		int i = 0;
 		for(int y = 1; y <= 4; y++){
 			for(int x = 1; x <= 3; x++){
-				buttons[i] = rb.grabImage(x, y, BUTTONWIDTH, BUTTONHEIGHT);
+				buttons[i] = ab.getRegionButtons().grabImage(x, y, BUTTONWIDTH, BUTTONHEIGHT);
 				i++;
 			}
 		}
-
 // TODO: Find a way of populating the regions with locations that doesn't involve manual creation of every one.
 		for(int l = 0; l < 8; l++){
-			Location location = new Location(ss.grabImage(1, 1, SPRITEWIDTH, SPRITEHEIGHT));
+			Location location = new Location(ab.getRegionSprites().grabImage(1, 1, SPRITEWIDTH, SPRITEHEIGHT));
 			location.generateEarthLocation(l);
+			mapLocations.addElement(location);
+		}
+		for(int l = 0; l < 8; l++){
+			Location location = new Location(ab.getRegionSprites().grabImage(1, 1, SPRITEWIDTH, SPRITEHEIGHT));
+			location.generateLunaLocation(l);
 			mapLocations.addElement(location);
 		}
 	}
@@ -55,11 +60,11 @@ public class RegionView {
 	
 	public void render(Graphics g){
 		g.drawImage(region, 32, 32, null);
-		Font sectorfont = new Font("arial", Font.BOLD, 15);
 		g.setFont(sectorfont);
 		g.setColor(Color.WHITE);
-		g.drawString("Region: " + regionName[getRegionID(regionX, regionY)], 32, 25);
-		g.drawString("ID: " + getRegionID(regionX, regionY), 400, 25);
+		g.drawString("Region: " + regionName[getRegionID(regionX, regionY)], 32, 25);		// temp drawings
+		g.drawString("ID: " + getRegionID(regionX, regionY), 400, 25);						// temp drawings
+		g.drawString(Integer.toString(ab.getScenario().getCurrentYear()), 600, 25);			// temp drawings
 		
 		// Prototype Render Locations
 		for(int i = 0; i < mapLocations.size(); i++){
@@ -82,6 +87,7 @@ public class RegionView {
 			}
 		}
 	}
+	
 	public byte getRegionID(int x, int y){
 		int id = 0;
 		if(x < 0 || x > 64){

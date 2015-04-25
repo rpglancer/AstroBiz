@@ -44,6 +44,10 @@ public class LocationView {
 		// TODO: Determine if anything in the LV actually needs to tick.
 	}
 	
+	public Location getLocation(){
+		return this.location;
+	}
+	
 	public void setLocationView(Location l){
 		this.location = l;
 	}

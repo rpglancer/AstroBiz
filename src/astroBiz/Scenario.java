@@ -7,9 +7,6 @@ package astroBiz;
  */
 public class Scenario {
 	
-	Scenario(){
-	};
-	
 	private String scenarioName;	
 	private String scenarioDescription;
 	private int scenarioQuarter;
@@ -17,6 +14,13 @@ public class Scenario {
 	private int scenarioStartingYear;
 	private int scenarioEndingYear;
 	private int scenarioHubsRequired;
+	
+	Scenario(){
+	}
+	
+	public int getCurrentYear(){
+		return this.scenarioCurrentYear;
+	}
 	
 	public void setScenario(int scenario){
 		scenarioName = ScenarioInformation.scenarioInfoName[scenario];

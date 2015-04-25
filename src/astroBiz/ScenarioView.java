@@ -2,7 +2,6 @@ package astroBiz;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -19,6 +18,7 @@ public class ScenarioView {
 	private BufferedImage selectSprite;
 	
 	private boolean yesNo = true;
+	private int s = 0;			// Scenario Selected
 	private int x = 48;			// Cursor X position
 	private int y = 48;			// Curson Y position
 	
@@ -33,6 +33,7 @@ public class ScenarioView {
 	
 	public void tick(){
 		switch(AstroBiz.State){
+		
 		case SCENARIOCONFIRM:
 			break;
 		case SCENARIOVIEW:
@@ -45,11 +46,12 @@ public class ScenarioView {
 	
 	public void render(Graphics g){
 		switch(AstroBiz.State){
+
 		case SCENARIOCONFIRM:
 			g.setFont(sbfont);
 			g.setColor(Color.white);
 			g.drawRect(32, 32, 736, 272);
-			textUtilities.drawStringMultiLine(g, sbfont, MAINTEXTINDENT, 64, MAINTEXTWIDTH, ScenarioInformation.scenarioInfoDescription[0]);
+			textUtilities.drawStringMultiLine(g, sbfont, MAINTEXTINDENT, 64, MAINTEXTWIDTH, ScenarioInformation.scenarioInfoDescription[this.s]);
 			g.drawImage(this.employeeSprite, 32, 320, null);
 			g.drawString("Is this scenario OK?", 160, 384);
 			g.setFont(sbconf);
@@ -64,9 +66,15 @@ public class ScenarioView {
 				g.drawString("NO", 192+73, 444);
 			}
 			else{
-				
+				g.setColor(Color.blue);
+				g.fillRect(192, 416, 64, 32);
+				g.setColor(Color.gray);
+				g.drawString("YES", 194, 444);
+				g.setColor(Color.red);
+				g.fillRect(192+64, 416, 64, 32);
+				g.setColor(Color.white);
+				g.drawString("NO", 192+73, 444);		
 			}
-			// TODO: Come up with a way to type text out.
 			break;		// End SCENARIOCONFIRM
 			
 		case SCENARIOVIEW:
@@ -96,19 +104,37 @@ public class ScenarioView {
 		}
 	}
 	
+	public int getS(){
+		return this.s;
+	}
+	
 	public int getX(){
 		return this.x;
 	}
 	
+	
 	public int getY(){
 		return this.y;
+	}
+	
+	public boolean getYesNo(){
+		return this.yesNo;
+	}
+
+	public void setS(int n){
+		this.s = n;
 	}
 	
 	public void setX(int n){
 		this.x = n;
 	}
 	
+	
 	public void setY(int n){
 		this.y = n;
+	}
+	
+	public void setYesNo(boolean b){
+		this.yesNo = b;
 	}
 }

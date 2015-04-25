@@ -20,19 +20,50 @@ public class MainMenu {
 	Font fnt1 = new Font("arial", Font.BOLD, 15);
 	Graphics2D g2d;
 	
+	boolean buttonStatus[] = {false, false, false};
+	
 	public void render(Graphics g){	
 		g2d = (Graphics2D) g;
-
 		g.setFont(fnt0);
-		g.setColor(Color.WHITE);
+		g.setColor(Color.white);
 		g.drawString("AstroBiz", 300, 100);
 		g.setFont(fnt1);
+		g.setColor(getButtonColor(0));
 		g.drawString("New Game", newGameButton.x + 14, newGameButton.y + 32);
-		g2d.draw(newGameButton);
+		g2d.draw(newGameButton);getClass();
+		g.setColor(getButtonColor(1));
 		g.drawString("Load Game", loadGameButton.x + 14, loadGameButton.y + 32);
 		g2d.draw(loadGameButton);
+		g.setColor(getButtonColor(2));
 		g.drawString("Quit Game", quitGameButton.x + 14, quitGameButton.y + 32);
 		g2d.draw(quitGameButton);
 	}
-
+	
+	public Color getButtonColor(int button){
+		if(buttonStatus[button]){
+			return Color.green;
+		}
+		else{
+			return Color.white;
+		}
+	}
+	
+	public void setButtonStatus(int button, boolean status){
+		if(button < 0 || button > 2)
+			return;
+		this.buttonStatus[button] = status;
+	}
+	
+	public Rectangle getNewGameButton(){
+		return this.newGameButton;
+	}
+	
+	public Rectangle getLoadGameButton(){
+		return this.loadGameButton;
+	}
+	
+	public Rectangle getQuitGameButton(){
+		return this.quitGameButton;
+	}
+	
 }

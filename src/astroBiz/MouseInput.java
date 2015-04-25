@@ -1,12 +1,16 @@
 package astroBiz;
 
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.Vector;
 
+import astroBiz.AstroBiz.STATE;
 
 
-public class MouseInput implements MouseListener{
+
+public class MouseInput implements MouseMotionListener, MouseListener{
 	
 	private AstroBiz astrobiz;
 	
@@ -19,9 +23,7 @@ public class MouseInput implements MouseListener{
 		
 	}
 
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+	public void mouseEntered(MouseEvent e) {		
 	}
 
 	public void mouseExited(MouseEvent e) {
@@ -48,7 +50,6 @@ public class MouseInput implements MouseListener{
 			if(mx >= AstroBiz.WIDTH / 2 - 50 && mx <= AstroBiz.WIDTH / 2 - 50 + 100){
 				if(my >= 150 && my <= 200){
 					// Pressed Play
-					//AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
 					AstroBiz.State = AstroBiz.STATE.SCENARIOVIEW;
 				}
 			}
@@ -80,9 +81,8 @@ public class MouseInput implements MouseListener{
 					if(mx >= current.getLocationX() && mx <= current.getLocationX() + 16){
 						if(my >= current.getLocationY() && my <= current.getLocationY() + 16){
 							System.out.println(current.getLocationName() + " @ " + current.getLocationRegion());
+							AstroBiz.State = STATE.LOCATIONVIEW;
 							astrobiz.getLocationView().setLocationView(current);
-							AstroBiz.State = AstroBiz.STATE.LOCATIONVIEW;
-							// TODO: Code to display location.
 						}
 					}
 				}
@@ -141,6 +141,43 @@ public class MouseInput implements MouseListener{
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public void mouseMoved(MouseEvent e) {
+		int mx = e.getX();
+		int my = e.getY();
+		
+		switch(AstroBiz.State){
+		case MENU:
+			// Play Button
+			Rectangle newB = astrobiz.getMainMenu().getNewGameButton();
+			Rectangle quiB = astrobiz.getMainMenu().getQuitGameButton();
+			if(mx >= newB.x && mx <= newB.x + newB.width &&
+					my >= newB.y && my <= newB.y + newB.height){
+				astrobiz.getMainMenu().setButtonStatus(0, true);
+				astrobiz.getMainMenu().setButtonStatus(1, false);
+				astrobiz.getMainMenu().setButtonStatus(2, false);
+			}
+			else if(mx >= quiB.x && mx <= quiB.x + quiB.width &&
+					my >= quiB.y && my <= quiB.y + quiB.height){
+				astrobiz.getMainMenu().setButtonStatus(0, false);
+				astrobiz.getMainMenu().setButtonStatus(1, false);
+				astrobiz.getMainMenu().setButtonStatus(2, true);
+			}
+			else{
+				astrobiz.getMainMenu().setButtonStatus(0, false);
+				astrobiz.getMainMenu().setButtonStatus(1, false);
+				astrobiz.getMainMenu().setButtonStatus(2, false);
+			}
+			break;
+		default:
+			break;
+		}
 	}
 
 }

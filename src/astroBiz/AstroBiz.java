@@ -27,30 +27,26 @@ public class AstroBiz extends Canvas implements Runnable{
 	/**
 	 * Buffered Images
 	 */
-	//	TODO: Convert to SpriteSheets
 	private BufferedImage image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
-	private BufferedImage spriteSheet = null;
-	private BufferedImage worldMap = null;
-	private BufferedImage regionButtons = null;
 	
 	/**
 	 * Sprite Sheets
 	 */
 	private SpriteSheet employeeSprites = null;
+	private SpriteSheet regionButtons = null;
 	private SpriteSheet regionSprites = null;
+	private SpriteSheet worldMap = null;
 
 	/**
 	 * Views
 	 */
-	private LocationView locationView;
-	private MainMenu mainMenu;
-	private RegionView regionView;
-	private ScenarioView scenarioView;
+	private LocationView locationView = null;
+	private MainMenu mainMenu = null;
+	private RegionView regionView = null;
+	private ScenarioView scenarioView = null;
 	
-	// The enums should probably be moved to their own class
-	// and utilized with getters and setters, this is just
-	// a bit of a proof of concept.
 	public static enum STATE{
+		// TODO: Move ENUMs to own class.
 		MENU,
 		GAME,
 		REGIONVIEW,
@@ -76,13 +72,12 @@ public class AstroBiz extends Canvas implements Runnable{
 		try{
 			BufferedImage temp = loader.loadImage("../data/astrobizEmployeeSprites.png");
 			employeeSprites = new SpriteSheet(temp);
+			temp = loader.loadImage("../data/astrobizbuttons.png");
+			regionButtons = new SpriteSheet(temp);
 			temp = loader.loadImage("../data/astrobizworldicons.png");
 			regionSprites = new SpriteSheet(temp);
-			
-			spriteSheet = loader.loadImage("../data/astrobizworldicons.png");
-			worldMap = loader.loadImage("../data/astrobizmap.png");
-			regionButtons = loader.loadImage("../data/astrobizbuttons.png");
-//			employeeSprites = loader.loadImage("../data/astrobizEmployeeSprites.png");
+			temp = loader.loadImage("../data/astrobizmap.png");
+			worldMap = new SpriteSheet(temp);
 		}catch(IOException e){
 			e.printStackTrace();
 		}
@@ -93,6 +88,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		activeScenario = new Scenario();
 		addKeyListener(new KeyInput(this));
 		this.addMouseListener(new MouseInput(this));
+		this.addMouseMotionListener(new MouseInput(this));
 	}
 	
 	private synchronized void start(){
@@ -112,7 +108,6 @@ public class AstroBiz extends Canvas implements Runnable{
 		try {
 			thread.join();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.exit(1);
@@ -206,9 +201,40 @@ public class AstroBiz extends Canvas implements Runnable{
 		bs.show();
 	}
 	
+	/**
+	 * This should probably be reorganized thusly:
+	 * switch(key){
+	 * 	case KeyEvent.VK_XX:
+	 * 		switch(AstroBiz.State){
+	 * 			case CASE:
+	 * 		}
+	 * }
+	 */
 	public void keyPressed(KeyEvent e){
 		int key = e.getKeyCode();
 		switch(AstroBiz.State){
+
+		case SCENARIOCONFIRM:
+			switch(key){
+			case KeyEvent.VK_RIGHT:
+				scenarioView.setYesNo(false);
+				break;
+			case KeyEvent.VK_LEFT:
+				scenarioView.setYesNo(true);
+				break;
+			case KeyEvent.VK_ENTER:
+				if(scenarioView.getYesNo()){
+					this.activeScenario = new Scenario();
+					activeScenario.setScenario(scenarioView.getS());
+					AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
+				}
+				else{
+					scenarioView.setYesNo(true);
+					AstroBiz.State = AstroBiz.STATE.SCENARIOVIEW;
+				}
+			}
+			break;		// End SCENARIOCONFIRM
+			
 		case SCENARIOVIEW:
 			switch(key){
 			case KeyEvent.VK_UP:
@@ -222,6 +248,17 @@ public class AstroBiz extends Canvas implements Runnable{
 				if(scenarioView.getY() > 240){
 					scenarioView.setY(48);
 				}
+				break;
+			case KeyEvent.VK_ENTER:
+				if(scenarioView.getY() == 48)
+					scenarioView.setS(0);
+				if(scenarioView.getY() == 112)
+					scenarioView.setS(1);
+				if(scenarioView.getY() == 176)
+					scenarioView.setS(2);
+				if(scenarioView.getY() == 240)
+					scenarioView.setS(3);
+				AstroBiz.State = AstroBiz.STATE.SCENARIOCONFIRM;
 				break;
 			default:
 				break;
@@ -278,29 +315,29 @@ public class AstroBiz extends Canvas implements Runnable{
 		frame.setVisible(true);
 		astrobiz.start();
 	}
-	
-	public BufferedImage getRegionButtons(){
-		return regionButtons;
-	}
-	
-	public BufferedImage getSpriteSheet(){
-		return spriteSheet;
-	}
-	
+
 	public SpriteSheet getEmployeeSprites(){
 		return employeeSprites;
+	}
+	
+	public SpriteSheet getRegionButtons(){
+		return this.regionButtons;
 	}
 	
 	public SpriteSheet getRegionSprites(){
 		return regionSprites;
 	}
-	
-	public BufferedImage getWorldMap(){
-		return worldMap;
+
+	public SpriteSheet getWorldMap(){
+		return this.worldMap;
 	}
 	
 	public LocationView getLocationView(){
 		return this.locationView;
+	}
+	
+	public MainMenu getMainMenu(){
+		return this.mainMenu;
 	}
 	
 	public RegionView getRegion(){

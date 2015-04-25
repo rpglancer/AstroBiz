@@ -1,6 +1,7 @@
 package astroBiz;
 import java.awt.image.BufferedImage;
 import java.util.Random;
+import java.util.Vector;
 
 /**
  * Contains all the information for a Location on the Map.
@@ -19,6 +20,8 @@ public class Location {
 	private int locationSlotCost;					// The cost per slot to lease an available slot
 	private int locationSlotTotal;					// The location's total slots
 	private int locationRegion;						// The region at which this location is situated
+	private int locationRegionX;
+	private int locationRegionY;
 	private int locationX;							// The X coordinate of the location
 	private int locationY;							// The Y coordinate of the location
 	
@@ -62,8 +65,42 @@ public class Location {
 		this.locationSize = this.locationDevelopment * 100;
 		this.locationSlotTotal = this.locationDevelopment / 10;
 		this.locationSlotAvailable = this.locationSlotTotal;
-		this.locationSlotCost = 500;
-		
+		this.locationSlotCost = 500;	
+	}
+	
+	public void generateLunaLocation(int i){
+		this.locationRegion = 3;
+		this.locationX = LocationInformation.lunaLocationX[i];
+		this.locationY = LocationInformation.lunaLocationY[i];
+		this.locationName = LocationInformation.lunaLocationNames[i];
+		this.locationDemandBusiness = LocationInformation.lunaLocationDemandBusiness[i];
+		this.locationDemandIndustry = LocationInformation.lunaLocationDemandIndustry[i];
+		this.locationDemandTourism = LocationInformation.lunaLocationDemandTourism[i];
+		this.locationDevelopment = (this.locationDemandBusiness + this.locationDemandIndustry + this.locationDemandTourism) / 3;
+		this.locationSize = this.locationDevelopment * 100;
+		this.locationSlotTotal = this.locationDevelopment / 10;
+		this.locationSlotAvailable = this.locationSlotTotal;
+		this.locationSlotCost = 500;	
+	}
+	
+	public void generateLocation(int region, Vector<Location> locationVector){
+		if(region < 0 || region > 8)
+			return;
+		switch(region){
+		case 2:
+			for(int i = 0; i < 8; i++){
+				generateEarthLocation(i);
+			}
+			break;
+		case 3:
+			for(int i = 0; i < 8; i++){
+				generateLunaLocation(i);
+			}
+			break;
+		default:
+			break;
+		}
+			
 	}
 	
 	BufferedImage getSprite(){
@@ -122,6 +159,14 @@ public class Location {
 		return this.locationRegion;
 	}
 
+	int getLocationRegionX(){
+		return this.locationRegionX;
+	}
+	
+	int getLocationRegionY(){
+		return this.locationRegionY;
+	}
+	
 	/*
 	void setLocationCategory(int category){
 		locationCategory = category;
