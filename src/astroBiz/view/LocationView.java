@@ -1,14 +1,16 @@
-package astroBiz;
+package astroBiz.view;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+import astroBiz.Location;
+
 public class LocationView {
 	private Location location;
 	
-	LocationView(Location l){
+	public LocationView(Location l){
 		this.location = l;
 	}
 	public void render(Graphics g){

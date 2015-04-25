@@ -1,4 +1,4 @@
-package astroBiz;
+package astroBiz.util;
 
 import java.awt.Font;
 import java.awt.FontMetrics;

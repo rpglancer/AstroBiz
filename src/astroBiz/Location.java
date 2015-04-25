@@ -30,7 +30,7 @@ public class Location {
 	/**
 	 * Default constructor for a Location.
 	 */
-	Location(BufferedImage sprite){
+	public Location(BufferedImage sprite){
 		this.locationSprite = sprite;
 	}
 
@@ -103,7 +103,7 @@ public class Location {
 			
 	}
 	
-	BufferedImage getSprite(){
+	public BufferedImage getSprite(){
 		return locationSprite;
 	}
 /*
@@ -127,7 +127,7 @@ public class Location {
 		return locationDevelopment;
 	}
 
-	String getLocationName(){
+	public String getLocationName(){
 		return locationName;
 	}	
 
@@ -135,27 +135,27 @@ public class Location {
 		return locationSize;
 	}
 
-	int getLocationSlotAvailable(){
+	public int getLocationSlotAvailable(){
 		return locationSlotAvailable;
 	}
 
-	int getLocationSlotCost(){
+	public int getLocationSlotCost(){
 		return locationSlotCost;
 	}
 
-	int getLocationSlotTotal(){
+	public int getLocationSlotTotal(){
 		return locationSlotTotal;
 	}
 
-	int getLocationX(){
+	public int getLocationX(){
 		return locationX;
 	}	
 
-	int getLocationY(){
+	public int getLocationY(){
 		return locationY;
 	}
 	
-	int getLocationRegion(){
+	public int getLocationRegion(){
 		return this.locationRegion;
 	}
 

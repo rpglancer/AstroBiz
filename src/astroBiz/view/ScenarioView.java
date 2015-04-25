@@ -1,9 +1,13 @@
-package astroBiz;
+package astroBiz.view;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+
+import astroBiz.AstroBiz;
+import astroBiz.ScenarioInformation;
+import astroBiz.util.textUtilities;
 
 public class ScenarioView {
 	public static final int SBWIDTH = 672;
@@ -12,7 +16,7 @@ public class ScenarioView {
 	private final int MAINTEXTWIDTH = 672;
 	private final int MAINTEXTINDENT = 64;
 	
-	private AstroBiz ab;
+	private astroBiz.AstroBiz ab;
 	
 	private BufferedImage employeeSprite;
 	private BufferedImage selectSprite;
@@ -25,14 +29,14 @@ public class ScenarioView {
 	private Font sbfont = new Font("sans", Font.BOLD, 16);
 	private Font sbconf	= new Font("sans", Font.BOLD, 32);
 	
-	ScenarioView(AstroBiz astrobiz){
+	public ScenarioView(AstroBiz astrobiz){
 		this.ab = astrobiz;
 		this.employeeSprite = ab.getEmployeeSprites().grabImage(1, 1, 128, 128);
 		this.selectSprite = ab.getRegionSprites().grabImage(2, 3, 16, 16);
 	}
 	
 	public void tick(){
-		switch(AstroBiz.State){
+		switch(astroBiz.AstroBiz.State){
 		
 		case SCENARIOCONFIRM:
 			break;
@@ -45,7 +49,7 @@ public class ScenarioView {
 	}
 	
 	public void render(Graphics g){
-		switch(AstroBiz.State){
+		switch(astroBiz.AstroBiz.State){
 
 		case SCENARIOCONFIRM:
 			g.setFont(sbfont);

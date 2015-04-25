@@ -10,6 +10,11 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 
+import astroBiz.view.LocationView;
+import astroBiz.view.MainMenu;
+import astroBiz.view.RegionView;
+import astroBiz.view.ScenarioView;
+
 public class AstroBiz extends Canvas implements Runnable{
 
 	/**

@@ -1,4 +1,4 @@
-package astroBiz;
+package astroBiz.view;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -13,9 +13,10 @@ import java.awt.Rectangle;
  */
 public class MainMenu {
 	
-	public Rectangle newGameButton = new Rectangle(AstroBiz.WIDTH/2 - 50, 150, 100, 50);
-	public Rectangle loadGameButton = new Rectangle(AstroBiz.WIDTH/2 - 50, 225, 100, 50);
-	public Rectangle quitGameButton = new Rectangle(AstroBiz.WIDTH/2 - 50, 300, 100, 50);
+	public Rectangle newGameButton = new Rectangle(astroBiz.AstroBiz.WIDTH/2 - 50, 150, 100, 50);
+	//public Rectangle newGameButton = new Rectangle(AstroBiz.WIDTH/2 - 50, 150, 100, 50);
+	public Rectangle loadGameButton = new Rectangle(astroBiz.AstroBiz.WIDTH/2 - 50, 225, 100, 50);
+	public Rectangle quitGameButton = new Rectangle(astroBiz.AstroBiz.WIDTH/2 - 50, 300, 100, 50);
 	Font fnt0 = new Font("arial", Font.BOLD, 50);
 	Font fnt1 = new Font("arial", Font.BOLD, 15);
 	Graphics2D g2d;

@@ -1,10 +1,13 @@
-package astroBiz;
+package astroBiz.view;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.Vector;
+
+import astroBiz.AstroBiz;
+import astroBiz.Location;
 
 public class RegionView {
 	private static final int MAPWIDTH = 2208;

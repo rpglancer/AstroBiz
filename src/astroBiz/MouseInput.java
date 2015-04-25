@@ -7,6 +7,8 @@ import java.awt.event.MouseMotionListener;
 import java.util.Vector;
 
 import astroBiz.AstroBiz.STATE;
+import astroBiz.view.RegionView;
+import astroBiz.view.ScenarioView;
 
 
 
