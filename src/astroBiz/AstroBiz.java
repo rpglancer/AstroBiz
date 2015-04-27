@@ -10,8 +10,10 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 
+import astroBiz.util.BufferedImageLoader;
 import astroBiz.view.LocationView;
 import astroBiz.view.MainMenu;
+import astroBiz.view.MainMenu.MENUSELECT;
 import astroBiz.view.RegionView;
 import astroBiz.view.ScenarioView;
 
@@ -58,6 +60,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		SCENARIOCONFIRM,
 		SCENARIOVIEW,
 		LOCATIONVIEW,
+		SETDIFFICULTY,
 	};
 
 	/**
@@ -75,25 +78,25 @@ public class AstroBiz extends Canvas implements Runnable{
 	public void init(){
 		BufferedImageLoader loader = new BufferedImageLoader();
 		try{
-			BufferedImage temp = loader.loadImage("../data/astrobizEmployeeSprites.png");
+			BufferedImage temp = loader.loadImage("../../data/astrobizEmployeeSprites.png");
 			employeeSprites = new SpriteSheet(temp);
-			temp = loader.loadImage("../data/astrobizbuttons.png");
+			temp = loader.loadImage("../../data/astrobizbuttons.png");
 			regionButtons = new SpriteSheet(temp);
-			temp = loader.loadImage("../data/astrobizworldicons.png");
+			temp = loader.loadImage("../../data/astrobizworldicons.png");
 			regionSprites = new SpriteSheet(temp);
-			temp = loader.loadImage("../data/astrobizmap.png");
+			temp = loader.loadImage("../../data/astrobizmap.png");
 			worldMap = new SpriteSheet(temp);
 		}catch(IOException e){
 			e.printStackTrace();
 		}
+		addKeyListener(new KeyInput(this));
+		this.addMouseListener(new MouseInput(this));
+		this.addMouseMotionListener(new MouseInput(this));
 		mainMenu = new MainMenu();
 		locationView = new LocationView(null);
 		regionView = new RegionView(this);
 		scenarioView = new ScenarioView(this);
 		activeScenario = new Scenario();
-		addKeyListener(new KeyInput(this));
-		this.addMouseListener(new MouseInput(this));
-		this.addMouseMotionListener(new MouseInput(this));
 	}
 	
 	private synchronized void start(){
@@ -200,6 +203,11 @@ public class AstroBiz extends Canvas implements Runnable{
 		case SCENARIOVIEW:
 			scenarioView.render(g);
 			break;
+		case SETDIFFICULTY:
+			scenarioView.render(g);
+			break;
+		default:
+			break;
 		}
 
 		g.dispose();
@@ -231,7 +239,8 @@ public class AstroBiz extends Canvas implements Runnable{
 				if(scenarioView.getYesNo()){
 					this.activeScenario = new Scenario();
 					activeScenario.setScenario(scenarioView.getS());
-					AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
+					AstroBiz.State = AstroBiz.STATE.SETDIFFICULTY;
+					//AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
 				}
 				else{
 					scenarioView.setYesNo(true);
@@ -269,8 +278,23 @@ public class AstroBiz extends Canvas implements Runnable{
 				break;
 			}
 			break;		// End SCENARIOVIEW
+			
+		case SETDIFFICULTY:
+			switch(key){
+			case KeyEvent.VK_UP:
+				scenarioView.cycleDifficultyPrev();
+				break;
+			case KeyEvent.VK_DOWN:
+				scenarioView.cycleDifficultyNext();
+				break;
+			case KeyEvent.VK_ENTER:
+				scenarioView.setDifficulty();
+				AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
+				break;
+			}
+			break;
+			
 		case REGIONVIEW:
-//			int key = e.getKeyCode();
 			switch(key){
 			case KeyEvent.VK_UP:
 				regionView.setRegionY(regionView.getRegionY() - 1);
@@ -288,11 +312,29 @@ public class AstroBiz extends Canvas implements Runnable{
 				break;
 			}
 			break;		// End REGIONVIEW
-		default: 
+			
+		case MENU:
+			switch(key){
+			case KeyEvent.VK_UP:
+				mainMenu.cycleMenuPrev();
+				break;
+			case KeyEvent.VK_DOWN:
+				mainMenu.cycleMenuNext();
+				break;
+			case KeyEvent.VK_ENTER:
+				if(mainMenu.getMenuStatus() == MENUSELECT.NEWGAME)
+					AstroBiz.State = AstroBiz.STATE.SCENARIOVIEW;
+				if(mainMenu.getMenuStatus() == MENUSELECT.LOADGAME)
+					break;
+				if(mainMenu.getMenuStatus() == MENUSELECT.QUITGAME)
+					System.exit(1);
+				break;
+			}
 			break;
-		}
-
-		
+			
+		default:
+			break;
+		}	
 	}
 	
 	public void keyReleased(KeyEvent e){
@@ -310,6 +352,8 @@ public class AstroBiz extends Canvas implements Runnable{
 		astrobiz.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		astrobiz.setMaximumSize(new Dimension(WIDTH, HEIGHT));
 		astrobiz.setMinimumSize(new Dimension(HEIGHT, WIDTH));
+		astrobiz.setFocusable(true);
+		astrobiz.requestFocus();
 		
 		JFrame frame = new JFrame(astrobiz.TITLE);
 		frame.add(astrobiz);

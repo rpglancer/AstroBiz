@@ -3,6 +3,8 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 import java.util.Vector;
 
+import astroBiz.info.LocationInformation;
+
 /**
  * Contains all the information for a Location on the Map.
  * @author Matt Bangert

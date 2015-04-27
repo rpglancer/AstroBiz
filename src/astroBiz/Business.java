@@ -7,9 +7,10 @@ import java.util.Vector;
  *
  */
 public class Business {
-	double businessAccountBalance;
-	boolean businessIsPlayerOwned;
-	double businessOperatingCosts;
+	private double businessAccountBalance;
+	private int[] businessColor = new int[3];
+	private boolean businessIsPlayerOwned;
+	private double businessOperatingCosts;
 	private	Vector<SpaceCraft> businessHangar;
 	private Location businessHQ;
 	private Vector<Location> businessHubs;

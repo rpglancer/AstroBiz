@@ -11,7 +11,11 @@ import astroBiz.view.RegionView;
 import astroBiz.view.ScenarioView;
 
 
-
+/**
+ * MouseInput is here for future use, the initial builds should be 100% operable with the Keyboard.
+ * @author Matt Bangert
+ *
+ */
 public class MouseInput implements MouseMotionListener, MouseListener{
 	
 	private AstroBiz astrobiz;
@@ -151,35 +155,35 @@ public class MouseInput implements MouseMotionListener, MouseListener{
 	}
 	
 	public void mouseMoved(MouseEvent e) {
-		int mx = e.getX();
-		int my = e.getY();
+//		int mx = e.getX();
+//		int my = e.getY();
 		
-		switch(AstroBiz.State){
-		case MENU:
+//		switch(AstroBiz.State){
+//		case MENU:
 			// Play Button
-			Rectangle newB = astrobiz.getMainMenu().getNewGameButton();
-			Rectangle quiB = astrobiz.getMainMenu().getQuitGameButton();
-			if(mx >= newB.x && mx <= newB.x + newB.width &&
-					my >= newB.y && my <= newB.y + newB.height){
-				astrobiz.getMainMenu().setButtonStatus(0, true);
-				astrobiz.getMainMenu().setButtonStatus(1, false);
-				astrobiz.getMainMenu().setButtonStatus(2, false);
-			}
-			else if(mx >= quiB.x && mx <= quiB.x + quiB.width &&
-					my >= quiB.y && my <= quiB.y + quiB.height){
-				astrobiz.getMainMenu().setButtonStatus(0, false);
-				astrobiz.getMainMenu().setButtonStatus(1, false);
-				astrobiz.getMainMenu().setButtonStatus(2, true);
-			}
-			else{
-				astrobiz.getMainMenu().setButtonStatus(0, false);
-				astrobiz.getMainMenu().setButtonStatus(1, false);
-				astrobiz.getMainMenu().setButtonStatus(2, false);
-			}
-			break;
-		default:
-			break;
-		}
+//			Rectangle newB = astrobiz.getMainMenu().getNewGameButton();
+//			Rectangle quiB = astrobiz.getMainMenu().getQuitGameButton();
+//			if(mx >= newB.x && mx <= newB.x + newB.width &&
+//					my >= newB.y && my <= newB.y + newB.height){
+//				astrobiz.getMainMenu().setButtonStatus(0, true);
+//				astrobiz.getMainMenu().setButtonStatus(1, false);
+//				astrobiz.getMainMenu().setButtonStatus(2, false);
+//			}
+//			else if(mx >= quiB.x && mx <= quiB.x + quiB.width &&
+//					my >= quiB.y && my <= quiB.y + quiB.height){
+//				astrobiz.getMainMenu().setButtonStatus(0, false);
+//				astrobiz.getMainMenu().setButtonStatus(1, false);
+//				astrobiz.getMainMenu().setButtonStatus(2, true);
+//			}
+//			else{
+//				astrobiz.getMainMenu().setButtonStatus(0, false);
+//				astrobiz.getMainMenu().setButtonStatus(1, false);
+//				astrobiz.getMainMenu().setButtonStatus(2, false);
+//			}
+//			break;
+//		default:
+//			break;
+//		}
 	}
 
 }

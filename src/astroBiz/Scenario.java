@@ -1,5 +1,10 @@
 package astroBiz;
 
+import java.util.Vector;
+
+import astroBiz.info.ScenarioInformation;
+import astroBiz.view.ScenarioView.DIFFICULTYSELECT;
+
 /**
  * Contains the information about the currently active scenario.
  * @author Matt Bangert
@@ -7,15 +12,23 @@ package astroBiz;
  */
 public class Scenario {
 	
-	private String scenarioName;	
+	private String scenarioName;
 	private String scenarioDescription;
-	private int scenarioQuarter;
+	
+	private int scenarioDifficultyLevel;
 	private int scenarioCurrentYear;
-	private int scenarioStartingYear;
 	private int scenarioEndingYear;
 	private int scenarioHubsRequired;
+	private int scenarioQuarter;
+	private int scenarioStartingYear;
+	
+	private Vector<Business> scenarioBusinesses = new Vector<Business>();
 	
 	Scenario(){
+		for(int i = 0; i < 4; i++){
+			Business b = new Business();
+			scenarioBusinesses.addElement(b);
+		}
 	}
 	
 	public int getCurrentYear(){
@@ -30,5 +43,12 @@ public class Scenario {
 		scenarioHubsRequired = ScenarioInformation.scenarioInfoHubsRequired[scenario];
 		scenarioCurrentYear = scenarioStartingYear;
 		scenarioQuarter = 1;
+	}
+	
+	public void setScenarioDifficulty(int difficulty){
+		if(difficulty < 1 || difficulty > 4)
+			this.scenarioDifficultyLevel = 0;
+		else
+			this.scenarioDifficultyLevel = difficulty;
 	}
 }

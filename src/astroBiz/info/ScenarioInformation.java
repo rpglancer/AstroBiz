@@ -1,4 +1,4 @@
-package astroBiz;
+package astroBiz.info;
 
 /**
  * Scenario Constants

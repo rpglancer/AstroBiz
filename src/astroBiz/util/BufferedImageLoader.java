@@ -1,4 +1,4 @@
-package astroBiz;
+package astroBiz.util;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
