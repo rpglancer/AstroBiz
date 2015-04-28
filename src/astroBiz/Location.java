@@ -26,7 +26,7 @@ public class Location {
 	private int locationX;							// The X coordinate of the location
 	private int locationY;							// The Y coordinate of the location
 	
-	private boolean isHQ;							// This location is the HQ of a business
+	private boolean isHub = false;					// This location is the HQ of a business
 	
 	private BufferedImage locationSprite;			// The sprite that represents this location
 	
@@ -126,6 +126,10 @@ public class Location {
 		return locationDevelopment;
 	}
 
+	public boolean getLocationIsHub(){
+		return this.isHub;
+	}
+	
 	public String getLocationName(){
 		return locationName;
 	}	
@@ -184,6 +188,10 @@ public class Location {
 	void setLocationDevelopment(int dev){
 		locationDevelopment = dev;
 	}
+	void setLocationIsHub(boolean tf){
+		this.isHub = tf;
+	}
+	
 	void setLocationName(String name){
 		locationName = name;
 	}

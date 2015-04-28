@@ -31,6 +31,10 @@ public class Scenario {
 		}
 	}
 	
+	public Vector<Business> getBusinesses(){
+		return this.scenarioBusinesses;
+	}
+	
 	public int getCurrentYear(){
 		return this.scenarioCurrentYear;
 	}

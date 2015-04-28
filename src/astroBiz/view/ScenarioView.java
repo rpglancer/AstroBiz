@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 import java.util.Vector;
 
 import astroBiz.AstroBiz;
-import astroBiz.Business;
+import astroBiz.Location;
 import astroBiz.info.ScenarioInformation;
 import astroBiz.util.textUtilities;
 
@@ -23,14 +23,12 @@ public class ScenarioView {
 	
 	private BufferedImage employeeSprite;
 	private BufferedImage selectSprite;
-	private BufferedImage worldOverview;
 	
 	private boolean yesNo = true;
 	
 	private Font sbfont = new Font("sans", Font.BOLD, 16);
 	private Font sbconf	= new Font("sans", Font.BOLD, 32);
 	
-	// All of these could perhaps be merged into vectors?
 	public static enum REGIONSELECT{
 		R1,
 		R2,
@@ -86,8 +84,12 @@ public class ScenarioView {
 	private SCENARIOSELECT scenarioSelect = SCENARIOSELECT.S1;
 	private SCENARIOVIEWMODE scenarioViewMode = SCENARIOVIEWMODE.VM_SCEN_SELECT;
 	
-	private int scenarioPlayerConfigure = 0;
-	private int scenarioPlayersToConfigure = 0;
+	private Vector<Location> availableHqLocations;
+	
+	private int availableHqLocationNumber = -1;		// Contains the Vector index number for the currently selected Location or -1 for an empty Vector.
+	
+	private int scenarioPlayerConfigure = 0;		// Contains the number of the player currently being configured.
+	private int scenarioPlayersToConfigure = 0;		// Contains the total number of players needing to be configured.
 	
 	public ScenarioView(AstroBiz astrobiz){
 		this.ab = astrobiz;
@@ -227,11 +229,48 @@ public class ScenarioView {
 	}
 	
 	private void scenarioSetHQ(Graphics g){
+
+		String s = "";
+		if(this.scenarioPlayerConfigure == 1)
+			s = "Player 1";
+		if(this.scenarioPlayerConfigure == 2)
+			s = "Player 2";
+		if(this.scenarioPlayerConfigure == 3)
+			s = "Player 3";
+		if(this.scenarioPlayerConfigure == 4)
+			s = "Player 4";
+		
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setColor(Color.white);
 		switch(this.hqPlacementView){
 		case REGION:
-			g.drawImage(region, 32, 32, null);
+			g2d.drawImage(region, 32, 32, null);
+
+			for(int i = 0; i < this.availableHqLocations.size(); i++){
+				g2d.drawImage(this.availableHqLocations.elementAt(i).getSprite(), 
+							this.availableHqLocations.elementAt(i).getLocationX(), 
+							this.availableHqLocations.elementAt(i).getLocationY(), 
+							null);
+			}
+			
+			g2d.setColor(Color.green);
+			
+			if(this.availableHqLocationNumber > -1){
+				g2d.drawString(this.availableHqLocations.elementAt(this.availableHqLocationNumber).getLocationName(), 
+						this.availableHqLocations.elementAt(this.availableHqLocationNumber).getLocationX() + 16, 
+						this.availableHqLocations.elementAt(this.availableHqLocationNumber).getLocationY() + 16);
+		
+				g2d.drawOval(this.availableHqLocations.elementAt(this.availableHqLocationNumber).getLocationX(),
+						this.availableHqLocations.elementAt(this.availableHqLocationNumber).getLocationY(),
+						16,
+						16);
+			}
+			
+			g2d.setFont(sbfont);
+			g2d.setColor(Color.white);
+			g2d.drawImage(this.employeeSprite, 32, 320, null);
+			g2d.drawString("Select headquarters location for " + s, 160, 384);		
+			
 			break;	//	End	REGION
 			
 		case WORLD:
@@ -319,7 +358,7 @@ public class ScenarioView {
 			g2d.setFont(sbfont);
 			g2d.setColor(Color.white);
 			g2d.drawImage(this.employeeSprite, 32, 320, null);
-			g2d.drawString("Select headquarters location for [player].", 160, 384);		
+			g2d.drawString("Select headquarters region for " + s, 160, 384);		
 			break;	//	End	WORLD
 		}
 	}
@@ -381,6 +420,24 @@ public class ScenarioView {
 			this.scenarioDifficulty = DIFFICULTYSELECT.DIFF3;
 	}
 
+	public void cycleLocationNext(){
+		if(this.availableHqLocationNumber == -1)
+			return;
+		if(this.availableHqLocationNumber < this.availableHqLocations.size() - 1)
+			this.availableHqLocationNumber++;
+		else
+			this.availableHqLocationNumber = 1;
+	}
+	
+	public void cycleLocationPrev(){
+		if(this.availableHqLocationNumber == -1)
+			return;
+		if(this.availableHqLocationNumber > 0)
+			this.availableHqLocationNumber--;
+		else
+			this.availableHqLocationNumber = this.availableHqLocations.size() - 1;
+	}
+	
 	public void cyclePlayerNext(){
 		if(this.scenarioPlayers == PLAYERSELECT.P1)
 			this.scenarioPlayers = PLAYERSELECT.P2;
@@ -470,11 +527,23 @@ public class ScenarioView {
 	public DIFFICULTYSELECT getDifficulty(){
 		return this.scenarioDifficulty;
 	}
+
+	public int getHqLocationCount(){
+		return this.availableHqLocationNumber;
+	}
+	
+	public Location getHqSelectedLocation(){
+		return this.availableHqLocations.elementAt(this.availableHqLocationNumber);
+	}
 	
 	public HQPLACEMENTVIEW getHqPlacementView(){
 		return this.hqPlacementView;
 	}
 	
+	/**
+	 * Method for returning the total number of players that need to be configured by a human being.
+	 * @return	The total number of players that need to be configured by a human being.
+	 */
 	public int getPlayersToConfigure(){
 		return this.scenarioPlayersToConfigure;
 	}
@@ -483,12 +552,67 @@ public class ScenarioView {
 		return this.yesNo;
 	}
 	
+	/**
+	 * Method for returning the numeric identifier of the current player being configured.
+	 * @return The number of the player being actively configured.
+	 */
 	public int getScenarioPlayerConfigure(){
 		return this.scenarioPlayerConfigure;
 	}
 	
 	public SCENARIOVIEWMODE getViewMode(){
 		return this.scenarioViewMode;
+	}
+	
+	public void loadLocationVector(){
+		this.availableHqLocationNumber = -1;
+		if(this.availableHqLocations != null)
+			this.availableHqLocations = null;
+		this.availableHqLocations = new Vector<Location>();
+		for(int i = 0; i < ab.getRegion().getLocationVector().size(); i++){
+			switch(this.hqPlacementRegion){
+			case R1:
+				if(ab.getRegion().getLocationVector().elementAt(i).getLocationRegion() == 0 && !ab.getRegion().getLocationVector().elementAt(i).getLocationIsHub())
+					this.availableHqLocations.addElement(ab.getRegion().getLocationVector().elementAt(i));
+				break;
+			case R2:
+				if(ab.getRegion().getLocationVector().elementAt(i).getLocationRegion() == 1 && !ab.getRegion().getLocationVector().elementAt(i).getLocationIsHub())
+					this.availableHqLocations.addElement(ab.getRegion().getLocationVector().elementAt(i));
+				break;
+			case R3:
+				if(ab.getRegion().getLocationVector().elementAt(i).getLocationRegion() == 2 && !ab.getRegion().getLocationVector().elementAt(i).getLocationIsHub())
+					this.availableHqLocations.addElement(ab.getRegion().getLocationVector().elementAt(i));
+				break;
+			case R4:
+				if(ab.getRegion().getLocationVector().elementAt(i).getLocationRegion() == 3 && !ab.getRegion().getLocationVector().elementAt(i).getLocationIsHub())
+					this.availableHqLocations.addElement(ab.getRegion().getLocationVector().elementAt(i));
+				break;
+			case R5:
+				if(ab.getRegion().getLocationVector().elementAt(i).getLocationRegion() == 4 && !ab.getRegion().getLocationVector().elementAt(i).getLocationIsHub())
+					this.availableHqLocations.addElement(ab.getRegion().getLocationVector().elementAt(i));
+				break;
+			case R6:
+				if(ab.getRegion().getLocationVector().elementAt(i).getLocationRegion() == 5 && !ab.getRegion().getLocationVector().elementAt(i).getLocationIsHub())
+					this.availableHqLocations.addElement(ab.getRegion().getLocationVector().elementAt(i));
+				break;
+			case R7:
+				if(ab.getRegion().getLocationVector().elementAt(i).getLocationRegion() == 6 && !ab.getRegion().getLocationVector().elementAt(i).getLocationIsHub())
+					this.availableHqLocations.addElement(ab.getRegion().getLocationVector().elementAt(i));
+				break;
+			case R8:
+				if(ab.getRegion().getLocationVector().elementAt(i).getLocationRegion() == 7 && !ab.getRegion().getLocationVector().elementAt(i).getLocationIsHub())
+					this.availableHqLocations.addElement(ab.getRegion().getLocationVector().elementAt(i));
+				break;
+			case R9:
+				if(ab.getRegion().getLocationVector().elementAt(i).getLocationRegion() == 8 && !ab.getRegion().getLocationVector().elementAt(i).getLocationIsHub())
+					this.availableHqLocations.addElement(ab.getRegion().getLocationVector().elementAt(i));
+				break;
+			}
+		}
+		if(this.availableHqLocations.size() > 0)
+			this.availableHqLocationNumber = 0;
+		else
+			this.availableHqLocationNumber = -1;
 	}
 
 	public void loadRegionMap(){
