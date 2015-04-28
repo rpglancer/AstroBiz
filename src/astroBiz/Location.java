@@ -10,8 +10,7 @@ import astroBiz.info.LocationInformation;
  * @author Matt Bangert
  *
  */
-public class Location {
-//	private int locationCategory;			
+public class Location {	
 	private int locationDemandBusiness;				// The location's demand for business [0 - 255]
 	private int locationDemandTourism;				// The location's demand for tourism  [0 - 255]
 	private int locationDemandIndustry;				// The location's demand for industry [0 - 255]
@@ -26,6 +25,8 @@ public class Location {
 	private int locationRegionY;
 	private int locationX;							// The X coordinate of the location
 	private int locationY;							// The Y coordinate of the location
+	
+	private boolean isHQ;							// This location is the HQ of a business
 	
 	private BufferedImage locationSprite;			// The sprite that represents this location
 	
@@ -108,11 +109,7 @@ public class Location {
 	public BufferedImage getSprite(){
 		return locationSprite;
 	}
-/*
-	int getLocationCategory(){
-		return locationCategory;
-	}
-*/
+
 	int getLocationDemandBusiness(){
 		return locationDemandBusiness;
 	}

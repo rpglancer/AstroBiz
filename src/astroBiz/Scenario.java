@@ -35,7 +35,15 @@ public class Scenario {
 		return this.scenarioCurrentYear;
 	}
 	
-	public void setScenario(int scenario){
+	public String getScenarioName(){
+		return this.scenarioName;
+	}
+	
+	public String getScenarioDescription(){
+		return this.scenarioDescription;
+	}
+	
+	public void loadScenario(int scenario){
 		scenarioName = ScenarioInformation.scenarioInfoName[scenario];
 		scenarioDescription = ScenarioInformation.scenarioInfoDescription[scenario];
 		scenarioStartingYear = ScenarioInformation.scenarioInfoStartingYear[scenario];
@@ -47,8 +55,15 @@ public class Scenario {
 	
 	public void setScenarioDifficulty(int difficulty){
 		if(difficulty < 1 || difficulty > 4)
-			this.scenarioDifficultyLevel = 0;
+			this.scenarioDifficultyLevel = 1;
 		else
 			this.scenarioDifficultyLevel = difficulty;
 	}
+	
+	public void setScenarioPlayers(int players){
+		for(int i = 0; i < players; i++){
+			this.scenarioBusinesses.elementAt(i).setBusinessPlayerOwned(true);
+		}
+	}
+	
 }

@@ -42,4 +42,12 @@ public class ScenarioInformation {
 			7,
 			9
 	};
+	
+	//	Considering keeping the map stored in the scenario.
+	public static final String[] scenarioInfoMapPath = {
+		"../../data/astrobizmap.png",
+		"../../data/astrobizmap.png",
+		"../../data/astrobizmap.png",
+		"../../data/astrobizmap.png"
+	};
 }

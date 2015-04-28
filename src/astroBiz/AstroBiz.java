@@ -16,6 +16,8 @@ import astroBiz.view.MainMenu;
 import astroBiz.view.MainMenu.MENUSELECT;
 import astroBiz.view.RegionView;
 import astroBiz.view.ScenarioView;
+import astroBiz.view.ScenarioView.HQPLACEMENTVIEW;
+import astroBiz.view.ScenarioView.SCENARIOVIEWMODE;
 
 public class AstroBiz extends Canvas implements Runnable{
 
@@ -53,14 +55,10 @@ public class AstroBiz extends Canvas implements Runnable{
 	private ScenarioView scenarioView = null;
 	
 	public static enum STATE{
-		// TODO: Move ENUMs to own class.
 		MENU,
-		GAME,
 		REGIONVIEW,
-		SCENARIOCONFIRM,
-		SCENARIOVIEW,
-		LOCATIONVIEW,
-		SETDIFFICULTY,
+		SCENARIOSETUP,
+		LOCATIONVIEW
 	};
 
 	/**
@@ -161,12 +159,10 @@ public class AstroBiz extends Canvas implements Runnable{
 			break;
 		case LOCATIONVIEW:
 			break;
-		case GAME:
-			break;
 		case REGIONVIEW:
 			regionView.tick();
 			break;
-		case SCENARIOVIEW:
+		case SCENARIOSETUP:
 			scenarioView.tick();
 			break;
 		default:
@@ -186,8 +182,6 @@ public class AstroBiz extends Canvas implements Runnable{
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
 		
 		switch(State){
-		case GAME:			// Game was really a prototyping state and probably will be cut sooner or later. Don't use it.
-			break;
 		case LOCATIONVIEW:
 			locationView.render(g);
 			break;
@@ -197,13 +191,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		case REGIONVIEW:
 			regionView.render(g);
 			break;
-		case SCENARIOCONFIRM:
-			scenarioView.render(g);
-			break;
-		case SCENARIOVIEW:
-			scenarioView.render(g);
-			break;
-		case SETDIFFICULTY:
+		case SCENARIOSETUP:
 			scenarioView.render(g);
 			break;
 		default:
@@ -214,85 +202,110 @@ public class AstroBiz extends Canvas implements Runnable{
 		bs.show();
 	}
 	
-	/**
-	 * This should probably be reorganized thusly:
-	 * switch(key){
-	 * 	case KeyEvent.VK_XX:
-	 * 		switch(AstroBiz.State){
-	 * 			case CASE:
-	 * 		}
-	 * }
-	 */
 	public void keyPressed(KeyEvent e){
 		int key = e.getKeyCode();
 		switch(AstroBiz.State){
 
-		case SCENARIOCONFIRM:
-			switch(key){
-			case KeyEvent.VK_RIGHT:
-				scenarioView.setYesNo(false);
-				break;
-			case KeyEvent.VK_LEFT:
-				scenarioView.setYesNo(true);
-				break;
-			case KeyEvent.VK_ENTER:
-				if(scenarioView.getYesNo()){
-					this.activeScenario = new Scenario();
-					activeScenario.setScenario(scenarioView.getS());
-					AstroBiz.State = AstroBiz.STATE.SETDIFFICULTY;
-					//AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
+		case SCENARIOSETUP:
+			switch(this.scenarioView.getViewMode()){
+			case VM_DIFF_SELECT:
+				switch(key){
+				case KeyEvent.VK_UP:
+					scenarioView.cycleDifficultyPrev();
+					break;
+				case KeyEvent.VK_DOWN:
+					scenarioView.cycleDifficultyNext();
+					break;
+				case KeyEvent.VK_ENTER:
+					scenarioView.setDifficulty();
+					scenarioView.setViewMode(SCENARIOVIEWMODE.VM_PLYR_SELECT);
+					break;
 				}
-				else{
+				break;	//	END VM_DIFF_SELECT
+				
+			case VM_PLYR_SELECT:
+				switch(key){
+				case KeyEvent.VK_UP:
+					scenarioView.cyclePlayerPrev();
+					break;
+				case KeyEvent.VK_DOWN:
+					scenarioView.cyclePlayerNext();
+					break;
+				case KeyEvent.VK_ENTER:
+					scenarioView.setPlayers();
+					scenarioView.setViewMode(SCENARIOVIEWMODE.VM_SET_HQ);
+					break;
+				}
+				break;	//	END VM_PLYR_SELECT
+				
+			case VM_SCEN_CONFIRM:
+				switch(key){
+				case KeyEvent.VK_RIGHT:
+					scenarioView.setYesNo(false);
+					break;
+				case KeyEvent.VK_LEFT:
 					scenarioView.setYesNo(true);
-					AstroBiz.State = AstroBiz.STATE.SCENARIOVIEW;
+					break;
+				case KeyEvent.VK_ENTER:
+					if(scenarioView.getYesNo()){
+						this.activeScenario = new Scenario();
+						this.scenarioView.setScenario();
+						scenarioView.setViewMode(SCENARIOVIEWMODE.VM_DIFF_SELECT);
+					}
+					else{
+						scenarioView.setYesNo(true);
+						scenarioView.setViewMode(SCENARIOVIEWMODE.VM_SCEN_SELECT);
+					}
 				}
-			}
-			break;		// End SCENARIOCONFIRM
-			
-		case SCENARIOVIEW:
-			switch(key){
-			case KeyEvent.VK_UP:
-				scenarioView.setY(scenarioView.getY() - 64);
-				if(scenarioView.getY() < 48){
-					scenarioView.setY(240);
+				break;	//	END_VM_SCEN_CONFIRM
+				
+			case VM_SCEN_SELECT:
+				switch(key){
+				case KeyEvent.VK_UP:
+					scenarioView.cycleScenarioPrev();
+					break;
+				case KeyEvent.VK_DOWN:
+					scenarioView.cycleScenarioNext();
+					break;
+				case KeyEvent.VK_ENTER:
+					scenarioView.setScenario();
+					scenarioView.setViewMode(SCENARIOVIEWMODE.VM_SCEN_CONFIRM);
+					break;
+				default:
+					break;
 				}
-				break;
-			case KeyEvent.VK_DOWN:
-				scenarioView.setY(scenarioView.getY() + 64);
-				if(scenarioView.getY() > 240){
-					scenarioView.setY(48);
+				break;	//	END VM_SCEN_SELECT
+				
+			case VM_SET_HQ:
+				switch(key){
+				case KeyEvent.VK_RIGHT:
+					if(scenarioView.getHqPlacementView() == HQPLACEMENTVIEW.WORLD)
+						scenarioView.cycleRegionNext();
+					
+					break;
+					
+				case KeyEvent.VK_LEFT:
+					if(scenarioView.getHqPlacementView() == HQPLACEMENTVIEW.WORLD)
+						scenarioView.cycleRegionPrev();
+					break;
+					
+				case KeyEvent.VK_ESCAPE:
+					if(scenarioView.getHqPlacementView() == HQPLACEMENTVIEW.WORLD)
+						scenarioView.setViewMode(SCENARIOVIEWMODE.VM_PLYR_SELECT);
+					if(scenarioView.getHqPlacementView() == HQPLACEMENTVIEW.REGION)
+						scenarioView.setHqPlacementView(HQPLACEMENTVIEW.WORLD);
+					break;
+					
+				case KeyEvent.VK_ENTER:
+					if(scenarioView.getHqPlacementView() == HQPLACEMENTVIEW.WORLD){
+						scenarioView.loadRegionMap();
+						scenarioView.setHqPlacementView(HQPLACEMENTVIEW.REGION);
+					}
+					break;
 				}
-				break;
-			case KeyEvent.VK_ENTER:
-				if(scenarioView.getY() == 48)
-					scenarioView.setS(0);
-				if(scenarioView.getY() == 112)
-					scenarioView.setS(1);
-				if(scenarioView.getY() == 176)
-					scenarioView.setS(2);
-				if(scenarioView.getY() == 240)
-					scenarioView.setS(3);
-				AstroBiz.State = AstroBiz.STATE.SCENARIOCONFIRM;
-				break;
-			default:
-				break;
+				break;	//	END VM_SET_HQ
 			}
-			break;		// End SCENARIOVIEW
-			
-		case SETDIFFICULTY:
-			switch(key){
-			case KeyEvent.VK_UP:
-				scenarioView.cycleDifficultyPrev();
-				break;
-			case KeyEvent.VK_DOWN:
-				scenarioView.cycleDifficultyNext();
-				break;
-			case KeyEvent.VK_ENTER:
-				scenarioView.setDifficulty();
-				AstroBiz.State = AstroBiz.STATE.REGIONVIEW;
-				break;
-			}
-			break;
+			break;	//	END SCENARIOSETUP
 			
 		case REGIONVIEW:
 			switch(key){
@@ -323,7 +336,7 @@ public class AstroBiz extends Canvas implements Runnable{
 				break;
 			case KeyEvent.VK_ENTER:
 				if(mainMenu.getMenuStatus() == MENUSELECT.NEWGAME)
-					AstroBiz.State = AstroBiz.STATE.SCENARIOVIEW;
+					AstroBiz.State = AstroBiz.STATE.SCENARIOSETUP;
 				if(mainMenu.getMenuStatus() == MENUSELECT.LOADGAME)
 					break;
 				if(mainMenu.getMenuStatus() == MENUSELECT.QUITGAME)

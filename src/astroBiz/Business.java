@@ -14,6 +14,11 @@ public class Business {
 	private	Vector<SpaceCraft> businessHangar;
 	private Location businessHQ;
 	private Vector<Location> businessHubs;
+	
+	byte colorR;
+	byte colorG;
+	byte colorB;
+	
 	String businessName;
 	Vector<Route> businessRoutes;
 	
@@ -47,6 +52,10 @@ public class Business {
 	
 	void setBusinessHQ(Location hq){
 		this.businessHQ = hq;
+	}
+	
+	void setBusinessPlayerOwned(boolean p){
+		this.businessIsPlayerOwned = p;
 	}
 	
 	void subBusinessAccountBalance(int amount){
