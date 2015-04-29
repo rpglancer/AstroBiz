@@ -27,6 +27,10 @@ public class Scenario {
 	Scenario(){
 		for(int i = 0; i < 4; i++){
 			Business b = new Business();
+			if(i == 0) b.setColor(b, 255, 0, 0);
+			if(i == 1) b.setColor(b, 0, 255, 0);
+			if(i == 2) b.setColor(b, 0, 0, 255);
+			if(i == 3) b.setColor(b, 240, 140, 0);
 			scenarioBusinesses.addElement(b);
 		}
 	}

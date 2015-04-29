@@ -1,4 +1,5 @@
 package astroBiz;
+import java.awt.Color;
 import java.util.Vector;
 
 /**
@@ -8,16 +9,12 @@ import java.util.Vector;
  */
 public class Business {
 	private double businessAccountBalance;
-	private int[] businessColor = new int[3];
+	private Color businessColor;
 	private boolean businessIsPlayerOwned;
 	private double businessOperatingCosts;
 	private	Vector<SpaceCraft> businessHangar;
 	private Location businessHQ;
 	private Vector<Location> businessHubs;
-	
-	byte colorR;
-	byte colorG;
-	byte colorB;
 	
 	String businessName;
 	Vector<Route> businessRoutes;
@@ -46,11 +43,24 @@ public class Business {
 		businessAccountBalance += amount;
 	}
 	
+	public Color getColor(){
+		return businessColor;
+	}
+	
 	SpaceCraft getCraft(int index){
 		return businessHangar.get(index);
 	}
 	
-	void setBusinessHQ(Location hq){
+	public String getName(){
+		return this.businessName;
+	}
+	
+	void setColor(Business business, int r, int g, int b){
+		business.businessColor = new Color(r,g,b);
+	}
+	
+	void setHQ(Location hq){
+		this.businessName = hq.getLocationName() + " Airlines";
 		this.businessHQ = hq;
 	}
 	

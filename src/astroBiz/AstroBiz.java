@@ -21,7 +21,7 @@ import astroBiz.view.ScenarioView.SCENARIOVIEWMODE;
 
 public class AstroBiz extends Canvas implements Runnable{
 
-	/**
+	/*
 	 * Constants
 	 */
 	private static final long serialVersionUID = 1477754103243231171L;	
@@ -33,12 +33,12 @@ public class AstroBiz extends Canvas implements Runnable{
 	public static final int PATCH = 0;
 	public final String TITLE = "AstroBiz Prototype version " + VERSION + "." + MAJOR + "." + MINOR + "." + PATCH;
 
-	/**
+	/*
 	 * Buffered Images
 	 */
 	private BufferedImage image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
 	
-	/**
+	/*
 	 * Sprite Sheets
 	 */
 	private SpriteSheet employeeSprites = null;
@@ -46,7 +46,7 @@ public class AstroBiz extends Canvas implements Runnable{
 	private SpriteSheet regionSprites = null;
 	private SpriteSheet worldMap = null;
 
-	/**
+	/*
 	 * Views
 	 */
 	private LocationView locationView = null;
@@ -61,12 +61,12 @@ public class AstroBiz extends Canvas implements Runnable{
 		LOCATIONVIEW
 	};
 
-	/**
+	/*
 	 * Game State information
 	 */
 	private Scenario activeScenario;
 	
-	/**
+	/*
 	 * Operational Variables
 	 */
 	public static STATE State = STATE.MENU;
@@ -232,7 +232,8 @@ public class AstroBiz extends Canvas implements Runnable{
 					scenarioView.cyclePlayerNext();
 					break;
 				case KeyEvent.VK_ENTER:
-					scenarioView.setPlayers();
+					//scenarioView.setPlayers();
+					scenarioView.setPlayers(activeScenario);
 					scenarioView.setViewMode(SCENARIOVIEWMODE.VM_SET_HQ);
 					break;
 				}
@@ -302,28 +303,22 @@ public class AstroBiz extends Canvas implements Runnable{
 					
 				case KeyEvent.VK_ENTER:
 					if(scenarioView.getHqPlacementView() == HQPLACEMENTVIEW.WORLD){
-						scenarioView.loadRegionMap();
-						scenarioView.loadLocationVector();
+						scenarioView.loadRegionMap(worldMap);
+						scenarioView.loadLocationVector(regionView.getLocationVector());
 						scenarioView.setHqPlacementView(HQPLACEMENTVIEW.REGION);
 					}
 					else if(scenarioView.getHqPlacementView() == HQPLACEMENTVIEW.REGION){
 						if(scenarioView.getHqLocationCount() < 0)
 							break;
 						else{
-							this.activeScenario.getBusinesses().elementAt(scenarioView.getScenarioPlayerConfigure() - 1).setBusinessHQ(this.scenarioView.getHqSelectedLocation());
-							for(int i = 0; i < regionView.getLocationVector().size(); i++){
-								System.out.println(regionView.getLocationVector().elementAt(i).getLocationName() + ", " + scenarioView.getHqSelectedLocation().getLocationName());
-								if(regionView.getLocationVector().elementAt(i) == scenarioView.getHqSelectedLocation()){
-									regionView.getLocationVector().elementAt(i).setLocationIsHub(true);
-									break;
-								}
-							}
+							this.scenarioView.getHqSelectedLocation().setLocationIsHub(true);
+							this.activeScenario.getBusinesses().elementAt(scenarioView.getScenarioPlayerConfigure() - 1).setHQ(this.scenarioView.getHqSelectedLocation());
 						}
-						//if(scenarioView.getPlayersToConfigure() > 1 ){
 						if(scenarioView.getScenarioPlayerConfigure() <= scenarioView.getPlayersToConfigure()){
 							scenarioView.setScenarioPlayerConfigure(this.scenarioView.getScenarioPlayerConfigure() + 1);
 							if(scenarioView.getScenarioPlayerConfigure() > scenarioView.getPlayersToConfigure()){
-								AstroBiz.State = STATE.REGIONVIEW;
+								scenarioView.setViewMode(SCENARIOVIEWMODE.VM_BUSI_CONFIG);
+								//AstroBiz.State = STATE.REGIONVIEW;
 								// Move to business customization
 							}
 							else{

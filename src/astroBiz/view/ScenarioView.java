@@ -9,19 +9,25 @@ import java.util.Vector;
 
 import astroBiz.AstroBiz;
 import astroBiz.Location;
+import astroBiz.Scenario;
+import astroBiz.SpriteSheet;
 import astroBiz.info.ScenarioInformation;
 import astroBiz.util.textUtilities;
 
+/**
+ * Contains most everything involved in selecting a Scenario for play and configuring it for use.
+ * @author Matt Bangert
+ *
+ */
 public class ScenarioView {
 	public static final int SBWIDTH = 672;
 	public static final int SBHEIGHT = 40;
-
 	private final int MAINTEXTWIDTH = 672;
 	private final int MAINTEXTINDENT = 64;
-	
+
 	private astroBiz.AstroBiz ab;
-	
 	private BufferedImage employeeSprite;
+	private BufferedImage region;
 	private BufferedImage selectSprite;
 	
 	private boolean yesNo = true;
@@ -29,6 +35,26 @@ public class ScenarioView {
 	private Font sbfont = new Font("sans", Font.BOLD, 16);
 	private Font sbconf	= new Font("sans", Font.BOLD, 32);
 	
+	private int availableHqLocationNumber = -1;		// Contains the Vector index number for the currently selected Location or -1 for an empty Vector.
+	private int scenarioPlayerConfigure = 0;		// Contains the number of the player currently being configured.
+	private int scenarioPlayersToConfigure = 0;		// Contains the total number of players needing to be configured.
+
+	public static enum DIFFICULTYSELECT {
+		DIFF1,
+		DIFF2,
+		DIFF3,
+		DIFF4
+	}
+	public static enum HQPLACEMENTVIEW{
+		WORLD,
+		REGION
+	}
+	public static enum PLAYERSELECT{
+		P1,
+		P2,
+		P3,
+		P4
+	}
 	public static enum REGIONSELECT{
 		R1,
 		R2,
@@ -40,57 +66,32 @@ public class ScenarioView {
 		R8,
 		R9
 	}
-	
 	public static enum SCENARIOSELECT{
 		S1,
 		S2,
 		S3,
 		S4
-	}
-	
-	public static enum DIFFICULTYSELECT {
-		DIFF1,
-		DIFF2,
-		DIFF3,
-		DIFF4
-	}
-	
-	public static enum PLAYERSELECT{
-		P1,
-		P2,
-		P3,
-		P4
-	}
-
-	public static enum HQPLACEMENTVIEW{
-		WORLD,
-		REGION
-	}
-	
+	}	
 	public static enum SCENARIOVIEWMODE{
+		VM_BUSI_CONFIG,
 		VM_SCEN_CONFIRM,
 		VM_SCEN_SELECT,
 		VM_DIFF_SELECT,
 		VM_PLYR_SELECT,
 		VM_SET_HQ
 	}
-	
-	private BufferedImage region;
-	
 	private DIFFICULTYSELECT scenarioDifficulty = DIFFICULTYSELECT.DIFF1;
 	private HQPLACEMENTVIEW hqPlacementView = HQPLACEMENTVIEW.WORLD;
 	private PLAYERSELECT scenarioPlayers = PLAYERSELECT.P1;
 	private REGIONSELECT hqPlacementRegion = REGIONSELECT.R1;
 	private SCENARIOSELECT scenarioSelect = SCENARIOSELECT.S1;
 	private SCENARIOVIEWMODE scenarioViewMode = SCENARIOVIEWMODE.VM_SCEN_SELECT;
-	
+
 	private Vector<Location> availableHqLocations;
 	
-	private int availableHqLocationNumber = -1;		// Contains the Vector index number for the currently selected Location or -1 for an empty Vector.
-	
-	private int scenarioPlayerConfigure = 0;		// Contains the number of the player currently being configured.
-	private int scenarioPlayersToConfigure = 0;		// Contains the total number of players needing to be configured.
-	
+	/*
+	 * Methods
+	 */
 	public ScenarioView(AstroBiz astrobiz){
 		this.ab = astrobiz;
 		this.employeeSprite = ab.getEmployeeSprites().grabImage(1, 1, 128, 128);
@@ -114,6 +115,9 @@ public class ScenarioView {
 	
 	public void render(Graphics g){
 		switch(this.scenarioViewMode){
+		case VM_BUSI_CONFIG:
+			scenarioBusiConfig(g);
+			break;
 
 		case VM_SCEN_CONFIRM:
 			scenarioConfirm(g);
@@ -138,6 +142,25 @@ public class ScenarioView {
 		default:
 			break;
 		}
+	}
+	
+	private void scenarioBusiConfig(Graphics g){
+		g.setFont(sbfont);
+		int x = 64;
+		int y = 64;
+		int width = 256;
+		int height = 64;
+		for(int i = 0; i < ab.getScenario().getBusinesses().size(); i++){
+			g.setColor(ab.getScenario().getBusinesses().elementAt(i).getColor());
+			g.fillRect(x, y, width, height);
+			g.setColor(Color.white);
+			g.drawString(ab.getScenario().getBusinesses().elementAt(i).getName(), x, y + height/2);
+			y += height;
+		}
+		
+		g.setColor(Color.white);
+		g.drawImage(this.employeeSprite, 32, 320, null);
+		g.drawString("Customize each company's name and color?", 160, 384);
 	}
 	
 	private void scenarioDifficulty(Graphics g){
@@ -564,48 +587,49 @@ public class ScenarioView {
 		return this.scenarioViewMode;
 	}
 	
-	public void loadLocationVector(){
+	public void loadLocationVector(Vector<Location> v){
 		this.availableHqLocationNumber = -1;
-		if(this.availableHqLocations != null)
-			this.availableHqLocations = null;
-		this.availableHqLocations = new Vector<Location>();
-		for(int i = 0; i < ab.getRegion().getLocationVector().size(); i++){
+		if(this.availableHqLocations == null)
+			this.availableHqLocations = new Vector<Location>();
+		else
+			this.availableHqLocations.clear();
+		for(int i = 0; i < v.size(); i++){
 			switch(this.hqPlacementRegion){
 			case R1:
-				if(ab.getRegion().getLocationVector().elementAt(i).getLocationRegion() == 0 && !ab.getRegion().getLocationVector().elementAt(i).getLocationIsHub())
-					this.availableHqLocations.addElement(ab.getRegion().getLocationVector().elementAt(i));
+				if(v.elementAt(i).getLocationRegion() == 0 && !v.elementAt(i).getLocationIsHub())
+					this.availableHqLocations.addElement(v.elementAt(i));
 				break;
 			case R2:
-				if(ab.getRegion().getLocationVector().elementAt(i).getLocationRegion() == 1 && !ab.getRegion().getLocationVector().elementAt(i).getLocationIsHub())
-					this.availableHqLocations.addElement(ab.getRegion().getLocationVector().elementAt(i));
+				if(v.elementAt(i).getLocationRegion() == 1 && !v.elementAt(i).getLocationIsHub())
+					this.availableHqLocations.addElement(v.elementAt(i));
 				break;
 			case R3:
-				if(ab.getRegion().getLocationVector().elementAt(i).getLocationRegion() == 2 && !ab.getRegion().getLocationVector().elementAt(i).getLocationIsHub())
-					this.availableHqLocations.addElement(ab.getRegion().getLocationVector().elementAt(i));
+				if(v.elementAt(i).getLocationRegion() == 2 && !v.elementAt(i).getLocationIsHub())
+					this.availableHqLocations.addElement(v.elementAt(i));
 				break;
 			case R4:
-				if(ab.getRegion().getLocationVector().elementAt(i).getLocationRegion() == 3 && !ab.getRegion().getLocationVector().elementAt(i).getLocationIsHub())
-					this.availableHqLocations.addElement(ab.getRegion().getLocationVector().elementAt(i));
+				if(v.elementAt(i).getLocationRegion() == 3 && !v.elementAt(i).getLocationIsHub())
+					this.availableHqLocations.addElement(v.elementAt(i));
 				break;
 			case R5:
-				if(ab.getRegion().getLocationVector().elementAt(i).getLocationRegion() == 4 && !ab.getRegion().getLocationVector().elementAt(i).getLocationIsHub())
-					this.availableHqLocations.addElement(ab.getRegion().getLocationVector().elementAt(i));
+				if(v.elementAt(i).getLocationRegion() == 4 && !v.elementAt(i).getLocationIsHub())
+					this.availableHqLocations.addElement(v.elementAt(i));
 				break;
 			case R6:
-				if(ab.getRegion().getLocationVector().elementAt(i).getLocationRegion() == 5 && !ab.getRegion().getLocationVector().elementAt(i).getLocationIsHub())
-					this.availableHqLocations.addElement(ab.getRegion().getLocationVector().elementAt(i));
+				if(v.elementAt(i).getLocationRegion() == 5 && !v.elementAt(i).getLocationIsHub())
+					this.availableHqLocations.addElement(v.elementAt(i));
 				break;
 			case R7:
-				if(ab.getRegion().getLocationVector().elementAt(i).getLocationRegion() == 6 && !ab.getRegion().getLocationVector().elementAt(i).getLocationIsHub())
-					this.availableHqLocations.addElement(ab.getRegion().getLocationVector().elementAt(i));
+				if(v.elementAt(i).getLocationRegion() == 6 && !v.elementAt(i).getLocationIsHub())
+					this.availableHqLocations.addElement(v.elementAt(i));
 				break;
 			case R8:
-				if(ab.getRegion().getLocationVector().elementAt(i).getLocationRegion() == 7 && !ab.getRegion().getLocationVector().elementAt(i).getLocationIsHub())
-					this.availableHqLocations.addElement(ab.getRegion().getLocationVector().elementAt(i));
+				if(v.elementAt(i).getLocationRegion() == 7 && !v.elementAt(i).getLocationIsHub())
+					this.availableHqLocations.addElement(v.elementAt(i));
 				break;
 			case R9:
-				if(ab.getRegion().getLocationVector().elementAt(i).getLocationRegion() == 8 && !ab.getRegion().getLocationVector().elementAt(i).getLocationIsHub())
-					this.availableHqLocations.addElement(ab.getRegion().getLocationVector().elementAt(i));
+				if(v.elementAt(i).getLocationRegion() == 8 && !v.elementAt(i).getLocationIsHub())
+					this.availableHqLocations.addElement(v.elementAt(i));
 				break;
 			}
 		}
@@ -615,34 +639,34 @@ public class ScenarioView {
 			this.availableHqLocationNumber = -1;
 	}
 
-	public void loadRegionMap(){
+	public void loadRegionMap(SpriteSheet map){
 		switch(this.hqPlacementRegion){
 		case R1:
-			region = ab.getWorldMap().grabImage(1, 1, 736, 288);
+			region = map.grabImage(1, 1, 736, 288);
 			break;
 		case R2:
-			region = ab.getWorldMap().grabImage(2, 1, 736, 288);
+			region = map.grabImage(2, 1, 736, 288);
 			break;
 		case R3:
-			region = ab.getWorldMap().grabImage(3, 1, 736, 288);
+			region = map.grabImage(3, 1, 736, 288);
 			break;
 		case R4:
-			region = ab.getWorldMap().grabImage(1, 2, 736, 288);
+			region = map.grabImage(1, 2, 736, 288);
 			break;
 		case R5:
-			region = ab.getWorldMap().grabImage(2, 2, 736, 288);
+			region = map.grabImage(2, 2, 736, 288);
 			break;
 		case R6:
-			region = ab.getWorldMap().grabImage(3, 2, 736, 288);
+			region = map.grabImage(3, 2, 736, 288);
 			break;
 		case R7:
-			region = ab.getWorldMap().grabImage(1, 3, 736, 288);
+			region = map.grabImage(1, 3, 736, 288);
 			break;
 		case R8:
-			region = ab.getWorldMap().grabImage(2, 3, 736, 288);
+			region = map.grabImage(2, 3, 736, 288);
 			break;
 		case R9:
-			region = ab.getWorldMap().grabImage(3, 3, 736, 288);
+			region = map.grabImage(3, 3, 736, 288);
 			break;		
 		}
 	}
@@ -668,29 +692,26 @@ public class ScenarioView {
 		this.hqPlacementView = vm;
 	}
 	
-	public void setPlayers(){
-		switch(this.scenarioPlayers){
+	public void setPlayers(Scenario s){
+		switch(scenarioPlayers){
 		case P1:
-			ab.getScenario().setScenarioPlayers(1);
-			this.scenarioPlayersToConfigure = 1;
-			this.scenarioPlayerConfigure = 1;
+			s.setScenarioPlayers(1);
+			scenarioPlayersToConfigure = 1;
 			break;
 		case P2:
-			ab.getScenario().setScenarioPlayers(2);
-			this.scenarioPlayersToConfigure = 2;
-			this.scenarioPlayerConfigure = 1;
+			s.setScenarioPlayers(2);
+			scenarioPlayersToConfigure = 2;
 			break;
 		case P3:
-			ab.getScenario().setScenarioPlayers(3);
+			s.setScenarioPlayers(3);
 			this.scenarioPlayersToConfigure = 3;
-			this.scenarioPlayerConfigure = 1;
 			break;
 		case P4:
-			ab.getScenario().setScenarioPlayers(4);
+			s.setScenarioPlayers(4);
 			this.scenarioPlayersToConfigure = 4;
-			this.scenarioPlayerConfigure = 1;
 			break;
 		}
+		scenarioPlayerConfigure = 1;
 	}
 	
 	public void setScenario(){
