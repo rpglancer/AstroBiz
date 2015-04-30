@@ -2,8 +2,12 @@ package astroBiz.view;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Vector;
 
@@ -39,6 +43,11 @@ public class ScenarioView {
 	private int scenarioPlayerConfigure = 0;		// Contains the number of the player currently being configured.
 	private int scenarioPlayersToConfigure = 0;		// Contains the total number of players needing to be configured.
 
+	public static enum BUSICONFIGOPTIONS {
+		NAME,
+		COLOR,
+		EXIT
+	}
 	public static enum DIFFICULTYSELECT {
 		DIFF1,
 		DIFF2,
@@ -80,6 +89,7 @@ public class ScenarioView {
 		VM_PLYR_SELECT,
 		VM_SET_HQ
 	}
+	private BUSICONFIGOPTIONS busiConfigOptions = BUSICONFIGOPTIONS.EXIT;
 	private DIFFICULTYSELECT scenarioDifficulty = DIFFICULTYSELECT.DIFF1;
 	private HQPLACEMENTVIEW hqPlacementView = HQPLACEMENTVIEW.WORLD;
 	private PLAYERSELECT scenarioPlayers = PLAYERSELECT.P1;
@@ -88,6 +98,8 @@ public class ScenarioView {
 	private SCENARIOVIEWMODE scenarioViewMode = SCENARIOVIEWMODE.VM_SCEN_SELECT;
 
 	private Vector<Location> availableHqLocations;
+	
+	Rectangle2D textbox = null;
 	
 	/*
 	 * Methods
@@ -146,18 +158,26 @@ public class ScenarioView {
 	
 	private void scenarioBusiConfig(Graphics g){
 		g.setFont(sbfont);
-		int x = 64;
+		FontMetrics m = g.getFontMetrics(sbfont);
+		int x = 800 / 2 - 80;
 		int y = 64;
-		int width = 256;
-		int height = 64;
+		int width = 160;
+		int height = m.getHeight() * 2;
+		g.setColor(Color.darkGray);
+		g.fillRoundRect(x-8, y-8, width+16, height * 4 + 3 * 5 + 16, 16, 16);
+		g.setColor(Color.lightGray);
+		g.fillRoundRect(x-4, y-4, width+8, height * 4 + 3 * 5 + 8, 8, 8);
 		for(int i = 0; i < ab.getScenario().getBusinesses().size(); i++){
 			g.setColor(ab.getScenario().getBusinesses().elementAt(i).getColor());
-			g.fillRect(x, y, width, height);
+			g.fillRoundRect(x, y, width, height, 8, 8);
+			g.setColor(Color.black);
+			g.drawRoundRect(x+1, y+1, width-1, height-1, 8, 8);
 			g.setColor(Color.white);
-			g.drawString(ab.getScenario().getBusinesses().elementAt(i).getName(), x, y + height/2);
-			y += height;
+			g.drawString(ab.getScenario().getBusinesses().elementAt(i).getName(), x+5, y + m.getHeight() + m.getDescent());
+			y += height + 5;
 		}
-		
+		textbox = m.getStringBounds("COLOR NAME EXIT", g);
+		astroBiz.util.textUtilities.drawMenuTextBox(g, (int)(800 / 2 - textbox.getWidth() / 2), 300, (int)textbox.getWidth(), m.getHeight());
 		g.setColor(Color.white);
 		g.drawImage(this.employeeSprite, 32, 320, null);
 		g.drawString("Customize each company's name and color?", 160, 384);
@@ -391,8 +411,8 @@ public class ScenarioView {
 		g.setColor(Color.white);
 		g.drawRect(32, 32, 736, 272);
 		
-		g.drawString("Scenario 1:  " + ScenarioInformation.scenarioInfoName[0], 64, 64);
-		g.drawString("(" + ScenarioInformation.scenarioInfoStartingYear[0] + " - " + ScenarioInformation.scenarioInfoEndingYear[0] + ")", 96, 64+16);
+		textUtilities.drawString(g, 64, 48, "Scenario 1 - " +  ScenarioInformation.scenarioInfoName[0]);
+		textUtilities.drawString(g, 96, 64, "("+ScenarioInformation.scenarioInfoStartingYear[0] +" - "+ScenarioInformation.scenarioInfoEndingYear[0] +")");
 		
 		g.drawString("Scenario 2:  " + ScenarioInformation.scenarioInfoName[1], 64, 128);
 		g.drawString("(" + ScenarioInformation.scenarioInfoStartingYear[1] + " - " + ScenarioInformation.scenarioInfoEndingYear[1] + ")", 96, 128+16);
@@ -418,7 +438,26 @@ public class ScenarioView {
 			break;
 		}
 		g.drawImage(this.employeeSprite, 32, 320, null);
-		g.drawString("Please select a scenario to play.", 160, 384);
+		//textUtilities.drawString(g, 160, 384, "Please select a scenario to play.");
+//		g.drawString("Please select a scenario to play.", 160, 384);
+	}
+	
+	private void cycleBcoNext(){
+		if(busiConfigOptions == BUSICONFIGOPTIONS.NAME)
+			busiConfigOptions = BUSICONFIGOPTIONS.EXIT;
+		else if(busiConfigOptions == BUSICONFIGOPTIONS.COLOR)
+			busiConfigOptions = BUSICONFIGOPTIONS.NAME;
+		else if(busiConfigOptions == BUSICONFIGOPTIONS.EXIT)
+			busiConfigOptions = BUSICONFIGOPTIONS.COLOR;
+	}
+	
+	private void cycleBcoPrev(){
+		if(busiConfigOptions == BUSICONFIGOPTIONS.NAME)
+			busiConfigOptions = BUSICONFIGOPTIONS.COLOR;
+		else if(busiConfigOptions == BUSICONFIGOPTIONS.COLOR)
+			busiConfigOptions = BUSICONFIGOPTIONS.EXIT;
+		else if(busiConfigOptions == BUSICONFIGOPTIONS.EXIT)
+			busiConfigOptions = BUSICONFIGOPTIONS.NAME;
 	}
 	
 	public void cycleDifficultyNext(){
@@ -585,6 +624,25 @@ public class ScenarioView {
 	
 	public SCENARIOVIEWMODE getViewMode(){
 		return this.scenarioViewMode;
+	}
+	
+	public void keyAction(int key){
+		switch(key){
+		case KeyEvent.VK_DOWN:
+			break;
+		case KeyEvent.VK_ENTER:
+			break;
+		case KeyEvent.VK_LEFT:
+			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_CONFIG) cycleBcoPrev();
+			break;
+		case KeyEvent.VK_RIGHT:
+			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_CONFIG) cycleBcoNext();
+			break;
+		case KeyEvent.VK_UP:
+			break;
+		default:
+			break;
+		}
 	}
 	
 	public void loadLocationVector(Vector<Location> v){

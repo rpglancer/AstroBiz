@@ -11,6 +11,7 @@ import java.io.IOException;
 import javax.swing.JFrame;
 
 import astroBiz.util.BufferedImageLoader;
+import astroBiz.util.textUtilities;
 import astroBiz.view.LocationView;
 import astroBiz.view.MainMenu;
 import astroBiz.view.MainMenu.MENUSELECT;
@@ -53,6 +54,7 @@ public class AstroBiz extends Canvas implements Runnable{
 	private MainMenu mainMenu = null;
 	private RegionView regionView = null;
 	private ScenarioView scenarioView = null;
+	private textUtilities textUtil = null;
 	
 	public static enum STATE{
 		MENU,
@@ -84,6 +86,8 @@ public class AstroBiz extends Canvas implements Runnable{
 			regionSprites = new SpriteSheet(temp);
 			temp = loader.loadImage("../../data/astrobizmap.png");
 			worldMap = new SpriteSheet(temp);
+			temp = loader.loadImage("../../data/astrobiztext.png");
+			textUtil = new textUtilities(new SpriteSheet(temp));
 		}catch(IOException e){
 			e.printStackTrace();
 		}
@@ -145,7 +149,7 @@ public class AstroBiz extends Canvas implements Runnable{
 			
 			if(System.currentTimeMillis() - timer > 1000){
 				timer += 1000;
-				System.out.println(updates + " Ticks, FPS " + frames);
+				//System.out.println(updates + " Ticks, FPS " + frames);
 				updates = 0;
 				frames = 0;
 			}
@@ -208,6 +212,9 @@ public class AstroBiz extends Canvas implements Runnable{
 
 		case SCENARIOSETUP:
 			switch(this.scenarioView.getViewMode()){
+			case VM_BUSI_CONFIG:
+				scenarioView.keyAction(key);
+				break;
 			case VM_DIFF_SELECT:
 				switch(key){
 				case KeyEvent.VK_UP:
