@@ -188,7 +188,7 @@ public class Location {
 	void setLocationDevelopment(int dev){
 		locationDevelopment = dev;
 	}
-	void setLocationIsHub(boolean tf){
+	public void setLocationIsHub(boolean tf){
 		this.isHub = tf;
 	}
 	

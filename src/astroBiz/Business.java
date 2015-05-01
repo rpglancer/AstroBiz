@@ -59,7 +59,7 @@ public class Business {
 		business.businessColor = new Color(r,g,b);
 	}
 	
-	void setHQ(Location hq){
+	public void setHQ(Location hq){
 		this.businessName = hq.getLocationName() + " Airlines";
 		this.businessHQ = hq;
 	}

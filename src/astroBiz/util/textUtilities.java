@@ -13,15 +13,21 @@ import astroBiz.SpriteSheet;
 
 /**
  * All non-standard methods for doing things to Strings go in this class.
+ * <br>Now also contains methods to draw sprite based text.
  * @author Matt Bangert
  *
  */
-public class textUtilities {
+public class textUtilities{
 	public static int charWidth = 16;
 	public static int charHeight = 16;
 	
+	/**
+	 * Hash Map for all usable sprite based text characters.
+	 */
 	public static Map<Character, Point> textMap = new HashMap<Character, Point>();
-
+/**
+ * The Sprite Sheet containing all available characters.
+ */
 	public static SpriteSheet textSheet = null;
 
 	/*
@@ -68,13 +74,93 @@ public class textUtilities {
 		textMap.put('8', new Point(1,10)); textMap.put('9', new Point(2,10));
 		textMap.put('+', new Point(3,10)); textMap.put('-', new Point(4,10));
 		textMap.put('*', new Point(5,10)); textMap.put('/', new Point(6,10));
-		textMap.put('=', new Point(7,10)); textMap.put('"', new Point(8,10));
+		textMap.put('=', new Point(7,10)); textMap.put('"', new Point(8,10));	
+		textMap.put('\'', new Point(1,11)); textMap.put(':', new Point(2,11));
+		textMap.put(';', new Point(3,11)); textMap.put('|', new Point(4,11));
+		textMap.put('[', new Point(5,11)); textMap.put(']', new Point(6,11));
+		textMap.put('{', new Point(7,11)); textMap.put('}', new Point(8,11));
+	}
+
+	public static BufferedImage colorizeString(BufferedImage img, Color c){
+		BufferedImage temp = new BufferedImage(img.getWidth(), img.getHeight(), img.getType());
+		Graphics g = temp.createGraphics();
+		g.drawImage(img, 0, 0, null);
+		g.dispose();
+		for(int y = 0; y < temp.getHeight(); y++){
+			for(int x = 0; x < temp.getWidth(); x++){
+				Color originalColor = new Color(temp.getRGB(x, y), true);
+				if(originalColor.getAlpha() == 255) {
+                    temp.setRGB(x, y, c.getRGB());
+                    }
+                }
+			}
+		return temp;
 	}
 	
+	/**
+	 * Method to draw a sprite based text string to the screen.
+	 * @param g	Graphics
+	 * @param x	X coordinate of the text
+	 * @param y	Y coordinate of the text
+	 * @param text	The string of text to draw.
+	 */
 	public static void drawString(Graphics g, int x, int y, String text){
 		for(int i = 0; i < text.length(); i++){
 			g.drawImage(textSheet.grabImage((int)textMap.get(text.charAt(i)).getX(), (int)textMap.get(text.charAt(i)).getY(), charWidth, charWidth), x, y, null);
 			x+=charWidth;
+		}
+	}
+	
+	public static void drawString(Graphics g, int x, int y, String text, Color c){
+		for(int i = 0; i < text.length(); i++){
+			g.drawImage(colorizeString(textSheet.grabImage((int)textMap.get(text.charAt(i)).getX(), (int)textMap.get(text.charAt(i)).getY(), charWidth, charWidth),c), x, y, null);
+			x+=charWidth;
+		}
+	}
+	
+	public static void drawStringMultiLine(Graphics g, int x, int y, int width, String text){
+		if(text.length() * charWidth < width){
+			drawString(g,x,y,text);
+		}
+		else{
+			String[] words = text.split(" ");
+			String currentLine = words[0];
+			for(int i = 1; i < words.length; i++){
+				if(currentLine.length() * charWidth + words[i].length() * charWidth < width){
+					currentLine += " " + words[i];
+				}
+				else{
+					drawString(g, x, y, currentLine);
+					y += charHeight;
+					currentLine = words[i];
+				}
+			}
+			if(currentLine.trim().length() > 0){
+				drawString(g,x,y,currentLine);
+			}
+		}
+	}
+
+	public static void drawStringMultiLine(Graphics g, int x, int y, int width, String text, Color c){
+		if(text.length() * charWidth < width){
+			drawString(g,x,y,text, c);
+		}
+		else{
+			String[] words = text.split(" ");
+			String currentLine = words[0];
+			for(int i = 1; i < words.length; i++){
+				if(currentLine.length() * charWidth + words[i].length() * charWidth < width){
+					currentLine += " " + words[i];
+				}
+				else{
+					drawString(g, x, y, currentLine);
+					y += charHeight;
+					currentLine = words[i];
+				}
+			}
+			if(currentLine.trim().length() > 0){
+				drawString(g,x,y,currentLine, c);
+			}
 		}
 	}
 	

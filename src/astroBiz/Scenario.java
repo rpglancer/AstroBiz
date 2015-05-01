@@ -24,7 +24,7 @@ public class Scenario {
 	
 	private Vector<Business> scenarioBusinesses = new Vector<Business>();
 	
-	Scenario(){
+	public Scenario(){
 		for(int i = 0; i < 4; i++){
 			Business b = new Business();
 			if(i == 0) b.setColor(b, 255, 0, 0);

@@ -211,137 +211,8 @@ public class AstroBiz extends Canvas implements Runnable{
 		switch(AstroBiz.State){
 
 		case SCENARIOSETUP:
-			switch(this.scenarioView.getViewMode()){
-			case VM_BUSI_CONFIG:
-				scenarioView.keyAction(key);
-				break;
-			case VM_DIFF_SELECT:
-				switch(key){
-				case KeyEvent.VK_UP:
-					scenarioView.cycleDifficultyPrev();
-					break;
-				case KeyEvent.VK_DOWN:
-					scenarioView.cycleDifficultyNext();
-					break;
-				case KeyEvent.VK_ENTER:
-					scenarioView.setDifficulty();
-					scenarioView.setViewMode(SCENARIOVIEWMODE.VM_PLYR_SELECT);
-					break;
-				}
-				break;	//	END VM_DIFF_SELECT
-				
-			case VM_PLYR_SELECT:
-				switch(key){
-				case KeyEvent.VK_UP:
-					scenarioView.cyclePlayerPrev();
-					break;
-				case KeyEvent.VK_DOWN:
-					scenarioView.cyclePlayerNext();
-					break;
-				case KeyEvent.VK_ENTER:
-					//scenarioView.setPlayers();
-					scenarioView.setPlayers(activeScenario);
-					scenarioView.setViewMode(SCENARIOVIEWMODE.VM_SET_HQ);
-					break;
-				}
-				break;	//	END VM_PLYR_SELECT
-				
-			case VM_SCEN_CONFIRM:
-				switch(key){
-				case KeyEvent.VK_RIGHT:
-					scenarioView.setYesNo(false);
-					break;
-				case KeyEvent.VK_LEFT:
-					scenarioView.setYesNo(true);
-					break;
-				case KeyEvent.VK_ENTER:
-					if(scenarioView.getYesNo()){
-						this.activeScenario = new Scenario();
-						this.scenarioView.setScenario();
-						scenarioView.setViewMode(SCENARIOVIEWMODE.VM_DIFF_SELECT);
-					}
-					else{
-						scenarioView.setYesNo(true);
-						scenarioView.setViewMode(SCENARIOVIEWMODE.VM_SCEN_SELECT);
-					}
-				}
-				break;	//	END_VM_SCEN_CONFIRM
-				
-			case VM_SCEN_SELECT:
-				switch(key){
-				case KeyEvent.VK_UP:
-					scenarioView.cycleScenarioPrev();
-					break;
-				case KeyEvent.VK_DOWN:
-					scenarioView.cycleScenarioNext();
-					break;
-				case KeyEvent.VK_ENTER:
-					scenarioView.setScenario();
-					scenarioView.setViewMode(SCENARIOVIEWMODE.VM_SCEN_CONFIRM);
-					break;
-				default:
-					break;
-				}
-				break;	//	END VM_SCEN_SELECT
-				
-			case VM_SET_HQ:
-				switch(key){
-				case KeyEvent.VK_RIGHT:
-					if(scenarioView.getHqPlacementView() == HQPLACEMENTVIEW.WORLD)
-						scenarioView.cycleRegionNext();
-					else if(scenarioView.getHqPlacementView() == HQPLACEMENTVIEW.REGION)
-						scenarioView.cycleLocationNext();
-					
-					break;
-					
-				case KeyEvent.VK_LEFT:
-					if(scenarioView.getHqPlacementView() == HQPLACEMENTVIEW.WORLD)
-						scenarioView.cycleRegionPrev();
-					else if(scenarioView.getHqPlacementView() == HQPLACEMENTVIEW.REGION)
-						scenarioView.cycleLocationPrev();
-					break;
-					
-				case KeyEvent.VK_ESCAPE:
-					if(scenarioView.getHqPlacementView() == HQPLACEMENTVIEW.WORLD)
-						scenarioView.setViewMode(SCENARIOVIEWMODE.VM_PLYR_SELECT);
-					else if(scenarioView.getHqPlacementView() == HQPLACEMENTVIEW.REGION)
-						scenarioView.setHqPlacementView(HQPLACEMENTVIEW.WORLD);
-					break;
-					
-				case KeyEvent.VK_ENTER:
-					if(scenarioView.getHqPlacementView() == HQPLACEMENTVIEW.WORLD){
-						scenarioView.loadRegionMap(worldMap);
-						scenarioView.loadLocationVector(regionView.getLocationVector());
-						scenarioView.setHqPlacementView(HQPLACEMENTVIEW.REGION);
-					}
-					else if(scenarioView.getHqPlacementView() == HQPLACEMENTVIEW.REGION){
-						if(scenarioView.getHqLocationCount() < 0)
-							break;
-						else{
-							this.scenarioView.getHqSelectedLocation().setLocationIsHub(true);
-							this.activeScenario.getBusinesses().elementAt(scenarioView.getScenarioPlayerConfigure() - 1).setHQ(this.scenarioView.getHqSelectedLocation());
-						}
-						if(scenarioView.getScenarioPlayerConfigure() <= scenarioView.getPlayersToConfigure()){
-							scenarioView.setScenarioPlayerConfigure(this.scenarioView.getScenarioPlayerConfigure() + 1);
-							if(scenarioView.getScenarioPlayerConfigure() > scenarioView.getPlayersToConfigure()){
-								scenarioView.setViewMode(SCENARIOVIEWMODE.VM_BUSI_CONFIG);
-								//AstroBiz.State = STATE.REGIONVIEW;
-								// Move to business customization
-							}
-							else{
-								// Allow further HQ placement.
-								scenarioView.setHqPlacementView(HQPLACEMENTVIEW.WORLD);
-							}		 
-						}
-						else{
-							// Switch to AI HQ placement
-						}
-					}
-					break;
-				}
-				break;	//	END VM_SET_HQ
-			}
-			break;	//	END SCENARIOSETUP
+			scenarioView.keyAction(key);
+			break;
 			
 		case REGIONVIEW:
 			switch(key){
@@ -444,5 +315,9 @@ public class AstroBiz extends Canvas implements Runnable{
 
 	public Scenario getScenario(){
 		return this.activeScenario;
+	}
+	
+	public void setScenario(Scenario scenario){
+		activeScenario = scenario;
 	}
 }
