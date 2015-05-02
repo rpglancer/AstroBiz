@@ -792,7 +792,6 @@ public class ScenarioView {
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME_SELECT){
 				if(businessNameBuffer.length() == 0) break;
 				else businessNameBuffer = textUtilities.deleteEndChar(businessNameBuffer);
-				System.out.println(" "+businessNameBuffer.length());
 			}
 			break;
 		case KeyEvent.VK_ESCAPE:
