@@ -135,7 +135,6 @@ public class ScenarioView {
 	}
 	
 	public void render(Graphics g){
-		System.out.println(scenarioViewMode);
 		switch(this.scenarioViewMode){
 		case VM_BUSI_COLOR:
 			scenarioBusiConfig(g);
