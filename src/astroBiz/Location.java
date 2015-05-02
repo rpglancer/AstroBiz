@@ -16,7 +16,7 @@ public class Location {
 	private int locationDemandIndustry;				// The location's demand for industry [0 - 255]
 	private int locationDevelopment;				// The location's developmental level [0 - 255]
 	private String locationName;					// The location's name.
-	private int locationSize;						// The location's population
+	private int locationSize;						// REPLACED WITH Location.population !!! DO NOT USE !!!
 	private int locationSlotAvailable;				// The location's available slots for landing SpaceCraft on a Route
 	private int locationSlotCost;					// The cost per slot to lease an available slot
 	private int locationSlotTotal;					// The location's total slots
@@ -25,21 +25,28 @@ public class Location {
 	private int locationRegionY;
 	private int locationX;							// The X coordinate of the location
 	private int locationY;							// The Y coordinate of the location
+	private double population;
 	
-	private boolean isHub = false;					// This location is the HQ of a business
+	private static enum LOCATIONTYPE{
+		LT_TOWN,
+		LT_CITY;
+	}
+	private LOCATIONTYPE locationType = LOCATIONTYPE.LT_TOWN;
+
+	private Boolean[] isHub = {false, false, false, false};
 	
-	private BufferedImage locationSprite;			// The sprite that represents this location
+	private static SpriteSheet spritesheet = null;
+	
 	
 	/**
 	 * Default constructor for a Location.
 	 */
-	public Location(BufferedImage sprite){
-		this.locationSprite = sprite;
+	public Location(){
+		Location.spritesheet = AstroBiz.regionSprites;
 	}
 
 	public void generateLocation(int y, int x, int r){
 		Random rand = new Random();
-//		this.locationCategory = rand.nextInt(5);
 		this.locationDemandBusiness = rand.nextInt(255);
 		this.locationDemandIndustry = rand.nextInt(255);
 		this.locationDemandTourism = rand.nextInt(255);
@@ -68,7 +75,9 @@ public class Location {
 		this.locationSize = this.locationDevelopment * 100;
 		this.locationSlotTotal = this.locationDevelopment / 10;
 		this.locationSlotAvailable = this.locationSlotTotal;
-		this.locationSlotCost = 500;	
+		this.locationSlotCost = 500;
+		this.population = LocationInformation.earthPopulation[i];
+		if(this.population > 1.0) locationType = LOCATIONTYPE.LT_CITY;
 	}
 	
 	public void generateLunaLocation(int i){
@@ -106,8 +115,22 @@ public class Location {
 			
 	}
 	
-	public BufferedImage getSprite(){
-		return locationSprite;
+	public BufferedImage getSprite(Scenario s){
+		if(this == s.getBusinesses().elementAt(s.getActiveBusiness()).getHQ()) return Location.spritesheet.grabImage(6, 1, 16, 16);
+		for(int i = 0; i < s.getBusinesses().elementAt(s.getActiveBusiness()).getHubs().size(); i++){
+			if(this == s.getBusinesses().elementAt(s.getActiveBusiness()).getHubs().elementAt(i)) return Location.spritesheet.grabImage(5, 1, 16, 16);
+		}
+		for(int i = 0; i < s.getBusinesses().elementAt(s.getActiveBusiness()).getRoutes().size(); i++){
+			if(this == s.getBusinesses().elementAt(s.getActiveBusiness()).getRoutes().elementAt(i).getRouteDestination() && this.locationType == LOCATIONTYPE.LT_CITY){
+				return Location.spritesheet.grabImage(4, 1, 16, 16);
+			}
+			else if(this == s.getBusinesses().elementAt(s.getActiveBusiness()).getRoutes().elementAt(i).getRouteDestination() && this.locationType == LOCATIONTYPE.LT_TOWN){
+				return Location.spritesheet.grabImage(2, 1, 16, 16);
+			}
+		}
+		if(this.locationType == LOCATIONTYPE.LT_TOWN) return Location.spritesheet.grabImage(1, 1, 16, 16);
+		if(this.locationType == LOCATIONTYPE.LT_CITY) return Location.spritesheet.grabImage(3, 1, 16, 16);
+		return Location.spritesheet.grabImage(1, 1, 16, 16);
 	}
 
 	int getLocationDemandBusiness(){
@@ -127,7 +150,10 @@ public class Location {
 	}
 
 	public boolean getLocationIsHub(){
-		return this.isHub;
+		for(int i = 0; i < 4; i++){
+			if(isHub[i]) return isHub[i];
+		}
+		return false;
 	}
 	
 	public String getLocationName(){
@@ -170,12 +196,6 @@ public class Location {
 		return this.locationRegionY;
 	}
 	
-	/*
-	void setLocationCategory(int category){
-		locationCategory = category;
-	}
-*/
-	
 	void setLocationDemandBusiness(int demand){
 		locationDemandBusiness = demand;
 	}
@@ -188,8 +208,8 @@ public class Location {
 	void setLocationDevelopment(int dev){
 		locationDevelopment = dev;
 	}
-	public void setLocationIsHub(boolean tf){
-		this.isHub = tf;
+	public void setLocationIsHub(boolean tf, int business){
+		this.isHub[business] = tf;
 	}
 	
 	void setLocationName(String name){

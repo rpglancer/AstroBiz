@@ -3,6 +3,7 @@ package astroBiz.view;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.Vector;
 
@@ -22,7 +23,21 @@ public class RegionView {
 	private static enum REGIONVM{
 		
 	}
-
+	private static enum REGIONBUTTON{
+		RB_ROUTEOPEN,
+		RB_ROUTEADJUST,
+		RB_SLOTBID,
+		RB_BUY,
+		RB_BUDGET,
+		RB_VENTURE,
+		RB_HUBOPEN,
+		RB_AD,
+		RB_MEETING,
+		RB_STATUS,
+		RB_SETTING,
+		RB_TURN;
+	}
+	private REGIONBUTTON regionButton = REGIONBUTTON.RB_ROUTEOPEN;
 	private String[] regionName = {"Mercury", "Venus", "Earth", "Luna", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"};
 	private Vector<Location> mapLocations = new Vector<Location>();
 	private byte regionX = 3;	// Default Sector
@@ -50,12 +65,12 @@ public class RegionView {
 		}
 // TODO: Find a way of populating the regions with locations that doesn't involve manual creation of every one.
 		for(int l = 0; l < 8; l++){
-			Location location = new Location(ab.getRegionSprites().grabImage(1, 1, SPRITEWIDTH, SPRITEHEIGHT));
+			Location location = new Location();
 			location.generateEarthLocation(l);
 			mapLocations.addElement(location);
 		}
 		for(int l = 0; l < 8; l++){
-			Location location = new Location(ab.getRegionSprites().grabImage(1, 1, SPRITEWIDTH, SPRITEHEIGHT));
+			Location location = new Location();
 			location.generateLunaLocation(l);
 			mapLocations.addElement(location);
 		}
@@ -70,13 +85,14 @@ public class RegionView {
 		g.setFont(sectorfont);
 		g.setColor(Color.WHITE);
 		g.drawString("Region: " + regionName[getRegionID(regionX, regionY)], 32, 25);		// temp drawings
-		g.drawString("ID: " + getRegionID(regionX, regionY), 400, 25);						// temp drawings
+		g.drawString("Active: " + ab.getScenario().getActiveBusiness(), 400, 25);
+//		g.drawString("ID: " + getRegionID(regionX, regionY), 400, 25);						// temp drawings
 		g.drawString(Integer.toString(ab.getScenario().getCurrentYear()), 600, 25);			// temp drawings
 		
 		// Prototype Render Locations
 		for(int i = 0; i < mapLocations.size(); i++){
 			if(mapLocations.elementAt(i).getLocationRegion() == getRegionID(regionX, regionY)){
-				g.drawImage(mapLocations.elementAt(i).getSprite() , mapLocations.elementAt(i).getLocationX(), mapLocations.elementAt(i).getLocationY(), null);
+				g.drawImage(mapLocations.elementAt(i).getSprite(ab.getScenario()) , mapLocations.elementAt(i).getLocationX(), mapLocations.elementAt(i).getLocationY(), null);
 			}
 		}
 		
@@ -92,6 +108,49 @@ public class RegionView {
 				x = 192;
 				y += BUTTONHEIGHT;
 			}
+		}
+	}
+	
+	private void cycleButtonDown(){
+		if(regionButton == REGIONBUTTON.RB_ROUTEOPEN) regionButton = REGIONBUTTON.RB_HUBOPEN;
+		else if(regionButton == REGIONBUTTON.RB_ROUTEADJUST) regionButton = REGIONBUTTON.RB_AD;
+		else if(regionButton == REGIONBUTTON.RB_SLOTBID) regionButton = REGIONBUTTON.RB_MEETING;
+		else if(regionButton == REGIONBUTTON.RB_BUY) regionButton = REGIONBUTTON.RB_STATUS;
+		else if(regionButton == REGIONBUTTON.RB_BUDGET) regionButton = REGIONBUTTON.RB_SETTING;
+		else if(regionButton == REGIONBUTTON.RB_VENTURE) regionButton = REGIONBUTTON.RB_TURN;
+	}
+	
+	private void cycleButtonLeft(){	
+	}
+	
+	private void cycleButtonRight(){
+	}
+	
+	private void cycleButtonUp(){
+		if(regionButton == REGIONBUTTON.RB_HUBOPEN) regionButton = REGIONBUTTON.RB_ROUTEOPEN;
+		else if(regionButton == REGIONBUTTON.RB_AD) regionButton = REGIONBUTTON.RB_ROUTEADJUST;
+		else if(regionButton == REGIONBUTTON.RB_MEETING) regionButton = REGIONBUTTON.RB_SLOTBID;
+		else if(regionButton == REGIONBUTTON.RB_STATUS) regionButton = REGIONBUTTON.RB_BUY;
+		else if(regionButton == REGIONBUTTON.RB_SETTING) regionButton = REGIONBUTTON.RB_BUDGET;
+		else if(regionButton == REGIONBUTTON.RB_TURN) regionButton = REGIONBUTTON.RB_VENTURE;
+	}
+	
+	public void keyAction(KeyEvent e){
+		switch(e.getKeyCode()){
+		case KeyEvent.VK_UP:
+			setRegionY(getRegionY() - 1);
+			break;
+		case KeyEvent.VK_DOWN:
+			setRegionY(getRegionY() + 1);
+			break;
+		case KeyEvent.VK_RIGHT:
+			setRegionX(getRegionX() + 1);
+			break;
+		case KeyEvent.VK_LEFT:
+			setRegionX(getRegionX() - 1);
+			break;
+		default:
+			break;
 		}
 	}
 	

@@ -42,10 +42,10 @@ public class AstroBiz extends Canvas implements Runnable{
 	/*
 	 * Sprite Sheets
 	 */
-	private SpriteSheet employeeSprites = null;
-	private SpriteSheet regionButtons = null;
-	private SpriteSheet regionSprites = null;
-	private SpriteSheet worldMap = null;
+	public static SpriteSheet employeeSprites = null;
+	public static SpriteSheet regionButtons = null;
+	public static SpriteSheet regionSprites = null;
+	public static SpriteSheet worldMap = null;
 
 	/*
 	 * Views
@@ -164,6 +164,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		case LOCATIONVIEW:
 			break;
 		case REGIONVIEW:
+			if(scenarioView != null) scenarioView = null;
 			regionView.tick();
 			break;
 		case SCENARIOSETUP:
@@ -187,7 +188,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		
 		switch(State){
 		case LOCATIONVIEW:
-			locationView.render(g);
+			locationView.render(g, this);
 			break;
 		case MENU:
 			mainMenu.render(g);
@@ -215,22 +216,8 @@ public class AstroBiz extends Canvas implements Runnable{
 			break;
 			
 		case REGIONVIEW:
-			switch(key){
-			case KeyEvent.VK_UP:
-				regionView.setRegionY(regionView.getRegionY() - 1);
-				break;
-			case KeyEvent.VK_DOWN:
-				regionView.setRegionY(regionView.getRegionY() + 1);
-				break;
-			case KeyEvent.VK_RIGHT:
-				regionView.setRegionX(regionView.getRegionX() + 1);
-				break;
-			case KeyEvent.VK_LEFT:
-				regionView.setRegionX(regionView.getRegionX() - 1);
-				break;
-			default:
-				break;
-			}
+			regionView.keyAction(e);
+
 			break;		// End REGIONVIEW
 			
 		case MENU:
@@ -248,6 +235,7 @@ public class AstroBiz extends Canvas implements Runnable{
 					break;
 				if(mainMenu.getMenuStatus() == MENUSELECT.QUITGAME)
 					System.exit(1);
+				System.gc();
 				break;
 			}
 			break;

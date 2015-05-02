@@ -17,7 +17,7 @@ public class Business {
 	private Vector<Location> regionalHubs = null;
 	
 	String businessName = "Untitled Company";
-	Vector<Route> businessRoutes;
+	Vector<Route> businessRoutes = new Vector<Route>();
 	
 	/**
 	 * Default constructor to make a new Business.
@@ -39,8 +39,24 @@ public class Business {
 		return businessColor;
 	}
 	
+	public int getAccountBalance(){
+		return this.accountBalance;
+	}
+	
 	SpaceCraft getCraft(int index){
 		return spaceCraftHangar.get(index);
+	}
+	
+	public Vector<Location> getHubs(){
+		return this.regionalHubs;
+	}
+	
+	public Location getHQ(){
+		return this.headQuarters;
+	}
+	
+	public Vector<Route> getRoutes(){
+		return this.businessRoutes;
 	}
 	
 	public String getName(){

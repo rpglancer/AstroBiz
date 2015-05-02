@@ -41,7 +41,7 @@ public class ScenarioView {
 	private int availableHqLocationNumber = -1;		// Contains the Vector index number for the currently selected Location or -1 for an empty Vector.
 	private int businessSelect = 0;					// The number of the business to be configured.
 	private int colorSelect = 0;
-	private int nameCharSelect = 0;
+//	private int nameCharSelect = 0;
 	private int scenarioPlayerConfigure = 0;		// Contains the number of the player currently being configured.
 	private int scenarioPlayersToConfigure = 0;		// Contains the total number of players needing to be configured.
 	
@@ -179,6 +179,7 @@ public class ScenarioView {
 		default:
 			break;
 		}
+		g.dispose();
 	}
 	
 	private void scenarioBusiConfig(Graphics g){
@@ -265,6 +266,7 @@ public class ScenarioView {
 			g.drawImage(this.employeeSprite, 32, 320, null);
 			textUtilities.drawString(g, 160, 384, "Enter the name of your company.");		
 		}
+		g.dispose();
 	}
 	
 	private void scenarioDifficulty(Graphics g){
@@ -294,6 +296,7 @@ public class ScenarioView {
 		
 		g.drawImage(this.employeeSprite, 32, 320, null);
 		g.drawString("Select a difficulty level.", 160, 384);
+		g.dispose();
 	}
 	
 	private void scenarioConfirm(Graphics g){
@@ -324,6 +327,7 @@ public class ScenarioView {
 			g.setColor(Color.white);
 			g.drawString("NO", 192+73, 444);		
 		}
+		g.dispose();
 	}
 	
 	private void scenarioPlayers(Graphics g){
@@ -353,6 +357,7 @@ public class ScenarioView {
 		
 		g.drawImage(this.employeeSprite, 32, 320, null);
 		g.drawString("Choose the number of players.", 160, 384);
+		g.dispose();
 	}
 	
 	private void scenarioSetHQ(Graphics g){
@@ -374,7 +379,7 @@ public class ScenarioView {
 			g2d.drawImage(region, 32, 32, null);
 
 			for(int i = 0; i < this.availableHqLocations.size(); i++){
-				g2d.drawImage(this.availableHqLocations.elementAt(i).getSprite(), 
+				g2d.drawImage(this.availableHqLocations.elementAt(i).getSprite(ab.getScenario()), 
 							this.availableHqLocations.elementAt(i).getLocationX(), 
 							this.availableHqLocations.elementAt(i).getLocationY(), 
 							null);
@@ -488,6 +493,8 @@ public class ScenarioView {
 			g2d.drawString("Select headquarters region for " + s, 160, 384);		
 			break;	//	End	WORLD
 		}
+		g2d.dispose();
+		g.dispose();
 	}
 	
 	private void scenarioView(Graphics g){
@@ -523,7 +530,7 @@ public class ScenarioView {
 		}
 		g.drawImage(this.employeeSprite, 32, 320, null);
 		textUtilities.drawString(g, 160, 380, "Please select a scenario to play.");
-//		g.drawString("Please select a scenario to play.", 160, 384);
+		g.dispose();
 	}
 	
 	private void cycleBusinessNext(){
@@ -813,50 +820,63 @@ public class ScenarioView {
 		case KeyEvent.VK_ENTER:
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR){
 				scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT;
+				System.gc();
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT){
 				scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_COLOR;
+				System.gc();
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_CONFIG){
-				if(busiConfigOptions == BUSICONFIGOPTIONS.COLOR) scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_COLOR;
-				if(busiConfigOptions == BUSICONFIGOPTIONS.NAME){
-//					businessNameBuffer = ab.getScenario().getBusinesses().elementAt(businessSelect).getName();
-//					nameCharSelect = businessNameBuffer.length();
-					scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_NAME;
+				if(busiConfigOptions == BUSICONFIGOPTIONS.COLOR) {
+					scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_COLOR;
+					System.gc();
 				}
-				if(busiConfigOptions == BUSICONFIGOPTIONS.EXIT) AstroBiz.State = STATE.REGIONVIEW;
+				else if(busiConfigOptions == BUSICONFIGOPTIONS.NAME){
+					scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_NAME;
+					System.gc();
+				}
+				else if(busiConfigOptions == BUSICONFIGOPTIONS.EXIT){
+					AstroBiz.State = STATE.REGIONVIEW;
+					System.gc();
+				}
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME){
 				businessNameBuffer = ab.getScenario().getBusinesses().elementAt(businessSelect).getName();
-				nameCharSelect = businessNameBuffer.length();
 				scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_NAME_SELECT;
+				System.gc();
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME_SELECT){
 				ab.getScenario().getBusinesses().elementAt(businessSelect).setName(businessNameBuffer);
 				scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_NAME;
+				System.gc();
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_DIFF_SELECT){
 				setDifficulty();
 				scenarioViewMode = SCENARIOVIEWMODE.VM_PLYR_SELECT;
+				System.gc();
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_PLYR_SELECT){
 				setPlayers(ab.getScenario());
 				scenarioViewMode = SCENARIOVIEWMODE.VM_SET_HQ;
+				System.gc();
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_CONFIRM){
 				if(yesNo){
 					ab.setScenario(new Scenario());
 					setScenario();
 					scenarioViewMode = SCENARIOVIEWMODE.VM_DIFF_SELECT;
+					System.gc();
 				}
 				else{
 					yesNo = true;
 					scenarioViewMode = SCENARIOVIEWMODE.VM_SCEN_SELECT;
+					System.gc();
 				}
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_SELECT){
 				setScenario();
 				scenarioViewMode = SCENARIOVIEWMODE.VM_SCEN_CONFIRM;
+				System.gc();
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ){
 				if(hqPlacementView == HQPLACEMENTVIEW.WORLD){
@@ -868,14 +888,13 @@ public class ScenarioView {
 					if(availableHqLocationNumber < 0)
 						break;
 					else{
-						getHqSelectedLocation().setLocationIsHub(true);
+						getHqSelectedLocation().setLocationIsHub(true, scenarioPlayerConfigure - 1);
 						ab.getScenario().getBusinesses().elementAt(scenarioPlayerConfigure - 1).setHQ(getHqSelectedLocation());
 					}
 					if(scenarioPlayerConfigure <= scenarioPlayersToConfigure){
 						scenarioPlayerConfigure++;
 						if(scenarioPlayerConfigure > scenarioPlayersToConfigure){
 							scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_CONFIG;
-							//AstroBiz.State = STATE.REGIONVIEW;
 							// Move to business customization
 						}
 						else{
@@ -887,6 +906,7 @@ public class ScenarioView {
 						// Switch to AI HQ placement
 					}
 				}
+				System.gc();
 			}
 			break;
 		case KeyEvent.VK_LEFT:

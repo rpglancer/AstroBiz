@@ -74,6 +74,17 @@ public class LocationInformation {
 		95,  
 		230
 		};
+	
+	public static double[] earthPopulation = {
+		8.0,
+		11.0,
+		9.0,
+		18.0,
+		20.0,
+		17.0,
+		5.5,
+		7.5
+	};
 
 	public static String[] lunaLocationNames = {
 		"Luna 1",
