@@ -105,6 +105,7 @@ public class textUtilities{
 	 * @param text	The string of text to draw.
 	 */
 	public static void drawString(Graphics g, int x, int y, String text){
+		if(text == null) return;
 		for(int i = 0; i < text.length(); i++){
 			g.drawImage(textSheet.grabImage((int)textMap.get(text.charAt(i)).getX(), (int)textMap.get(text.charAt(i)).getY(), charWidth, charWidth), x, y, null);
 			x+=charWidth;
@@ -208,5 +209,28 @@ public class textUtilities{
 		g.drawRoundRect(x-8, y-8, width + 8, height + 8, 16, 16);
 		g.setColor(Color.white);
 		drawStringMultiLine(g, f, x + 8, y + 8, width - 8, text);
+	}
+
+	public static String addEndChar(String string, char c){
+		char[] charArray = new char[string.length() + 1];
+		for(int i = 0; i < string.length(); i++){
+			charArray[i] = string.charAt(i);
+		}
+		charArray[string.length()] = c;
+		return new String(charArray);
+	}
+	
+	public static String deleteEndChar(String string){
+		char[] charArray = new char[string.length() - 1];
+		for(int i = 0; i < string.length() - 1; i++){
+			charArray[i] = string.charAt(i);
+		}
+		return new String(charArray);
+	}
+	
+	public static String replaceCharAt(int position, String string, char c){
+	    char[] charArray = string.toCharArray();
+	    charArray[position] = c;
+	    return new String(charArray);
 	}
 }

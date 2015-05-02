@@ -8,39 +8,31 @@ import java.util.Vector;
  *
  */
 public class Business {
-	private double businessAccountBalance;
+	private int accountBalance = 0;
 	private Color businessColor;
-	private boolean businessIsPlayerOwned;
-	private double businessOperatingCosts;
-	private	Vector<SpaceCraft> businessHangar;
-	private Location businessHQ;
-	private Vector<Location> businessHubs;
+	private boolean isPlayerOwned = false;
+	private int operatingCosts = 0;
+	private	Vector<SpaceCraft> spaceCraftHangar = null;
+	private Location headQuarters = null;
+	private Vector<Location> regionalHubs = null;
 	
-	String businessName;
+	String businessName = "Untitled Company";
 	Vector<Route> businessRoutes;
 	
 	/**
 	 * Default constructor to make a new Business.
 	 */
 	Business(){
-		this.businessAccountBalance = 0;
-		this.businessOperatingCosts = 0;
-		this.businessName = "Untitled Company";
-		this.businessIsPlayerOwned = false;
+		this.regionalHubs = new Vector<Location>();
+		this.spaceCraftHangar = new Vector<SpaceCraft>();
 	}
 	
 	void addCraft(SpaceCraft sc){
-		if(this.businessHangar == null){
-			this.businessHangar = new Vector<SpaceCraft>();
-			this.businessHangar.addElement(sc);
-		}
-		else{
-			this.businessHangar.addElement(sc);
-		}
+		this.spaceCraftHangar.addElement(sc);
 	}
 
 	void addBusinessAccountBalance(int amount){
-		businessAccountBalance += amount;
+		accountBalance += amount;
 	}
 	
 	public Color getColor(){
@@ -48,7 +40,7 @@ public class Business {
 	}
 	
 	SpaceCraft getCraft(int index){
-		return businessHangar.get(index);
+		return spaceCraftHangar.get(index);
 	}
 	
 	public String getName(){
@@ -59,16 +51,26 @@ public class Business {
 		business.businessColor = new Color(r,g,b);
 	}
 	
+	public void setColor(Color color){
+		this.businessColor = color;
+	}
+	
 	public void setHQ(Location hq){
 		this.businessName = hq.getLocationName() + " Airlines";
-		this.businessHQ = hq;
+		if(this.regionalHubs == null) this.regionalHubs = new Vector<Location>();
+		this.regionalHubs.addElement(hq);
+		this.headQuarters = hq;
 	}
 	
-	void setBusinessPlayerOwned(boolean p){
-		this.businessIsPlayerOwned = p;
+	public void setBusinessPlayerOwned(boolean p){
+		this.isPlayerOwned = p;
 	}
 	
-	void subBusinessAccountBalance(int amount){
-		businessAccountBalance -= amount;
+	public void setName(String name){
+		this.businessName = name;
+	}
+	
+	public void subBusinessAccountBalance(int amount){
+		accountBalance -= amount;
 	}
 }

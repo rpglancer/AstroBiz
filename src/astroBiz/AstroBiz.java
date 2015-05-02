@@ -30,7 +30,7 @@ public class AstroBiz extends Canvas implements Runnable{
 	public static final int HEIGHT = 480;
 	public static final int VERSION = 0;
 	public static final int MAJOR = 0;
-	public static final int MINOR = 1;
+	public static final int MINOR = 2;
 	public static final int PATCH = 0;
 	public final String TITLE = "AstroBiz Prototype version " + VERSION + "." + MAJOR + "." + MINOR + "." + PATCH;
 
@@ -211,7 +211,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		switch(AstroBiz.State){
 
 		case SCENARIOSETUP:
-			scenarioView.keyAction(key);
+			scenarioView.keyAction(e);
 			break;
 			
 		case REGIONVIEW:

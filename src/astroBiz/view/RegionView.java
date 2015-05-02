@@ -18,6 +18,10 @@ public class RegionView {
 	private static final int SPRITEWIDTH = 16;
 	private static final int BUTTONHEIGHT = 64;
 	private static final int BUTTONWIDTH = 96;
+	
+	private static enum REGIONVM{
+		
+	}
 
 	private String[] regionName = {"Mercury", "Venus", "Earth", "Luna", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"};
 	private Vector<Location> mapLocations = new Vector<Location>();

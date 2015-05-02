@@ -2,11 +2,9 @@ package astroBiz.view;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
-import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Vector;
@@ -41,9 +39,13 @@ public class ScenarioView {
 	private Font sbconf	= new Font("sans", Font.BOLD, 32);
 	
 	private int availableHqLocationNumber = -1;		// Contains the Vector index number for the currently selected Location or -1 for an empty Vector.
-	private int businessSelect = 0;
+	private int businessSelect = 0;					// The number of the business to be configured.
+	private int colorSelect = 0;
+	private int nameCharSelect = 0;
 	private int scenarioPlayerConfigure = 0;		// Contains the number of the player currently being configured.
 	private int scenarioPlayersToConfigure = 0;		// Contains the total number of players needing to be configured.
+	
+	private String businessNameBuffer = null;
 
 	public static enum BUSICONFIGOPTIONS {
 		NAME,
@@ -86,7 +88,9 @@ public class ScenarioView {
 	}	
 	public static enum SCENARIOVIEWMODE{
 		VM_BUSI_NAME,
+		VM_BUSI_NAME_SELECT,
 		VM_BUSI_COLOR,
+		VM_BUSI_COLOR_SELECT,
 		VM_BUSI_CONFIG,
 		VM_SCEN_CONFIRM,
 		VM_SCEN_SELECT,
@@ -131,12 +135,25 @@ public class ScenarioView {
 	}
 	
 	public void render(Graphics g){
+		System.out.println(scenarioViewMode);
 		switch(this.scenarioViewMode){
 		case VM_BUSI_COLOR:
 			scenarioBusiConfig(g);
 			break;
 			
+		case VM_BUSI_COLOR_SELECT:
+			scenarioBusiConfig(g);
+			break;
+			
 		case VM_BUSI_CONFIG:
+			scenarioBusiConfig(g);
+			break;
+			
+		case VM_BUSI_NAME:
+			scenarioBusiConfig(g);
+			break;
+			
+		case VM_BUSI_NAME_SELECT:
 			scenarioBusiConfig(g);
 			break;
 
@@ -191,7 +208,17 @@ public class ScenarioView {
 			g.drawImage(this.employeeSprite, 32, 320, null);
 			textUtilities.drawString(g, 160, 384, "Change color for which company?");
 		}
-		if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_CONFIG){
+		else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT){
+			g.setColor(ab.getScenario().getBusinesses().elementAt(businessSelect).getColor());
+			g.fillRoundRect(x, y, width, height, 8, 8);
+			textUtilities.drawString(g, 400 - 3 * 16, 96, "R: " + ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getRed());
+			textUtilities.drawString(g, 400 - 3 * 16, 96+32, "G: " + ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getGreen());
+			textUtilities.drawString(g, 400 - 3 * 16, 96+64, "B: " + ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getBlue());
+			g.drawImage(this.employeeSprite, 32, 320, null);
+			textUtilities.drawString(g, 160, 384, "Select your desired color.");
+			
+		}
+		else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_CONFIG){
 
 			g.setColor(Color.darkGray);
 			g.fillRoundRect(x-8, y-8, width+16, height * 4 + 3 * 5 + 16, 16, 16);
@@ -212,6 +239,32 @@ public class ScenarioView {
 			g.setColor(Color.white);
 			g.drawImage(this.employeeSprite, 32, 320, null);
 			textUtilities.drawString(g, 160, 384, "Customize each company's name and color?");
+		}
+		else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME){
+			g.setColor(Color.darkGray);
+			g.fillRoundRect(x-8, y-8, width+16, height * 4 + 3 * 5 + 16, 16, 16);
+			g.setColor(Color.lightGray);
+			g.fillRoundRect(x-4, y-4, width+8, height * 4 + 3 * 5 + 8, 8, 8);
+			if(businessSelect == 0) g.drawImage(selectSprite, x-24, 72, null);
+			else if(businessSelect == 1) g.drawImage(selectSprite, x-24, 110, null);
+			else if(businessSelect == 2) g.drawImage(selectSprite, x-24, 148, null);
+			else if(businessSelect == 3) g.drawImage(selectSprite, x-24, 186, null);
+			for(int i = 0; i < ab.getScenario().getBusinesses().size(); i++){
+				g.setColor(ab.getScenario().getBusinesses().elementAt(i).getColor());
+				g.fillRoundRect(x, y, width, height, 8, 8);
+				g.setColor(Color.black);
+				g.drawRoundRect(x+1, y+1, width-1, height-1, 8, 8);
+				g.setColor(Color.white);
+				textUtilities.drawString(g, x, y+8, ab.getScenario().getBusinesses().elementAt(i).getName(), Color.white);
+				y += height + 5;
+			}
+			g.drawImage(this.employeeSprite, 32, 320, null);
+			textUtilities.drawString(g, 160, 384, "Change name of which company?");
+		}
+		else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME_SELECT){
+			textUtilities.drawString(g, 400 - 10 * 16, 128, businessNameBuffer);
+			g.drawImage(this.employeeSprite, 32, 320, null);
+			textUtilities.drawString(g, 160, 384, "Enter the name of your company.");		
 		}
 	}
 	
@@ -502,7 +555,17 @@ public class ScenarioView {
 			busiConfigOptions = BUSICONFIGOPTIONS.NAME;
 	}
 	
-	public void cycleDifficultyNext(){
+	private void cycleColorNext(){
+		if(colorSelect == 2) colorSelect = 0;
+		else colorSelect++;
+	}
+	
+	private void cycleColorPrev(){
+		if(colorSelect == 0) colorSelect = 2;
+		else colorSelect--;
+	}
+	
+	private void cycleDifficultyNext(){
 		if(this.scenarioDifficulty == DIFFICULTYSELECT.DIFF1)
 			this.scenarioDifficulty = DIFFICULTYSELECT.DIFF2;
 		else if(this.scenarioDifficulty == DIFFICULTYSELECT.DIFF2)
@@ -513,7 +576,7 @@ public class ScenarioView {
 			this.scenarioDifficulty = DIFFICULTYSELECT.DIFF1;
 	}
 	
-	public void cycleDifficultyPrev(){
+	private void cycleDifficultyPrev(){
 		if(this.scenarioDifficulty == DIFFICULTYSELECT.DIFF1)
 			this.scenarioDifficulty = DIFFICULTYSELECT.DIFF4;
 		else if(this.scenarioDifficulty == DIFFICULTYSELECT.DIFF2)
@@ -524,7 +587,7 @@ public class ScenarioView {
 			this.scenarioDifficulty = DIFFICULTYSELECT.DIFF3;
 	}
 
-	public void cycleLocationNext(){
+	private void cycleLocationNext(){
 		if(this.availableHqLocationNumber == -1)
 			return;
 		if(this.availableHqLocationNumber < this.availableHqLocations.size() - 1)
@@ -533,7 +596,7 @@ public class ScenarioView {
 			this.availableHqLocationNumber = 1;
 	}
 	
-	public void cycleLocationPrev(){
+	private void cycleLocationPrev(){
 		if(this.availableHqLocationNumber == -1)
 			return;
 		if(this.availableHqLocationNumber > 0)
@@ -542,7 +605,7 @@ public class ScenarioView {
 			this.availableHqLocationNumber = this.availableHqLocations.size() - 1;
 	}
 	
-	public void cyclePlayerNext(){
+	private void cyclePlayerNext(){
 		if(this.scenarioPlayers == PLAYERSELECT.P1)
 			this.scenarioPlayers = PLAYERSELECT.P2;
 		else if(this.scenarioPlayers == PLAYERSELECT.P2)
@@ -553,7 +616,7 @@ public class ScenarioView {
 			this.scenarioPlayers = PLAYERSELECT.P1;
 	}
 	
-	public void cyclePlayerPrev(){
+	private void cyclePlayerPrev(){
 		if(this.scenarioPlayers == PLAYERSELECT.P1)
 			this.scenarioPlayers = PLAYERSELECT.P4;
 		else if(this.scenarioPlayers == PLAYERSELECT.P2)
@@ -564,7 +627,7 @@ public class ScenarioView {
 			this.scenarioPlayers = PLAYERSELECT.P3;
 	}
 	
-	public void cycleRegionNext(){
+	private void cycleRegionNext(){
 		if(this.hqPlacementRegion == REGIONSELECT.R1)
 			this.hqPlacementRegion = REGIONSELECT.R2;
 		else if(this.hqPlacementRegion == REGIONSELECT.R2)
@@ -585,7 +648,7 @@ public class ScenarioView {
 			this.hqPlacementRegion = REGIONSELECT.R1;
 	}
 	
-	public void cycleRegionPrev(){
+	private void cycleRegionPrev(){
 		if(this.hqPlacementRegion == REGIONSELECT.R1)
 			this.hqPlacementRegion = REGIONSELECT.R9;
 		else if(this.hqPlacementRegion == REGIONSELECT.R2)
@@ -606,7 +669,7 @@ public class ScenarioView {
 			this.hqPlacementRegion = REGIONSELECT.R8;
 	}
 	
-	public void cycleScenarioNext(){
+	private void cycleScenarioNext(){
 		if(this.scenarioSelect == SCENARIOSELECT.S1)
 			this.scenarioSelect = SCENARIOSELECT.S2;
 		else if(this.scenarioSelect == SCENARIOSELECT.S2)
@@ -617,7 +680,7 @@ public class ScenarioView {
 			this.scenarioSelect = SCENARIOSELECT.S1;
 	}
 	
-	public void cycleScenarioPrev(){
+	private void cycleScenarioPrev(){
 		if(this.scenarioSelect == SCENARIOSELECT.S1)
 			this.scenarioSelect = SCENARIOSELECT.S4;
 		else if(this.scenarioSelect == SCENARIOSELECT.S2)
@@ -628,65 +691,151 @@ public class ScenarioView {
 			this.scenarioSelect = SCENARIOSELECT.S3;
 	}
 	
-	public DIFFICULTYSELECT getDifficulty(){
-		return this.scenarioDifficulty;
-	}
-
-	public int getHqLocationCount(){
-		return this.availableHqLocationNumber;
-	}
-	
-	public Location getHqSelectedLocation(){
+	private Location getHqSelectedLocation(){
 		return this.availableHqLocations.elementAt(this.availableHqLocationNumber);
 	}
 	
-	public HQPLACEMENTVIEW getHqPlacementView(){
-		return this.hqPlacementView;
+	private void increaseColor(){
+		int r = ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getRed();
+		int g = ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getGreen();
+		int b = ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getBlue();
+		if(colorSelect == 0){
+			if(ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getRed() < 255){
+				Color temp = new Color(r+1, g, b);
+				ab.getScenario().getBusinesses().elementAt(businessSelect).setColor(temp);
+			}
+		}
+		else if(colorSelect == 1){
+			if(ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getGreen() < 255){
+				Color temp = new Color(r, g+1, b);
+				ab.getScenario().getBusinesses().elementAt(businessSelect).setColor(temp);
+			}
+		}
+		else if(colorSelect == 2){
+			if(ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getBlue() < 255){
+				Color temp = new Color(r, g, b+1);
+				ab.getScenario().getBusinesses().elementAt(businessSelect).setColor(temp);
+			}
+		}
 	}
 	
-	/**
-	 * Method for returning the total number of players that need to be configured by a human being.
-	 * @return	The total number of players that need to be configured by a human being.
-	 */
-	public int getPlayersToConfigure(){
-		return this.scenarioPlayersToConfigure;
+	private void decreaseColor(){
+		int r = ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getRed();
+		int g = ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getGreen();
+		int b = ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getBlue();
+		if(colorSelect == 0){
+			if(ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getRed() > 0){
+				Color temp = new Color(r-1, g, b);
+				ab.getScenario().getBusinesses().elementAt(businessSelect).setColor(temp);
+			}
+		}
+		else if(colorSelect == 1){
+			if(ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getGreen() > 0){
+				Color temp = new Color(r, g-1, b);
+				ab.getScenario().getBusinesses().elementAt(businessSelect).setColor(temp);
+			}
+		}
+		else if(colorSelect == 2){
+			if(ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getBlue() > 0){
+				Color temp = new Color(r, g, b-1);
+				ab.getScenario().getBusinesses().elementAt(businessSelect).setColor(temp);
+			}
+		}
 	}
 	
-	public boolean getYesNo(){
-		return this.yesNo;
-	}
-	
-	/**
-	 * Method for returning the numeric identifier of the current player being configured.
-	 * @return The number of the player being actively configured.
-	 */
-	public int getScenarioPlayerConfigure(){
-		return this.scenarioPlayerConfigure;
-	}
-	
-	public SCENARIOVIEWMODE getViewMode(){
-		return this.scenarioViewMode;
-	}
-	
-	public void keyAction(int key){
-		switch(key){
+	public void keyAction(KeyEvent e){
+		switch(e.getKeyCode()){
+		case KeyEvent.VK_A:			
+		case KeyEvent.VK_B:
+		case KeyEvent.VK_C:
+		case KeyEvent.VK_D:
+		case KeyEvent.VK_E:
+		case KeyEvent.VK_F:
+		case KeyEvent.VK_G:
+		case KeyEvent.VK_H:
+		case KeyEvent.VK_I:
+		case KeyEvent.VK_J:
+		case KeyEvent.VK_K:
+		case KeyEvent.VK_L:
+		case KeyEvent.VK_M:
+		case KeyEvent.VK_N:
+		case KeyEvent.VK_O:
+		case KeyEvent.VK_P:
+		case KeyEvent.VK_Q:
+		case KeyEvent.VK_R:
+		case KeyEvent.VK_S:
+		case KeyEvent.VK_T:
+		case KeyEvent.VK_U:
+		case KeyEvent.VK_V:
+		case KeyEvent.VK_W:
+		case KeyEvent.VK_X:
+		case KeyEvent.VK_Y:
+		case KeyEvent.VK_Z:
+		case KeyEvent.VK_1:
+		case KeyEvent.VK_2:
+		case KeyEvent.VK_3:
+		case KeyEvent.VK_4:
+		case KeyEvent.VK_5:
+		case KeyEvent.VK_6:
+		case KeyEvent.VK_7:
+		case KeyEvent.VK_8:
+		case KeyEvent.VK_9:
+		case KeyEvent.VK_0:
+		case KeyEvent.VK_SPACE:
+			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME_SELECT){
+				if(businessNameBuffer.length() == 20) break;
+				//else if(e.isShiftDown()) businessNameBuffer = textUtilities.addEndChar(businessNameBuffer, 'A');
+				else businessNameBuffer = textUtilities.addEndChar(businessNameBuffer, e.getKeyChar());
+				break;
+			}
+			break;
+		case KeyEvent.VK_BACK_SPACE:
+			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME_SELECT){
+				if(businessNameBuffer.length() == 0) break;
+				else businessNameBuffer = textUtilities.deleteEndChar(businessNameBuffer);
+				System.out.println(" "+businessNameBuffer.length());
+			}
+			break;
 		case KeyEvent.VK_ESCAPE:
-			if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ){
+			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR) scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_CONFIG;
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME) scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_CONFIG;
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ){
 				if(hqPlacementView == HQPLACEMENTVIEW.WORLD) scenarioViewMode = SCENARIOVIEWMODE.VM_PLYR_SELECT;
 				else if(hqPlacementView == HQPLACEMENTVIEW.REGION) hqPlacementView = HQPLACEMENTVIEW.WORLD;
 			}
 			break;
 		case KeyEvent.VK_DOWN:
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR) cycleBusinessNext();
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT) cycleColorNext();
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME) cycleBusinessNext();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_DIFF_SELECT) cycleDifficultyNext();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_PLYR_SELECT) cyclePlayerNext();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_SELECT) cycleScenarioNext();
 			break;
 		case KeyEvent.VK_ENTER:
-			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_CONFIG){
+			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR){
+				scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT;
+			}
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT){
+				scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_COLOR;
+			}
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_CONFIG){
 				if(busiConfigOptions == BUSICONFIGOPTIONS.COLOR) scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_COLOR;
-				if(busiConfigOptions == BUSICONFIGOPTIONS.NAME) scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_NAME;
+				if(busiConfigOptions == BUSICONFIGOPTIONS.NAME){
+//					businessNameBuffer = ab.getScenario().getBusinesses().elementAt(businessSelect).getName();
+//					nameCharSelect = businessNameBuffer.length();
+					scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_NAME;
+				}
 				if(busiConfigOptions == BUSICONFIGOPTIONS.EXIT) AstroBiz.State = STATE.REGIONVIEW;
+			}
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME){
+				businessNameBuffer = ab.getScenario().getBusinesses().elementAt(businessSelect).getName();
+				nameCharSelect = businessNameBuffer.length();
+				scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_NAME_SELECT;
+			}
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME_SELECT){
+				ab.getScenario().getBusinesses().elementAt(businessSelect).setName(businessNameBuffer);
+				scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_NAME;
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_DIFF_SELECT){
 				setDifficulty();
@@ -744,6 +893,7 @@ public class ScenarioView {
 			break;
 		case KeyEvent.VK_LEFT:
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_CONFIG) cycleBcoPrev();
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT) decreaseColor();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_CONFIRM) yesNo = true;
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ){
 				if(hqPlacementView == HQPLACEMENTVIEW.WORLD) cycleRegionPrev();
@@ -752,6 +902,7 @@ public class ScenarioView {
 			break;
 		case KeyEvent.VK_RIGHT:
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_CONFIG) cycleBcoNext();
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT) increaseColor();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_CONFIRM) yesNo = false;
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ){
 				if(hqPlacementView == HQPLACEMENTVIEW.WORLD) cycleRegionNext();
@@ -760,6 +911,8 @@ public class ScenarioView {
 			break;
 		case KeyEvent.VK_UP:
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR) cycleBusinessPrev();
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT) cycleColorPrev();
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME) cycleBusinessPrev();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_DIFF_SELECT) cycleDifficultyPrev();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_PLYR_SELECT) cyclePlayerPrev();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_SELECT) cycleScenarioPrev();
@@ -769,7 +922,7 @@ public class ScenarioView {
 		}
 	}
 	
-	public void loadLocationVector(Vector<Location> v){
+	private void loadLocationVector(Vector<Location> v){
 		this.availableHqLocationNumber = -1;
 		if(this.availableHqLocations == null)
 			this.availableHqLocations = new Vector<Location>();
@@ -821,7 +974,7 @@ public class ScenarioView {
 			this.availableHqLocationNumber = -1;
 	}
 
-	public void loadRegionMap(SpriteSheet map){
+	private void loadRegionMap(SpriteSheet map){
 		switch(this.hqPlacementRegion){
 		case R1:
 			region = map.grabImage(1, 1, 736, 288);
@@ -853,7 +1006,7 @@ public class ScenarioView {
 		}
 	}
 	
-	public void setDifficulty(){
+	private void setDifficulty(){
 		switch(this.scenarioDifficulty){
 		case DIFF1:
 			ab.getScenario().setScenarioDifficulty(1);
@@ -870,11 +1023,7 @@ public class ScenarioView {
 		}
 	}
 	
-	public void setHqPlacementView(HQPLACEMENTVIEW vm){
-		this.hqPlacementView = vm;
-	}
-	
-	public void setPlayers(Scenario s){
+	private void setPlayers(Scenario s){
 		switch(scenarioPlayers){
 		case P1:
 			s.setScenarioPlayers(1);
@@ -896,7 +1045,7 @@ public class ScenarioView {
 		scenarioPlayerConfigure = 1;
 	}
 	
-	public void setScenario(){
+	private void setScenario(){
 		switch(this.scenarioSelect){
 		case S1:
 			ab.getScenario().loadScenario(0);
@@ -911,18 +1060,6 @@ public class ScenarioView {
 			ab.getScenario().loadScenario(3);
 			break;
 		}
-	}
-
-	public void setScenarioPlayerConfigure(int p){
-		this.scenarioPlayerConfigure = p;
-	}
-	
-	public void setViewMode(SCENARIOVIEWMODE vm){
-		this.scenarioViewMode = vm;
-	}
-	
-	public void setYesNo(boolean b){
-		this.yesNo = b;
 	}
 
 }
