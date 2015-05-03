@@ -17,7 +17,8 @@ public class LocationInformation {
 		"Mumbai", 
 		"Beijing", 
 		"London", 
-		"Sao Paolo"
+		"Sao Paolo",
+		"Johannesburg"
 		};
 	
 	public static int[] earthLocationDemandBusiness = {
@@ -28,7 +29,8 @@ public class LocationInformation {
 		50, 
 		220, 
 		172, 
-		100
+		100,
+		75
 		};
 	
 	public static int[] earthLocationDemandIndustry = {
@@ -39,7 +41,8 @@ public class LocationInformation {
 		144, 
 		200, 
 		75, 
-		131
+		131,
+		50
 		};
 	
 	public static int[] earthLocationDemandTourism = {
@@ -50,7 +53,8 @@ public class LocationInformation {
 		23, 
 		101, 
 		224, 
-		197
+		197,
+		100
 		};
 
 	public static int[] earthLocationX = {
@@ -61,7 +65,8 @@ public class LocationInformation {
 		550, 
 		640, 
 		395, 
-		300
+		300,
+		445
 		};
 	
 	public static int[] earthLocationY = {
@@ -72,7 +77,8 @@ public class LocationInformation {
 		155, 
 		115, 
 		95,  
-		230
+		230,
+		240
 		};
 	
 	public static double[] earthPopulation = {
@@ -83,7 +89,8 @@ public class LocationInformation {
 		20.0,
 		17.0,
 		5.5,
-		7.5
+		7.5,
+		0.4
 	};
 
 	public static String[] lunaLocationNames = {

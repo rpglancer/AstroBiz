@@ -17,8 +17,6 @@ import astroBiz.view.MainMenu;
 import astroBiz.view.MainMenu.MENUSELECT;
 import astroBiz.view.RegionView;
 import astroBiz.view.ScenarioView;
-import astroBiz.view.ScenarioView.HQPLACEMENTVIEW;
-import astroBiz.view.ScenarioView.SCENARIOVIEWMODE;
 
 public class AstroBiz extends Canvas implements Runnable{
 
@@ -45,6 +43,7 @@ public class AstroBiz extends Canvas implements Runnable{
 	public static SpriteSheet employeeSprites = null;
 	public static SpriteSheet regionButtons = null;
 	public static SpriteSheet regionSprites = null;
+	public static SpriteSheet textSheet = null;
 	public static SpriteSheet worldMap = null;
 
 	/*
@@ -54,7 +53,6 @@ public class AstroBiz extends Canvas implements Runnable{
 	private MainMenu mainMenu = null;
 	private RegionView regionView = null;
 	private ScenarioView scenarioView = null;
-	private textUtilities textUtil = null;
 	
 	public static enum STATE{
 		MENU,
@@ -87,7 +85,8 @@ public class AstroBiz extends Canvas implements Runnable{
 			temp = loader.loadImage("../../data/astrobizmap.png");
 			worldMap = new SpriteSheet(temp);
 			temp = loader.loadImage("../../data/astrobiztext.png");
-			textUtil = new textUtilities(new SpriteSheet(temp));
+			textSheet = new SpriteSheet(temp);
+			textUtilities.init();
 		}catch(IOException e){
 			e.printStackTrace();
 		}
@@ -129,8 +128,8 @@ public class AstroBiz extends Canvas implements Runnable{
 		final double amountOfTicks = 60.0;
 		double ns = 1000000000 / amountOfTicks;
 		double delta = 0;
-		int updates = 0;
-		int frames = 0;
+//		int updates = 0;		// Tick counter
+//		int frames = 0;			// FPS counter
 		long timer = System.currentTimeMillis();
 		
 		while(running){
@@ -140,8 +139,8 @@ public class AstroBiz extends Canvas implements Runnable{
 			if(delta >= 1){
 				tick();
 				render();		// Tick Limited FPS
-				frames++;		// Tick Limited FPS
-				updates++;
+//				frames++;		// Tick Limited FPS
+//				updates++;
 				delta--;
 			}
 //			render();			// Processor Limited FPS
@@ -149,9 +148,8 @@ public class AstroBiz extends Canvas implements Runnable{
 			
 			if(System.currentTimeMillis() - timer > 1000){
 				timer += 1000;
-				//System.out.println(updates + " Ticks, FPS " + frames);
-				updates = 0;
-				frames = 0;
+//				updates = 0;
+//				frames = 0;
 			}
 		}
 		stop();
@@ -273,20 +271,18 @@ public class AstroBiz extends Canvas implements Runnable{
 		astrobiz.start();
 	}
 
+	/*
+	 * With the SpriteSheets now being public static these
+	 * methods are pointless and should be removed once
+	 * everything depending upon them has been updated to
+	 * access the SpriteSheets in a static manner.
+	 */
 	public SpriteSheet getEmployeeSprites(){
 		return employeeSprites;
 	}
 	
-	public SpriteSheet getRegionButtons(){
-		return this.regionButtons;
-	}
-	
 	public SpriteSheet getRegionSprites(){
 		return regionSprites;
-	}
-
-	public SpriteSheet getWorldMap(){
-		return this.worldMap;
 	}
 	
 	public LocationView getLocationView(){

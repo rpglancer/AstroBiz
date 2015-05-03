@@ -69,25 +69,10 @@ public class MouseInput implements MouseMotionListener, MouseListener{
 		// End MENU
 			
 		case REGIONVIEW:
-			RegionView rv = astrobiz.getRegion();
-			Vector<Location> lv = rv.getLocationVector();
-			int regionID = rv.getRegionID(rv.getRegionX(), rv.getRegionY());
-			Location current = null;
-			
-			for(int i = 0; i < lv.size(); i++){
-				current = lv.elementAt(i);
-				if(current.getLocationRegion() == regionID){
-					if(mx >= current.getLocationX() && mx <= current.getLocationX() + 16){
-						if(my >= current.getLocationY() && my <= current.getLocationY() + 16){
-							System.out.println(current.getLocationName() + " @ " + current.getLocationRegion());
-							AstroBiz.State = STATE.LOCATIONVIEW;
-							astrobiz.getLocationView().setLocationView(current);
-						}
-					}
-				}
-			}
 			break;
 		// End REGIONVIEW
+		default:
+			break;
 		}
 	}
 

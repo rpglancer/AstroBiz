@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
+import astroBiz.AstroBiz;
 import astroBiz.SpriteSheet;
 
 /**
@@ -25,16 +26,19 @@ public class textUtilities{
 	 * Hash Map for all usable sprite based text characters.
 	 */
 	public static Map<Character, Point> textMap = new HashMap<Character, Point>();
+	
 /**
  * The Sprite Sheet containing all available characters.
  */
-	public static SpriteSheet textSheet = null;
+	public static SpriteSheet textSheet = AstroBiz.textSheet;
 
 	/*
 	 * Because fuck you String, that's why.
 	 */
-	public textUtilities(SpriteSheet text){
-		textUtilities.textSheet = text;
+	public textUtilities(){
+	}
+
+	public static void init(){
 		textMap.put('A', new Point(1,1)); textMap.put('B', new Point(2,1)); 
 		textMap.put('C', new Point(3,1)); textMap.put('D', new Point(4,1));
 		textMap.put('E', new Point(5,1)); textMap.put('F', new Point(6,1));
@@ -80,7 +84,7 @@ public class textUtilities{
 		textMap.put('[', new Point(5,11)); textMap.put(']', new Point(6,11));
 		textMap.put('{', new Point(7,11)); textMap.put('}', new Point(8,11));
 	}
-
+	
 	public static BufferedImage colorizeString(BufferedImage img, Color c){
 		BufferedImage temp = new BufferedImage(img.getWidth(), img.getHeight(), img.getType());
 		Graphics g = temp.createGraphics();

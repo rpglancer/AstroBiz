@@ -6,8 +6,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
-import astroBiz.util.textUtilities;
-
 /**
  * Displays the Main Menu at the start of the game.
  * @author Matt Bangert

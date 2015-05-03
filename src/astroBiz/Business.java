@@ -8,10 +8,12 @@ import java.util.Vector;
  *
  */
 public class Business {
-	private int accountBalance = 0;
+	private Integer accountBalance = 0;
 	private Color businessColor;
 	private boolean isPlayerOwned = false;
-	private int operatingCosts = 0;
+	private double advertisingCosts = 0;
+	private double maintenanceCosts = 0;
+	private double serviceCosts = 0;
 	private	Vector<SpaceCraft> spaceCraftHangar = null;
 	private Location headQuarters = null;
 	private Vector<Location> regionalHubs = null;
@@ -39,7 +41,7 @@ public class Business {
 		return businessColor;
 	}
 	
-	public int getAccountBalance(){
+	public Integer getAccountBalance(){
 		return this.accountBalance;
 	}
 	

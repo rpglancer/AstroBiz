@@ -27,7 +27,7 @@ public class Location {
 	private int locationY;							// The Y coordinate of the location
 	private double population;
 	
-	private static enum LOCATIONTYPE{
+	public static enum LOCATIONTYPE{
 		LT_TOWN,
 		LT_CITY;
 	}
@@ -35,14 +35,13 @@ public class Location {
 
 	private Boolean[] isHub = {false, false, false, false};
 	
-	private static SpriteSheet spritesheet = null;
+	private static SpriteSheet spritesheet = AstroBiz.regionSprites;
 	
 	
 	/**
 	 * Default constructor for a Location.
 	 */
 	public Location(){
-		Location.spritesheet = AstroBiz.regionSprites;
 	}
 
 	public void generateLocation(int y, int x, int r){
@@ -176,6 +175,10 @@ public class Location {
 		return locationSlotTotal;
 	}
 
+	public LOCATIONTYPE getLocationType(){
+		return this.locationType;
+	}
+	
 	public int getLocationX(){
 		return locationX;
 	}	

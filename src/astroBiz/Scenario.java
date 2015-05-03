@@ -2,8 +2,8 @@ package astroBiz;
 
 import java.util.Vector;
 
+import astroBiz.info.ManufacturerInformation;
 import astroBiz.info.ScenarioInformation;
-import astroBiz.view.ScenarioView.DIFFICULTYSELECT;
 
 /**
  * Contains the information about the currently active scenario.
@@ -25,6 +25,8 @@ public class Scenario {
 	private int scenarioStartingYear;
 	
 	private Vector<Business> scenarioBusinesses = new Vector<Business>();
+	private Vector<Manufacturer> scenarioManufacturers = new Vector<Manufacturer>();
+	private Vector<Manufacturer> scenarioManufacturersAvailable = new Vector<Manufacturer>();
 	
 	public Scenario(){
 		for(int i = 0; i < 4; i++){
@@ -36,10 +38,21 @@ public class Scenario {
 			b.addBusinessAccountBalance(1500000);
 			scenarioBusinesses.addElement(b);
 		}
+		for(int i = 0; i < ManufacturerInformation.names.length; i++){
+			scenarioManufacturers.addElement(new Manufacturer(i));
+		}
 	}
 	
 	public Vector<Business> getBusinesses(){
 		return this.scenarioBusinesses;
+	}
+	
+	public Vector<Manufacturer> getManufacturers(){
+		return this.scenarioManufacturers;
+	}
+	
+	public Vector<Manufacturer> getManufacturersAvailable(){
+		return this.scenarioManufacturersAvailable;
 	}
 	
 	public int getActiveBusiness(){
@@ -66,6 +79,7 @@ public class Scenario {
 		scenarioHubsRequired = ScenarioInformation.scenarioInfoHubsRequired[scenario];
 		scenarioCurrentYear = scenarioStartingYear;
 		scenarioQuarter = 1;
+		updateManufacturersAvailable();
 	}
 	
 	public void setScenarioDifficulty(int difficulty){
@@ -84,4 +98,20 @@ public class Scenario {
 		}
 	}
 	
+	/**
+	 * Updates the Vector of available manufacturers
+	 * <br>as some incorporate and some become insolvent
+	 * <br>during the course of the game.
+	 * <br><br>
+	 * This should be used during the loading of a Scenario<br>
+	 * and during a yearly rollover.
+	 */
+	private void updateManufacturersAvailable(){
+		scenarioManufacturersAvailable.clear();
+		for(int i = 0; i < scenarioManufacturers.size(); i++){
+			if(scenarioManufacturers.elementAt(i).getYearIncorporated() <= scenarioCurrentYear && scenarioManufacturers.elementAt(i).getYearDissolved() >= scenarioCurrentYear){
+				scenarioManufacturersAvailable.addElement(scenarioManufacturers.elementAt(i));
+			}
+		}
+	}
 }

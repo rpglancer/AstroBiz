@@ -6,58 +6,20 @@ package astroBiz;
  *
  */
 public class SpaceCraft {
-	private int craftAge;				// Age of craft
-	private int craftCapacity;			// Passenger Capacity of craft
-	private int craftCondition;			// Current condition of craft
-	private int craftFuel;				// Fuel cost of craft
-	private int craftMaintenanceCost;	// Maintenance cost of craft
-	private int craftRange;				// Range of craft
-	private int craftSpeed;				// The speed at which the craft travels.
-	private int craftReliability;		// Reliability of craft
-	private int craftYearIntroduced;	// The year the craft was introduced by the Manufacturer.
-	private int craftYearRetired;		// The year production of the craft was ceased by the Manufacturer.
-	private String craftType;			// Type of craft
+	private int craftAge = 0;				// Age of craft
+	private int craftCapacity = 0;			// Passenger Capacity of craft
+	private int craftCondition = 0;			// Current condition of craft
+	private int craftFuel = 0;				// Fuel cost of craft
+	private int craftMaintenanceCost = 0;	// Maintenance cost of craft
+	private int craftRange = 0;				// Range of craft
+	private int craftSpeed = 0;				// The speed at which the craft travels.
+	private int craftReliability = 0;		// Reliability of craft
+	private int craftYearIntroduced = 0;	// The year the craft was introduced by the Manufacturer.
+	private int craftYearRetired = 0;		// The year production of the craft was ceased by the Manufacturer.
+//	private String craftType;			// Type of craft
 	
-	SpaceCraft(String type){
-		switch(type){
-		case "shuttleSmall":
-			craftType = "shuttleSmall";
-			craftCapacity = 10;
-			craftFuel = 250;
-			craftRange = 2500;
-			break;
-		case "shuttleMedium":
-			craftCapacity = 15;
-			craftFuel = 325;
-			craftRange = 3250;
-			break;
-		case "shuttleLarge":
-			craftCapacity = 25;
-			craftFuel = 440;
-			craftRange = 4400;
-			break;
-		case "cruiserMedium":
-			craftCapacity = 50;
-			craftFuel = 900;
-			craftRange = 9000;
-			break;
-		case "cruiserLarge":
-			craftCapacity = 100;
-			craftFuel = 1150;
-			craftRange = 11500;
-			break;
-		case "extendedMedium":
-			craftCapacity = 250;
-			craftFuel = 2500;
-			craftRange = 25000;
-			break;
-		case "extendedLarge":
-			craftCapacity = 300;
-			craftFuel = 2750;
-			craftRange = 27500;
-			break;
-		}
-	}
+//	SpaceCraft(String type){
+//	}
 	
 	public int getCraftCapacity(SpaceCraft sc){
 		return sc.craftCapacity;
@@ -71,8 +33,16 @@ public class SpaceCraft {
 		return sc.craftRange;
 	}
 	
-	public String getCraftType(SpaceCraft sc){
-		return sc.craftType;
+//	public String getCraftType(SpaceCraft sc){
+//		return sc.craftType;
+//	}
+	
+	public int getYearIntroduced(){
+		return this.craftYearIntroduced;
+	}
+	
+	public int getYearRetired(){
+		return this.craftYearRetired;
 	}
 	
 	public void setCraftCapacity(SpaceCraft sc, int capacity){
@@ -87,7 +57,8 @@ public class SpaceCraft {
 		sc.craftRange = range;
 	}
 	
-	public void setCraftType(SpaceCraft sc, String type){
-		sc.craftType = type;
-	}
+//	public void setCraftType(SpaceCraft sc, String type){
+//		sc.craftType = type;
+//	}
+	
 }

@@ -12,6 +12,7 @@ import java.util.Vector;
 import astroBiz.AstroBiz;
 import astroBiz.AstroBiz.STATE;
 import astroBiz.Location;
+import astroBiz.Location.LOCATIONTYPE;
 import astroBiz.Scenario;
 import astroBiz.SpriteSheet;
 import astroBiz.info.ScenarioInformation;
@@ -880,7 +881,7 @@ public class ScenarioView {
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ){
 				if(hqPlacementView == HQPLACEMENTVIEW.WORLD){
-					loadRegionMap(ab.getWorldMap());
+					loadRegionMap(AstroBiz.worldMap);
 					loadLocationVector(ab.getRegion().getLocationVector());
 					hqPlacementView = HQPLACEMENTVIEW.REGION;
 				}
@@ -957,7 +958,7 @@ public class ScenarioView {
 					this.availableHqLocations.addElement(v.elementAt(i));
 				break;
 			case R3:
-				if(v.elementAt(i).getLocationRegion() == 2 && !v.elementAt(i).getLocationIsHub())
+				if(v.elementAt(i).getLocationRegion() == 2 && !v.elementAt(i).getLocationIsHub() && v.elementAt(i).getLocationType() == LOCATIONTYPE.LT_CITY)
 					this.availableHqLocations.addElement(v.elementAt(i));
 				break;
 			case R4:
