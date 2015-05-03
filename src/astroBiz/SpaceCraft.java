@@ -1,11 +1,14 @@
 package astroBiz;
 
+import astroBiz.info.CraftInformation.CI_DEVCO;
+
 /**
  * Contains all information pertinent to a space craft.
  * @author Matt Bangert
  *
  */
 public class SpaceCraft {
+	private String craftName;
 	private int craftAge = 0;				// Age of craft
 	private int craftCapacity = 0;			// Passenger Capacity of craft
 	private int craftCondition = 0;			// Current condition of craft
@@ -20,6 +23,12 @@ public class SpaceCraft {
 	
 //	SpaceCraft(String type){
 //	}
+	SpaceCraft(CI_DEVCO dc){
+		this.craftName = dc.getName();
+		this.craftYearIntroduced = dc.getIntro();
+		this.craftYearRetired = dc.getRetire();
+		this.craftCapacity = dc.getCapacity();
+	}
 	
 	public int getCraftCapacity(SpaceCraft sc){
 		return sc.craftCapacity;
@@ -32,10 +41,10 @@ public class SpaceCraft {
 	public int getCraftRange(SpaceCraft sc){
 		return sc.craftRange;
 	}
-	
-//	public String getCraftType(SpaceCraft sc){
-//		return sc.craftType;
-//	}
+		
+	public String getName(){
+		return this.craftName;
+	}
 	
 	public int getYearIntroduced(){
 		return this.craftYearIntroduced;
@@ -56,9 +65,5 @@ public class SpaceCraft {
 	public void setCraftRange(SpaceCraft sc, int range){
 		sc.craftRange = range;
 	}
-	
-//	public void setCraftType(SpaceCraft sc, String type){
-//		sc.craftType = type;
-//	}
 	
 }

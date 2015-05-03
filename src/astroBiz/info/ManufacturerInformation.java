@@ -1,24 +1,50 @@
 package astroBiz.info;
 
 public class ManufacturerInformation {
-	public static final String[] names = {
-		"DevCorp",
-	};
-	
-	public static final Integer[] yearsDissolved = {
-		2260,
-	};
-	
-	public static final Integer[] yearsIncorporated = {
-		2200,
-	};
-	
-	public static final Integer[] locationsX = {
-		128,
-	};
-	
-	public static final Integer[] locationsY = {
-		128,
-	};
-
+	public static enum MI{
+		
+		DEVCO ("Developer Corporation", "DCO", 2200, 2300, 128, 128),
+		GRUNDER ("Grunder Heavy Industries AG", "GHI", 2200, 2250, 128, 144),
+		SOKOLOV ("Sokolov Design Bureau", "SDB", 2200, 2225, 128, 160);
+		
+		private final String name;
+		private final String symbol;
+		private final int incorporated;
+		private final int dissolved;
+		private final int x;
+		private final int y;
+		
+		MI(String name, String symbol, int inc, int dis, int x, int y){
+			this.name = name;
+			this.symbol = symbol;
+			this.incorporated = inc;
+			this.dissolved = dis;
+			this.x = x;
+			this.y = y;
+		}
+		
+		public String getCorpName(){
+			return this.name;
+		}
+		
+		public String getSymbol(){
+			return this.symbol;
+		}
+		
+		public int getInc(){
+			return this.incorporated;
+		}
+		
+		public int getDis(){
+			return this.dissolved;
+		}
+		
+		public int getX(){
+			return this.x;
+		}
+		
+		public int getY(){
+			return this.y;
+		}	
+	}
 }

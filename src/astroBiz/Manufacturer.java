@@ -2,27 +2,46 @@ package astroBiz;
 
 import java.util.Vector;
 
+import astroBiz.info.CraftInformation.CI_DEVCO;
 import astroBiz.info.ManufacturerInformation;
+import astroBiz.info.ManufacturerInformation.MI;
 
 public class Manufacturer {
 	private String name = "Untitled MFG";
+	private String symbol = "NONE";
 	private Vector<SpaceCraft> models = new Vector<SpaceCraft>();
 	private int yearDissolved = 0;
 	private int yearIncorporated = 0;
 	private int x = 0;
 	private int y = 0;
 	
-	public Manufacturer(int index){
-		this.name = ManufacturerInformation.names[index];
-		this.yearDissolved = ManufacturerInformation.yearsDissolved[index];
-		this.yearIncorporated = ManufacturerInformation.yearsIncorporated[index];
-		this.x = ManufacturerInformation.locationsX[index];
-		this.y = ManufacturerInformation.locationsY[index];
+//	public Manufacturer(int index){
+//		this.name = ManufacturerInformation.names[index];
+//		this.yearDissolved = ManufacturerInformation.yearsDissolved[index];
+//		this.yearIncorporated = ManufacturerInformation.yearsIncorporated[index];
+//		this.x = ManufacturerInformation.locationsX[index];
+//		this.y = ManufacturerInformation.locationsY[index];
+//		loadModels();
+//	}
+	
+	public Manufacturer(MI mi){
+		this.name = mi.getCorpName();
+		this.symbol = mi.getSymbol();
+		this.yearDissolved = mi.getDis();
+		this.yearIncorporated = mi.getInc();
+		this.x = mi.getX();
+		this.y = mi.getY();
+		loadModels();
 	}
 	
 	public String getName(){
 		return this.name;
 	}
+	
+	public String getSymbol(){
+		return this.symbol;
+	}
+	
 	public Vector<SpaceCraft> getModelsAll(){
 		return this.models;
 	}
@@ -52,6 +71,13 @@ public class Manufacturer {
 	}
 	
 	public void loadModels(){
-		
+		switch(this.symbol){
+		case "DCO":
+			for(CI_DEVCO devco : CI_DEVCO.values()){
+				SpaceCraft temp = new SpaceCraft(devco);
+				this.models.addElement(temp);
+			}
+			break;
+		}
 	}
 }

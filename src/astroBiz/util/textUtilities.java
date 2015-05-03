@@ -111,7 +111,7 @@ public class textUtilities{
 	public static void drawString(Graphics g, int x, int y, String text){
 		if(text == null) return;
 		for(int i = 0; i < text.length(); i++){
-			g.drawImage(textSheet.grabImage((int)textMap.get(text.charAt(i)).getX(), (int)textMap.get(text.charAt(i)).getY(), charWidth, charWidth), x, y, null);
+			g.drawImage(textSheet.grabImage((int)textMap.get(text.charAt(i)).getX(), (int)textMap.get(text.charAt(i)).getY(), charWidth, charHeight), x, y, null);
 			x+=charWidth;
 		}
 	}
@@ -215,6 +215,12 @@ public class textUtilities{
 		drawStringMultiLine(g, f, x + 8, y + 8, width - 8, text);
 	}
 
+	/**
+	 * Method to add a character to the end of the specified String.
+	 * @param string	The String to which the character will be added.
+	 * @param c	The character to add.
+	 * @return A new String comprised of the original String and the specified character.
+	 */
 	public static String addEndChar(String string, char c){
 		char[] charArray = new char[string.length() + 1];
 		for(int i = 0; i < string.length(); i++){

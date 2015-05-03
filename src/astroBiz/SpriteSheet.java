@@ -23,7 +23,8 @@ public class SpriteSheet {
 			System.out.println("ERR: grabImage column or row is 0 value. Null returned.");
 			return null;
 		}
-		BufferedImage img = image.getSubimage((col * width) - width, (row * height) - height, width, height);
-		return img;
+//		BufferedImage img = image.getSubimage((col * width) - width, (row * height) - height, width, height);
+//		return img;
+		return image.getSubimage(col * width - width, row * height - height, width, height);
 	}
 }

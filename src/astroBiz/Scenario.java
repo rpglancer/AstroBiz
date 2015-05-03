@@ -3,6 +3,7 @@ package astroBiz;
 import java.util.Vector;
 
 import astroBiz.info.ManufacturerInformation;
+import astroBiz.info.ManufacturerInformation.MI;
 import astroBiz.info.ScenarioInformation;
 
 /**
@@ -38,8 +39,8 @@ public class Scenario {
 			b.addBusinessAccountBalance(1500000);
 			scenarioBusinesses.addElement(b);
 		}
-		for(int i = 0; i < ManufacturerInformation.names.length; i++){
-			scenarioManufacturers.addElement(new Manufacturer(i));
+		for(MI mi : MI.values()){
+			scenarioManufacturers.addElement(new Manufacturer(mi));
 		}
 	}
 	

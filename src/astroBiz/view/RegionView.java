@@ -23,6 +23,7 @@ public class RegionView {
 	private static enum REGIONVM{
 		VM_BRIEFING,
 		VM_BUY,
+		VM_BUY_SELECT_MFG,
 		VM_REGION,
 	}
 	private static enum REGIONBUTTON{
@@ -41,9 +42,10 @@ public class RegionView {
 	}
 	private REGIONVM regionVm = REGIONVM.VM_REGION;
 	private REGIONBUTTON regionButton = REGIONBUTTON.RB_ROUTEOPEN;
-//	private static final String[] regionName = {"Mercury", "Venus", "Earth", "Luna", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"};
 	private Vector<Location> mapLocations = new Vector<Location>();
+	private Vector<Manufacturer> manufacturersAvailable = new Vector<Manufacturer>();
 	private byte activeRegion = 2;
+	private byte selectedMfg = 0;
 
 	private AstroBiz ab;
 	private BufferedImage[] buttons;	// Contains the buttons displayed on the regional map.
@@ -77,13 +79,7 @@ public class RegionView {
 	}
 	
 	public void render(Graphics g){
-		if(regionVm == REGIONVM.VM_BUY){
-			g.setColor(Color.white);
-			for(int i = 0; i < ab.getScenario().getManufacturersAvailable().size(); i++){
-				Manufacturer temp = ab.getScenario().getManufacturersAvailable().elementAt(i);
-				textUtilities.drawString(g, temp.getX(), temp.getY(), temp.getName());
-			}
-		}
+		if(regionVm == REGIONVM.VM_BUY_SELECT_MFG) drawBuySelectMfg(g);
 		else if(regionVm == REGIONVM.VM_REGION){
 			g.setColor(ab.getScenario().getBusinesses().elementAt(ab.getScenario().getActiveBusiness()).getColor());
 			g.fillRect(32, 0, ab.getScenario().getBusinesses().elementAt(ab.getScenario().getActiveBusiness()).getName().length() * 16, 32);
@@ -230,6 +226,14 @@ public class RegionView {
 		
 	}
 	
+	private void drawBuySelectMfg(Graphics g){
+		g.setColor(Color.white);
+		for(int i = 0; i < this.manufacturersAvailable.size(); i++){
+			if(i == selectedMfg) textUtilities.drawString(g, this.manufacturersAvailable.elementAt(i).getX(), this.manufacturersAvailable.elementAt(i).getY(), this.manufacturersAvailable.elementAt(i).getSymbol(), Color.green);
+			else textUtilities.drawString(g, this.manufacturersAvailable.elementAt(i).getX(), this.manufacturersAvailable.elementAt(i).getY(), this.manufacturersAvailable.elementAt(i).getSymbol());
+		}
+	}
+	
 	private void cycleButtonDown(){
 		if(regionButton == REGIONBUTTON.RB_ROUTEOPEN) regionButton = REGIONBUTTON.RB_HUBOPEN;
 		else if(regionButton == REGIONBUTTON.RB_ROUTEADJUST) regionButton = REGIONBUTTON.RB_AD;
@@ -276,6 +280,20 @@ public class RegionView {
 		else if(regionButton == REGIONBUTTON.RB_TURN) regionButton = REGIONBUTTON.RB_VENTURE;
 	}
 	
+	private void cycleMfgNext(){
+		if(selectedMfg < manufacturersAvailable.size() - 1){
+			selectedMfg++;
+		}
+		else return;	
+	}
+	
+	private void cycleMfgPrev(){
+		if(selectedMfg > 0){
+			selectedMfg--;
+		}
+		else return;
+	}
+	
 	public void keyAction(KeyEvent e){
 		switch(e.getKeyCode()){
 
@@ -284,17 +302,23 @@ public class RegionView {
 			break;
 		case KeyEvent.VK_ENTER:
 			if(regionVm == REGIONVM.VM_REGION){
-				if(regionButton == REGIONBUTTON.RB_BUY) regionVm = REGIONVM.VM_BUY;
+				if(regionButton == REGIONBUTTON.RB_BUY){
+					this.manufacturersAvailable.clear();
+					this.manufacturersAvailable = ab.getScenario().getManufacturersAvailable();
+					regionVm = REGIONVM.VM_BUY_SELECT_MFG;
+				}
 			}
 			break;
 		case KeyEvent.VK_LEFT:
-			if(regionVm == REGIONVM.VM_REGION)cycleButtonLeft();
+			if(regionVm == REGIONVM.VM_BUY_SELECT_MFG) cycleMfgPrev();
+			else if(regionVm == REGIONVM.VM_REGION)cycleButtonLeft();
 			break;
 		case KeyEvent.VK_UP:
 			if(regionVm == REGIONVM.VM_REGION)cycleButtonUp();
 			break;
 		case KeyEvent.VK_RIGHT:
-			if(regionVm == REGIONVM.VM_REGION)cycleButtonRight();
+			if(regionVm == REGIONVM.VM_BUY_SELECT_MFG) cycleMfgNext();
+			else if(regionVm == REGIONVM.VM_REGION)cycleButtonRight();
 			break;
 		default:
 			break;
