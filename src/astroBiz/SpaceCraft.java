@@ -1,6 +1,8 @@
 package astroBiz;
 
-import astroBiz.info.CraftInformation.CI_DEVCO;
+import java.awt.image.BufferedImage;
+
+import astroBiz.info.CraftInformation.CI;
 
 /**
  * Contains all information pertinent to a space craft.
@@ -11,23 +13,25 @@ public class SpaceCraft {
 	private String craftName;
 	private int craftAge = 0;				// Age of craft
 	private int craftCapacity = 0;			// Passenger Capacity of craft
-	private int craftCondition = 0;			// Current condition of craft
 	private int craftFuel = 0;				// Fuel cost of craft
-	private int craftMaintenanceCost = 0;	// Maintenance cost of craft
-	private int craftRange = 0;				// Range of craft
+	private int craftMaintenanceRating = 0;	// Maintenance cost of craft
+	private double craftRange = 0;				// Range of craft
 	private int craftSpeed = 0;				// The speed at which the craft travels.
-	private int craftReliability = 0;		// Reliability of craft
 	private int craftYearIntroduced = 0;	// The year the craft was introduced by the Manufacturer.
 	private int craftYearRetired = 0;		// The year production of the craft was ceased by the Manufacturer.
-//	private String craftType;			// Type of craft
+//	private String craftType;				// Type of craft
+	private BufferedImage sprite;
 	
 //	SpaceCraft(String type){
 //	}
-	SpaceCraft(CI_DEVCO dc){
-		this.craftName = dc.getName();
-		this.craftYearIntroduced = dc.getIntro();
-		this.craftYearRetired = dc.getRetire();
-		this.craftCapacity = dc.getCapacity();
+	SpaceCraft(CI ci){
+		this.craftName = ci.getName();
+		this.craftYearIntroduced = ci.getIntro();
+		this.craftYearRetired = ci.getRetire();
+		this.craftCapacity = ci.getCapacity();
+		this.craftMaintenanceRating = ci.getMaintR();
+		this.craftRange = ci.getRange();
+		this.craftSpeed = ci.getSpeed();
 	}
 	
 	public int getCraftCapacity(SpaceCraft sc){
@@ -38,7 +42,7 @@ public class SpaceCraft {
 		return sc.craftFuel;
 	}
 	
-	public int getCraftRange(SpaceCraft sc){
+	public double getCraftRange(SpaceCraft sc){
 		return sc.craftRange;
 	}
 		

@@ -30,22 +30,45 @@ public class ScenarioView {
 	private final int MAINTEXTINDENT = 48;
 
 	private astroBiz.AstroBiz ab;
+	/**
+	 * Contains the sprite for the employee guiding the user through the setup process.
+	 */
 	private BufferedImage employeeSprite;
+	/**
+	 * Contains the image of the desired region pulled from {@link AstroBiz#worldMap}
+	 */
 	private BufferedImage region;
+	/**
+	 * Contains a simple sprite that is moved around for the purposes of selection.
+	 */
 	private BufferedImage selectSprite;
-	
+	/**
+	 * Boolean value for confirmation window purposes.
+	 */
 	private boolean yesNo = true;
 	
 	private Font sbfont = new Font("sans", Font.BOLD, 16);
 	private Font sbconf	= new Font("sans", Font.BOLD, 32);
-	
-	private int availableHqLocationNumber = -1;		// Contains the Vector index number for the currently selected Location or -1 for an empty Vector.
-	private int businessSelect = 0;					// The number of the business to be configured.
+	/**
+	 * Contains the Vector element number for the currently selected Location or -1 for an empty Vector.
+	 */
+	private int availableHqLocationNumber = -1;
+	/**
+	 * Contains the number of the business to be configured.
+	 */
+	private int businessSelect = 0;
 	private int colorSelect = 0;
-//	private int nameCharSelect = 0;
-	private int scenarioPlayerConfigure = 0;		// Contains the number of the player currently being configured.
+	/**
+	 * Contains the number of the player currently being configured.
+	 */
+	private int scenarioPlayerConfigure = 0;
+	/**
+	 * Contains the total number of players needing to be configured.
+	 */
 	private int scenarioPlayersToConfigure = 0;		// Contains the total number of players needing to be configured.
-	
+	/**
+	 * Buffer for editing business names.
+	 */
 	private String businessNameBuffer = null;
 
 	public static enum BUSICONFIGOPTIONS {
@@ -87,6 +110,13 @@ public class ScenarioView {
 		S3,
 		S4
 	}	
+	/**
+	 * Enumerator for all the available view modes.
+	 * <br>What is rendered on screen is dependent upon the
+	 * <br>selected view mode.
+	 * @author Matt Bangert
+	 *
+	 */
 	public static enum SCENARIOVIEWMODE{
 		VM_BUSI_NAME,
 		VM_BUSI_NAME_SELECT,
@@ -99,20 +129,29 @@ public class ScenarioView {
 		VM_PLYR_SELECT,
 		VM_SET_HQ
 	}
+	/**
+	 * The currently selected business configuration option.
+	 */
 	private BUSICONFIGOPTIONS busiConfigOptions = BUSICONFIGOPTIONS.EXIT;
+	/**
+	 * The currently selected difficulty level.
+	 */
 	private DIFFICULTYSELECT scenarioDifficulty = DIFFICULTYSELECT.DIFF1;
 	private HQPLACEMENTVIEW hqPlacementView = HQPLACEMENTVIEW.WORLD;
 	private PLAYERSELECT scenarioPlayers = PLAYERSELECT.P1;
 	private REGIONSELECT hqPlacementRegion = REGIONSELECT.R1;
 	private SCENARIOSELECT scenarioSelect = SCENARIOSELECT.S1;
+	/**
+	 * The currently active Scenario View Mode
+	 */
 	private SCENARIOVIEWMODE scenarioViewMode = SCENARIOVIEWMODE.VM_SCEN_SELECT;
-
+	/**
+	 * Contains Location elements of all available HQ Locations.
+	 */
 	private Vector<Location> availableHqLocations;
-	
-	Rectangle2D textbox = null;
-	
-	/*
-	 * Methods
+	/**
+	 * Default ScenarioView constructor.
+	 * @param astrobiz	(AstroBiz) The active AstroBiz class for easy referencing within.
 	 */
 	public ScenarioView(AstroBiz astrobiz){
 		this.ab = astrobiz;
@@ -134,7 +173,10 @@ public class ScenarioView {
 			break;
 		}
 	}
-	
+/**
+ * Draws everything related to ScenarioView on screen depending upon the active {@link #scenarioViewMode}.
+ * @param g (Graphics) The active graphics buffer
+ */
 	public void render(Graphics g){
 		switch(this.scenarioViewMode){
 		case VM_BUSI_COLOR:
@@ -182,7 +224,10 @@ public class ScenarioView {
 		}
 		g.dispose();
 	}
-	
+	/**
+	 * Method for drawing all things related to business configuration based upon the selected view mode.
+	 * @param g	The graphics buffer to be drawn to.
+	 */
 	private void scenarioBusiConfig(Graphics g){
 		int x = 800 / 2 - 160;
 		int y = 64;
@@ -269,7 +314,10 @@ public class ScenarioView {
 		}
 		g.dispose();
 	}
-	
+	/**
+	 * Method for drawing all things related to difficulty selection.
+	 * @param g	The graphics buffer to be drawn to.
+	 */
 	private void scenarioDifficulty(Graphics g){
 		g.setFont(sbfont);
 		g.setColor(Color.white);
@@ -299,7 +347,10 @@ public class ScenarioView {
 		g.drawString("Select a difficulty level.", 160, 384);
 		g.dispose();
 	}
-	
+	/**
+	 * A method for drawing a player query for confirmation.
+	 * @param g The graphics buffer to be drawn to.
+	 */
 	private void scenarioConfirm(Graphics g){
 		g.setFont(sbfont);
 		g.setColor(Color.white);
@@ -330,7 +381,10 @@ public class ScenarioView {
 		}
 		g.dispose();
 	}
-	
+	/**
+	 * Method for drawing all things related to player count selection.
+	 * @param g	The graphics buffer to be drawn to.
+	 */
 	private void scenarioPlayers(Graphics g){
 		g.setFont(sbfont);
 		g.setColor(Color.white);
@@ -360,9 +414,11 @@ public class ScenarioView {
 		g.drawString("Choose the number of players.", 160, 384);
 		g.dispose();
 	}
-	
+	/**
+	 * Method for drawing all things related to player headquarters location selection.
+	 * @param g The graphics buffer to be drawn to.
+	 */
 	private void scenarioSetHQ(Graphics g){
-
 		String s = "";
 		if(this.scenarioPlayerConfigure == 1)
 			s = "Player 1";
@@ -497,7 +553,10 @@ public class ScenarioView {
 		g2d.dispose();
 		g.dispose();
 	}
-	
+	/**
+	 * Method for drawing all things related to Scenario selection.
+	 * @param g The graphics buffer to be drawn to.
+	 */
 	private void scenarioView(Graphics g){
 		g.setFont(sbfont);
 		g.setColor(Color.white);

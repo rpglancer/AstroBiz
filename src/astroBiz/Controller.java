@@ -4,7 +4,7 @@ import java.awt.Graphics;
 import java.util.LinkedList;
 
 /**
- * <b>Linked List Controller</b>
+ * Linked List Controller
  * <br>
  * <br>Easily render all Entities without having to loop
  * <br>through individual lists with a tangle of for loops.

@@ -4,8 +4,8 @@ public class ManufacturerInformation {
 	public static enum MI{
 		
 		DEVCO ("Developer Corporation", "DCO", 2200, 2300, 128, 128),
-		GRUNDER ("Grunder Heavy Industries AG", "GHI", 2200, 2250, 128, 144),
-		SOKOLOV ("Sokolov Design Bureau", "SDB", 2200, 2225, 128, 160);
+		GRUNDER ("Grunder Heavy Industries AG", "GHI", 2200, 2250, 240, 64),
+		SOKOLOV ("Sokolov Design Bureau", "SDB", 2200, 2225, 64, 296);
 		
 		private final String name;
 		private final String symbol;

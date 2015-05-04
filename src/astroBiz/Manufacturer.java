@@ -2,8 +2,7 @@ package astroBiz;
 
 import java.util.Vector;
 
-import astroBiz.info.CraftInformation.CI_DEVCO;
-import astroBiz.info.ManufacturerInformation;
+import astroBiz.info.CraftInformation.CI;
 import astroBiz.info.ManufacturerInformation.MI;
 
 public class Manufacturer {
@@ -73,9 +72,11 @@ public class Manufacturer {
 	public void loadModels(){
 		switch(this.symbol){
 		case "DCO":
-			for(CI_DEVCO devco : CI_DEVCO.values()){
-				SpaceCraft temp = new SpaceCraft(devco);
-				this.models.addElement(temp);
+			for(CI ci : CI.values()){
+				if(ci.getMfg() == this.symbol){
+					SpaceCraft temp = new SpaceCraft(ci);
+					this.models.addElement(temp);
+				}
 			}
 			break;
 		}

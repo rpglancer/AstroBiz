@@ -32,12 +32,19 @@ public class textUtilities{
  */
 	public static SpriteSheet textSheet = AstroBiz.textSheet;
 
-	/*
-	 * Because fuck you String, that's why.
+	/**
+	 * Default constructor?
 	 */
 	public textUtilities(){
 	}
 
+	/**
+	 * Initialize textUtilities.<br>
+	 * This absolutely <b>must</b> be done if you have any<br>
+	 * intention of using textMap, which is basically required<br>
+	 * for using any of the sprite based text functions contained<br>
+	 * in textUtilities.
+	 */
 	public static void init(){
 		textMap.put('A', new Point(1,1)); textMap.put('B', new Point(2,1)); 
 		textMap.put('C', new Point(3,1)); textMap.put('D', new Point(4,1));
@@ -84,7 +91,36 @@ public class textUtilities{
 		textMap.put('[', new Point(5,11)); textMap.put(']', new Point(6,11));
 		textMap.put('{', new Point(7,11)); textMap.put('}', new Point(8,11));
 	}
+
+	/**
+	 * Create a single-line text box
+	 * @param g	(Graphics) Graphics to draw it with
+	 * @param x	(int) Starting X coordinate of the box
+	 * @param y	(int) Starting Y coordinate of the box
+	 * @param borderwidth (int) The width of the box's border.
+	 * @param bordercolor	(Color) The color of the box's border.
+	 * @param framecolor	(Color)	The color of the interior of the box.
+	 * @param text	(String) The text contained in the box.
+	 */
+	public static void boxText(Graphics g, int x, int y, int borderwidth, Color bordercolor, Color framecolor, String text){
+		int boxwidth = text.length() * 16;
+		int bcsx = x - borderwidth;
+		int bcsy = y - borderwidth;
+		int bcwidth = boxwidth + borderwidth * 2;
+		int bcheight = charHeight + borderwidth * 2;
+		g.setColor(bordercolor);
+		g.fillRoundRect(bcsx, bcsy, bcwidth, bcheight, borderwidth, borderwidth);
+		g.setColor(framecolor);
+		g.fillRoundRect(x, y, boxwidth, charHeight, borderwidth/2, borderwidth/2);
+		drawString(g, x, y, text);
+	}
 	
+	/**
+	 * Change the color of the default sprite-based text.
+	 * @param img	(BufferedImage)	The sprite text character to be changed in color.
+	 * @param c	(Color)	The color to which the sprite text character will be changed.
+	 * @return	(BufferedImage)	The colorized spriite text character.
+	 */
 	public static BufferedImage colorizeString(BufferedImage img, Color c){
 		BufferedImage temp = new BufferedImage(img.getWidth(), img.getHeight(), img.getType());
 		Graphics g = temp.createGraphics();
@@ -103,10 +139,12 @@ public class textUtilities{
 	
 	/**
 	 * Method to draw a sprite based text string to the screen.
-	 * @param g	Graphics
-	 * @param x	X coordinate of the text
-	 * @param y	Y coordinate of the text
-	 * @param text	The string of text to draw.
+	 * @param g	(Graphics) The desired Graphics buffer.
+	 * @param x	(int) The X coordinate of the text.
+	 * @param y	(int) The Y coordinate of the text.
+	 * @param text	(String) The string of text to draw.
+	 * <br><i>Note: Sprite based text draws from top-left to bottom-right.
+	 * <br>Ergo, the x,y value is the top-left corner of the text.</i>
 	 */
 	public static void drawString(Graphics g, int x, int y, String text){
 		if(text == null) return;
@@ -115,14 +153,34 @@ public class textUtilities{
 			x+=charWidth;
 		}
 	}
-	
+
+	/**
+	 * Method to draw a sprite based string of the specified color.
+	 * @param g	(Graphics) The desired Graphics buffer.
+	 * @param x	(int) The X coordinate of the text.
+	 * @param y (int) The Y coordinate of the text.
+	 * @param text (String) The string of text to draw.
+	 * @param c	(Color) The desired color of the text.
+	 * <br><i>Note: Sprite based text draws from top-left to bottom-right.
+	 * <br>Ergo, the x,y value is the top-left corner of the text.</i>
+	 */
 	public static void drawString(Graphics g, int x, int y, String text, Color c){
 		for(int i = 0; i < text.length(); i++){
 			g.drawImage(colorizeString(textSheet.grabImage((int)textMap.get(text.charAt(i)).getX(), (int)textMap.get(text.charAt(i)).getY(), charWidth, charWidth),c), x, y, null);
 			x+=charWidth;
 		}
 	}
-	
+
+	/**
+	 * Method to draw sprite based text across multiple lines.
+	 * @param g	(Graphics) The desired Graphics buffer.
+	 * @param x	(int) The X coordinate of the text.
+	 * @param y	(int) The Y coordinate of the text.
+	 * @param width (int) The width [in pixels] of the String before it goes to a new line.
+	 * @param text (String) The string of text to draw.
+	 * <br><i>Note: Sprite based text draws from top-left to bottom-right.
+	 * <br>Ergo, the x,y value is the top-left corner of the text.</i>
+	 */
 	public static void drawStringMultiLine(Graphics g, int x, int y, int width, String text){
 		if(text.length() * charWidth < width){
 			drawString(g,x,y,text);
@@ -146,6 +204,17 @@ public class textUtilities{
 		}
 	}
 
+	/**
+	 * Method to draw sprite based text of a specified color across multiple lines.
+	 * @param g (Graphics) The desired Graphics buffer.
+	 * @param x	(int) The X coordinate of the text.
+	 * @param y	(int) The Y coordinate of the text.
+	 * @param width	(int) The width [in pixels] of the String before it goes to a new line.
+	 * @param text	(String) The string of text to draw.
+	 * @param c	(Color) The desired color of the text.
+	 * <br><i>Note: Sprite based text draws from top-left to bottom-right.
+	 * <br>Ergo, the x,y value is the top-left corner of the text.</i>
+	 */
 	public static void drawStringMultiLine(Graphics g, int x, int y, int width, String text, Color c){
 		if(text.length() * charWidth < width){
 			drawString(g,x,y,text, c);
@@ -203,23 +272,72 @@ public class textUtilities{
 		}
 	}
 	
+	/**Method to draw a box around text.
+	 * @deprecated
+	 * <br>Use {@link #boxText(Graphics, int, int, int, Color, Color, String)}
+	 * @param g (Graphics) The graphics buffer.
+	 * @param x (int) The X coordinate of the box.
+	 * @param y (int) The Y coordinate of the box.
+	 * @param width (int) The width of the box.
+	 * @param height (int) The height of the box.
+	 */
+	@Deprecated
 	public static void drawMenuTextBox(Graphics g, int x, int y, int width, int height){
 		g.setColor(Color.darkGray);
 		g.drawRoundRect(x-8, y-8, width + 8, height + 8, 16, 16);
 	}
 	
+	/**
+	 * Method to draw text within a box.
+	 * @deprecated
+	 * <br>Use {@link #boxText(Graphics, int, int, int, Color, Color, String)}
+	 * @param g (Graphics) The graphics buffer.
+	 * @param f (Font) The desired Font.
+	 * @param x (int) The X coordinate of the box.
+	 * @param y (int) The Y coordinate of the box.
+	 * @param width (int) The width of the box.
+	 * @param height (int) The height of the box.
+	 * @param text (String) The text to be drawn inside the box.
+	 */
+	@Deprecated
 	public static void drawMenuTextBox(Graphics g, Font f, int x, int y, int width, int height, String text){
 		g.setColor(Color.darkGray);
 		g.drawRoundRect(x-8, y-8, width + 8, height + 8, 16, 16);
 		g.setColor(Color.white);
 		drawStringMultiLine(g, f, x + 8, y + 8, width - 8, text);
 	}
+	
+	/**
+	 * Method to determine the number of lines that text will occupy<br>
+	 * if wrapped to a given width.
+	 * @param text	(String) The text to analyze.
+	 * @param width	(int) The width [in pixels] of the text before triggering a  new line.
+	 * @return	(int) The number of lines calculated.
+	 */
+	public static int getLineCount(String text, int width){
+		int lineCount = 1;
+		if(text.length() * charWidth < width) return lineCount;
+		else{
+			String[] words = text.split(" ");
+			String currentLine = words[0];
+			for(int i = 1; i < words.length; i++){
+				if(currentLine.length() * charWidth + words[i].length() * charWidth < width){
+					currentLine += " " + words[i];
+				}
+				else{
+					lineCount++;
+					currentLine = words[i];
+				}
+			}
+			return lineCount;
+		}
+	}
 
 	/**
 	 * Method to add a character to the end of the specified String.
-	 * @param string	The String to which the character will be added.
-	 * @param c	The character to add.
-	 * @return A new String comprised of the original String and the specified character.
+	 * @param string (String) The String to which the character will be added.
+	 * @param c	(char) The character to add.
+	 * @return (String) A new String comprised of the original String and the specified character.
 	 */
 	public static String addEndChar(String string, char c){
 		char[] charArray = new char[string.length() + 1];
@@ -230,6 +348,11 @@ public class textUtilities{
 		return new String(charArray);
 	}
 	
+	/**
+	 * Method to remove the final character of a String.
+	 * @param string (String) The string from which the final character will be removed.
+	 * @return (String) The modified String.
+	 */
 	public static String deleteEndChar(String string){
 		char[] charArray = new char[string.length() - 1];
 		for(int i = 0; i < string.length() - 1; i++){
@@ -238,6 +361,13 @@ public class textUtilities{
 		return new String(charArray);
 	}
 	
+	/**
+	 * Method to replace the character at a specific location within a String.
+	 * @param position	(int) The position of the character to be replaced.
+	 * @param string	(String) The string in which the character will be replaced.
+	 * @param c	(char) The replacing character.
+	 * @return	(String) The updated String.
+	 */
 	public static String replaceCharAt(int position, String string, char c){
 	    char[] charArray = string.toCharArray();
 	    charArray[position] = c;

@@ -229,8 +229,11 @@ public class RegionView {
 	private void drawBuySelectMfg(Graphics g){
 		g.setColor(Color.white);
 		for(int i = 0; i < this.manufacturersAvailable.size(); i++){
-			if(i == selectedMfg) textUtilities.drawString(g, this.manufacturersAvailable.elementAt(i).getX(), this.manufacturersAvailable.elementAt(i).getY(), this.manufacturersAvailable.elementAt(i).getSymbol(), Color.green);
-			else textUtilities.drawString(g, this.manufacturersAvailable.elementAt(i).getX(), this.manufacturersAvailable.elementAt(i).getY(), this.manufacturersAvailable.elementAt(i).getSymbol());
+			if(i == selectedMfg){
+				textUtilities.boxText(g, this.manufacturersAvailable.elementAt(i).getX(), this.manufacturersAvailable.elementAt(i).getY(), 4, Color.darkGray, Color.green, this.manufacturersAvailable.elementAt(i).getSymbol());
+				textUtilities.drawString(g, AstroBiz.WIDTH - (this.manufacturersAvailable.elementAt(i).getName().length() * 16), 0, this.manufacturersAvailable.elementAt(i).getName());
+			}
+			else textUtilities.boxText(g, this.manufacturersAvailable.elementAt(i).getX(), this.manufacturersAvailable.elementAt(i).getY(), 4, Color.darkGray, Color.black, this.manufacturersAvailable.elementAt(i).getSymbol());
 		}
 	}
 	
@@ -284,14 +287,14 @@ public class RegionView {
 		if(selectedMfg < manufacturersAvailable.size() - 1){
 			selectedMfg++;
 		}
-		else return;	
+		else selectedMfg = 0;	
 	}
 	
 	private void cycleMfgPrev(){
 		if(selectedMfg > 0){
 			selectedMfg--;
 		}
-		else return;
+		else selectedMfg = (byte) (manufacturersAvailable.size() - 1);
 	}
 	
 	public void keyAction(KeyEvent e){
