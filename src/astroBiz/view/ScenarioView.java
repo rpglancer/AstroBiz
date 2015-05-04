@@ -3,9 +3,7 @@ package astroBiz.view;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Vector;
 
@@ -15,7 +13,7 @@ import astroBiz.Location;
 import astroBiz.Location.LOCATIONTYPE;
 import astroBiz.Scenario;
 import astroBiz.SpriteSheet;
-import astroBiz.info.ScenarioInformation;
+import astroBiz.info.ScenarioInformation.SI;
 import astroBiz.util.textUtilities;
 
 /**
@@ -50,14 +48,14 @@ public class ScenarioView {
 	private Font sbfont = new Font("sans", Font.BOLD, 16);
 	private Font sbconf	= new Font("sans", Font.BOLD, 32);
 	/**
-	 * Contains the Vector element number for the currently selected Location or -1 for an empty Vector.
-	 */
-	private int availableHqLocationNumber = -1;
-	/**
 	 * Contains the number of the business to be configured.
 	 */
 	private int businessSelect = 0;
 	private int colorSelect = 0;
+	/**
+	 * Integer variable used for an attempt to replace the numerous enums in this class with a single selection mechanism.
+	 */
+	private int optionSelect = 0;
 	/**
 	 * Contains the number of the player currently being configured.
 	 */
@@ -77,39 +75,12 @@ public class ScenarioView {
 		EXIT,
 		SELECT
 	}
-	public static enum DIFFICULTYSELECT {
-		DIFF1,
-		DIFF2,
-		DIFF3,
-		DIFF4
-	}
+
 	public static enum HQPLACEMENTVIEW{
 		WORLD,
 		REGION
 	}
-	public static enum PLAYERSELECT{
-		P1,
-		P2,
-		P3,
-		P4
-	}
-	public static enum REGIONSELECT{
-		R1,
-		R2,
-		R3,
-		R4,
-		R5,
-		R6,
-		R7,
-		R8,
-		R9
-	}
-	public static enum SCENARIOSELECT{
-		S1,
-		S2,
-		S3,
-		S4
-	}	
+
 	/**
 	 * Enumerator for all the available view modes.
 	 * <br>What is rendered on screen is dependent upon the
@@ -129,18 +100,14 @@ public class ScenarioView {
 		VM_PLYR_SELECT,
 		VM_SET_HQ
 	}
+
 	/**
 	 * The currently selected business configuration option.
 	 */
 	private BUSICONFIGOPTIONS busiConfigOptions = BUSICONFIGOPTIONS.EXIT;
-	/**
-	 * The currently selected difficulty level.
-	 */
-	private DIFFICULTYSELECT scenarioDifficulty = DIFFICULTYSELECT.DIFF1;
+
 	private HQPLACEMENTVIEW hqPlacementView = HQPLACEMENTVIEW.WORLD;
-	private PLAYERSELECT scenarioPlayers = PLAYERSELECT.P1;
-	private REGIONSELECT hqPlacementRegion = REGIONSELECT.R1;
-	private SCENARIOSELECT scenarioSelect = SCENARIOSELECT.S1;
+
 	/**
 	 * The currently active Scenario View Mode
 	 */
@@ -328,17 +295,17 @@ public class ScenarioView {
 		g.drawString("Difficulty Level 3:", 64, 192);
 		g.drawString("Difficulty Level 4:", 64, 256);
 		
-		switch(this.scenarioDifficulty){
-		case DIFF1:
+		switch(this.optionSelect){
+		case 0:
 			g.drawImage(this.selectSprite, 48, 64-16, null);
 			break;
-		case DIFF2:
+		case 1:
 			g.drawImage(this.selectSprite, 48, 128-16, null);
 			break;
-		case DIFF3:
+		case 2:
 			g.drawImage(this.selectSprite, 48, 192-16, null);
 			break;
-		case DIFF4:
+		case 3:
 			g.drawImage(this.selectSprite, 48, 256-16, null);
 			break;
 		}
@@ -395,17 +362,17 @@ public class ScenarioView {
 		g.drawString("3 Player", 64, 192);
 		g.drawString("4 Player", 64, 256);
 		
-		switch(this.scenarioPlayers){
-		case P1:
+		switch(this.optionSelect){
+		case 0:
 			g.drawImage(this.selectSprite, 48, 64-16, null);
 			break;
-		case P2:
+		case 1:
 			g.drawImage(this.selectSprite, 48, 128-16, null);
 			break;
-		case P3:
+		case 2:
 			g.drawImage(this.selectSprite, 48, 192-16, null);
 			break;
-		case P4:
+		case 3:
 			g.drawImage(this.selectSprite, 48, 256-16, null);
 			break;
 		}
@@ -429,128 +396,125 @@ public class ScenarioView {
 		if(this.scenarioPlayerConfigure == 4)
 			s = "Player 4";
 		
-		Graphics2D g2d = (Graphics2D) g;
-		g2d.setColor(Color.white);
+		g.setColor(Color.white);
 		switch(this.hqPlacementView){
 		case REGION:
-			g2d.drawImage(region, 32, 32, null);
+			g.drawImage(region, 32, 32, null);
 
 			for(int i = 0; i < this.availableHqLocations.size(); i++){
-				g2d.drawImage(this.availableHqLocations.elementAt(i).getSprite(ab.getScenario()), 
+				g.drawImage(this.availableHqLocations.elementAt(i).getSprite(ab.getScenario()), 
 							this.availableHqLocations.elementAt(i).getLocationX(), 
 							this.availableHqLocations.elementAt(i).getLocationY(), 
 							null);
 			}
 			
-			g2d.setColor(Color.green);
+			g.setColor(Color.green);
 			
-			if(this.availableHqLocationNumber > -1){
-				g2d.drawString(this.availableHqLocations.elementAt(this.availableHqLocationNumber).getLocationName(), 
-						this.availableHqLocations.elementAt(this.availableHqLocationNumber).getLocationX() + 16, 
-						this.availableHqLocations.elementAt(this.availableHqLocationNumber).getLocationY() + 16);
-		
-				g2d.drawOval(this.availableHqLocations.elementAt(this.availableHqLocationNumber).getLocationX(),
-						this.availableHqLocations.elementAt(this.availableHqLocationNumber).getLocationY(),
-						16,
-						16);
+			if(this.availableHqLocations.size() > 0){
+				g.drawString(this.availableHqLocations.elementAt(optionSelect).getLocationName(),
+							this.availableHqLocations.elementAt(optionSelect).getLocationX() + 16,
+							this.availableHqLocations.elementAt(optionSelect).getLocationY() + 16);
+				
+				g.drawOval(this.availableHqLocations.elementAt(optionSelect).getLocationX(),
+							this.availableHqLocations.elementAt(optionSelect).getLocationY(),
+							16, 16);
 			}
 			
-			g2d.setFont(sbfont);
-			g2d.setColor(Color.white);
-			g2d.drawImage(this.employeeSprite, 32, 320, null);
-			g2d.drawString("Select headquarters location for " + s, 160, 384);		
+			g.setFont(sbfont);
+			g.setColor(Color.white);
+			g.drawImage(this.employeeSprite, 32, 320, null);
+			g.drawString("Select headquarters location for " + s, 160, 384);		
 			
 			break;	//	End	REGION
 			
 		case WORLD:
-			if(this.hqPlacementRegion == REGIONSELECT.R1){
-				g2d.setColor(Color.green);
-				g2d.drawString("Mercury", 96+15, 177+15);
+			if(this.optionSelect == 0){
+				g.setColor(Color.green);
+				g.drawString("Mercury", 96+15, 177+15);
 			}
 			else{
-				g2d.setColor(Color.white);
+				g.setColor(Color.white);
 			}
-			g2d.fillOval(96, 177, 15, 15);		// Mercury
+			g.fillOval(96, 177, 15, 15);		// Mercury
 			
-			if(this.hqPlacementRegion == REGIONSELECT.R2){
-				g2d.setColor(Color.green);
-				g2d.drawString("Venus", 160+32, 160+32);
+			if(this.optionSelect == 1){
+				g.setColor(Color.green);
+				g.drawString("Venus", 160+32, 160+32);
 			}
 			else{
-				g2d.setColor(Color.white);
+				g.setColor(Color.white);
 			}
-			g2d.fillOval(160, 160, 32, 32);		// Venus
+			g.fillOval(160, 160, 32, 32);		// Venus
 			
-			if(this.hqPlacementRegion == REGIONSELECT.R3){
-				g2d.setColor(Color.green);
-				g2d.drawString("Earth", 224+32, 64+32);
+			if(this.optionSelect == 2){
+				g.setColor(Color.green);
+				g.drawString("Earth", 224+32, 64+32);
 			}
 			else{
-				g2d.setColor(Color.white);
+				g.setColor(Color.white);
 			}
-			g2d.fillOval(224, 64, 32, 32);		// Earth
+			g.fillOval(224, 64, 32, 32);		// Earth
 			
-			if(this.hqPlacementRegion == REGIONSELECT.R4){
-				g2d.setColor(Color.green);
-				g2d.drawString("Luna", 256+10, 54+10);
+			if(this.optionSelect == 3){
+				g.setColor(Color.green);
+				g.drawString("Luna", 256+10, 54+10);
 			}
 			else{
-				g2d.setColor(Color.white);
+				g.setColor(Color.white);
 			}
-			g2d.fillOval(256, 54, 10, 10);		// Luna
+			g.fillOval(256, 54, 10, 10);		// Luna
 			
-			if(this.hqPlacementRegion == REGIONSELECT.R5){
-				g2d.setColor(Color.green);
-				g2d.drawString("Mars", 288+24, 160+24);
+			if(this.optionSelect == 4){
+				g.setColor(Color.green);
+				g.drawString("Mars", 288+24, 160+24);
 			}
 			else{
-				g2d.setColor(Color.white);
+				g.setColor(Color.white);
 			}
-			g2d.fillOval(288, 160, 24, 24);		// Mars
+			g.fillOval(288, 160, 24, 24);		// Mars
 			
-			if(this.hqPlacementRegion == REGIONSELECT.R6){
-				g2d.setColor(Color.green);
-				g2d.drawString("Jupiter", 352+96, 192+96);
+			if(this.optionSelect == 5){
+				g.setColor(Color.green);
+				g.drawString("Jupiter", 352+96, 192+96);
 			}
 			else{
-				g2d.setColor(Color.white);
+				g.setColor(Color.white);
 			}
-			g2d.fillOval(352, 192, 96, 96);		// Jupiter
+			g.fillOval(352, 192, 96, 96);		// Jupiter
 			
-			if(this.hqPlacementRegion == REGIONSELECT.R7){
-				g2d.setColor(Color.green);
-				g2d.drawString("Saturn", 480+64, 128+64);
+			if(this.optionSelect == 6){
+				g.setColor(Color.green);
+				g.drawString("Saturn", 480+64, 128+64);
 			}
 			else{
-				g2d.setColor(Color.white);
+				g.setColor(Color.white);
 			}
-			g2d.fillOval(480, 128, 64, 64);		// Saturn
+			g.fillOval(480, 128, 64, 64);		// Saturn
 			
-			if(this.hqPlacementRegion == REGIONSELECT.R8){
-				g2d.setColor(Color.green);
-				g2d.drawString("Uranus", 576+64, 192+64);
+			if(this.optionSelect == 7){
+				g.setColor(Color.green);
+				g.drawString("Uranus", 576+64, 192+64);
 			}
 			else{
-				g2d.setColor(Color.white);
+				g.setColor(Color.white);
 			}
-			g2d.fillOval(576, 192, 64, 64);		// Uranus
+			g.fillOval(576, 192, 64, 64);		// Uranus
 			
-			if(this.hqPlacementRegion == REGIONSELECT.R9){
-				g2d.setColor(Color.green);
-				g2d.drawString("Neptune", 676+64, 96+64);
+			if(this.optionSelect == 8){
+				g.setColor(Color.green);
+				g.drawString("Neptune", 676+64, 96+64);
 			}
 			else{
-				g2d.setColor(Color.white);
+				g.setColor(Color.white);
 			}
-			g2d.fillOval(676, 96, 64, 64);		// Neptune
+			g.fillOval(676, 96, 64, 64);		// Neptune
 			
-			g2d.setFont(sbfont);
-			g2d.setColor(Color.white);
-			g2d.drawImage(this.employeeSprite, 32, 320, null);
-			g2d.drawString("Select headquarters region for " + s, 160, 384);		
+			g.setFont(sbfont);
+			g.setColor(Color.white);
+			g.drawImage(this.employeeSprite, 32, 320, null);
+			g.drawString("Select headquarters region for " + s, 160, 384);		
 			break;	//	End	WORLD
 		}
-		g2d.dispose();
 		g.dispose();
 	}
 	/**
@@ -562,29 +526,25 @@ public class ScenarioView {
 		g.setColor(Color.white);
 		g.drawRect(32, 32, 736, 272);
 		
-		textUtilities.drawString(g, 64, 48, "Scenario 1: " +  ScenarioInformation.scenarioInfoName[0]);
-		textUtilities.drawString(g, 96, 64, "("+ScenarioInformation.scenarioInfoStartingYear[0] +" - "+ScenarioInformation.scenarioInfoEndingYear[0] +")");
+		int nameX = 64; int nameY = 48;
+		int yearX = 96; int yearY = 64;
+		for(SI si : SI.values()){
+			textUtilities.drawString(g, nameX, nameY, si.getName());
+			textUtilities.drawString(g, yearX, yearY, "("+si.getYearStart() + " - " + si.getYearEnd() +")");
+			nameY += 64; yearY += 64;
+		}
 		
-		g.drawString("Scenario 2:  " + ScenarioInformation.scenarioInfoName[1], 64, 128);
-		g.drawString("(" + ScenarioInformation.scenarioInfoStartingYear[1] + " - " + ScenarioInformation.scenarioInfoEndingYear[1] + ")", 96, 128+16);
-		
-		g.drawString("Scenario 3:  " + ScenarioInformation.scenarioInfoName[2], 64, 192);
-		g.drawString("(" + ScenarioInformation.scenarioInfoStartingYear[2] + " - " + ScenarioInformation.scenarioInfoEndingYear[2] + ")", 96, 192+16);
-		
-		g.drawString("Scenario 4:  " + ScenarioInformation.scenarioInfoName[3], 64, 256);
-		g.drawString("(" + ScenarioInformation.scenarioInfoStartingYear[3] + " - " + ScenarioInformation.scenarioInfoEndingYear[3] + ")", 96, 256+16);
-		
-		switch(this.scenarioSelect){
-		case S1:
+		switch(this.optionSelect){
+		case 0:
 			g.drawImage(this.selectSprite, 48, 64-16, null);
 			break;
-		case S2:
+		case 1:
 			g.drawImage(this.selectSprite, 48, 128-16, null);
 			break;
-		case S3:
+		case 2:
 			g.drawImage(this.selectSprite, 48, 192-16, null);
 			break;
-		case S4:
+		case 3:
 			g.drawImage(this.selectSprite, 48, 256-16, null);
 			break;
 		}
@@ -630,135 +590,93 @@ public class ScenarioView {
 		if(colorSelect == 0) colorSelect = 2;
 		else colorSelect--;
 	}
-	
-	private void cycleDifficultyNext(){
-		if(this.scenarioDifficulty == DIFFICULTYSELECT.DIFF1)
-			this.scenarioDifficulty = DIFFICULTYSELECT.DIFF2;
-		else if(this.scenarioDifficulty == DIFFICULTYSELECT.DIFF2)
-			this.scenarioDifficulty = DIFFICULTYSELECT.DIFF3;
-		else if(this.scenarioDifficulty == DIFFICULTYSELECT.DIFF3)
-			this.scenarioDifficulty = DIFFICULTYSELECT.DIFF4;
-		else if(this.scenarioDifficulty == DIFFICULTYSELECT.DIFF4)
-			this.scenarioDifficulty = DIFFICULTYSELECT.DIFF1;
+		
+	private void cycleOptionNext(){
+		switch(scenarioViewMode){
+		case VM_BUSI_COLOR:
+			break;
+		case VM_BUSI_COLOR_SELECT:
+			break;
+		case VM_BUSI_CONFIG:
+			break;
+		case VM_BUSI_NAME:
+			break;
+		case VM_BUSI_NAME_SELECT:
+			break;
+		case VM_DIFF_SELECT:
+			if(optionSelect < 3)optionSelect++;
+			else optionSelect = 0;
+			break;
+		case VM_PLYR_SELECT:
+			if(optionSelect < 3)optionSelect++;
+			else optionSelect = 0;
+			break;
+		case VM_SCEN_CONFIRM:
+			break;
+		case VM_SCEN_SELECT:
+			if(optionSelect < 3) optionSelect++;
+			else optionSelect = 0;
+			break;
+		case VM_SET_HQ:
+			if(hqPlacementView == HQPLACEMENTVIEW.WORLD){
+				if(this.optionSelect < 8) optionSelect++;
+				else optionSelect = 0;
+			}
+			else if(hqPlacementView == HQPLACEMENTVIEW.REGION){
+				if(this.availableHqLocations.size() == 0) return;
+				if(this.optionSelect < this.availableHqLocations.size() - 1) optionSelect++;
+				else optionSelect = 0;
+			}
+			break;
+		}
 	}
 	
-	private void cycleDifficultyPrev(){
-		if(this.scenarioDifficulty == DIFFICULTYSELECT.DIFF1)
-			this.scenarioDifficulty = DIFFICULTYSELECT.DIFF4;
-		else if(this.scenarioDifficulty == DIFFICULTYSELECT.DIFF2)
-			this.scenarioDifficulty = DIFFICULTYSELECT.DIFF1;
-		else if(this.scenarioDifficulty == DIFFICULTYSELECT.DIFF3)
-			this.scenarioDifficulty = DIFFICULTYSELECT.DIFF2;
-		else if(this.scenarioDifficulty == DIFFICULTYSELECT.DIFF4)
-			this.scenarioDifficulty = DIFFICULTYSELECT.DIFF3;
+	private void cycleOptionPrev(){
+		switch(scenarioViewMode){
+		case VM_BUSI_COLOR:
+			break;
+		case VM_BUSI_COLOR_SELECT:
+			break;
+		case VM_BUSI_CONFIG:
+			break;
+		case VM_BUSI_NAME:
+			break;
+		case VM_BUSI_NAME_SELECT:
+			break;
+		case VM_DIFF_SELECT:
+			if(optionSelect > 0) optionSelect--;
+			else optionSelect = 3;
+			break;
+		case VM_PLYR_SELECT:
+			if(optionSelect > 0) optionSelect--;
+			else optionSelect = 3;
+			break;
+		case VM_SCEN_CONFIRM:
+			break;
+		case VM_SCEN_SELECT:
+			if(optionSelect > 0) optionSelect--;
+			else optionSelect = 3;
+			break;
+		case VM_SET_HQ:
+			if(hqPlacementView == HQPLACEMENTVIEW.WORLD){
+				if(this.optionSelect > 0) optionSelect--;
+				else optionSelect = 8;
+			}
+			else if(hqPlacementView == HQPLACEMENTVIEW.REGION){
+				if(this.availableHqLocations.size() == 0) return;
+				if(this.optionSelect > 0) optionSelect--;
+				else optionSelect = this.availableHqLocations.size() - 1;
+			}
+			break;
+		default:
+			break;
+		
+		}
+		
 	}
-
-	private void cycleLocationNext(){
-		if(this.availableHqLocationNumber == -1)
-			return;
-		if(this.availableHqLocationNumber < this.availableHqLocations.size() - 1)
-			this.availableHqLocationNumber++;
-		else
-			this.availableHqLocationNumber = 1;
-	}
-	
-	private void cycleLocationPrev(){
-		if(this.availableHqLocationNumber == -1)
-			return;
-		if(this.availableHqLocationNumber > 0)
-			this.availableHqLocationNumber--;
-		else
-			this.availableHqLocationNumber = this.availableHqLocations.size() - 1;
-	}
-	
-	private void cyclePlayerNext(){
-		if(this.scenarioPlayers == PLAYERSELECT.P1)
-			this.scenarioPlayers = PLAYERSELECT.P2;
-		else if(this.scenarioPlayers == PLAYERSELECT.P2)
-			this.scenarioPlayers = PLAYERSELECT.P3;
-		else if(this.scenarioPlayers == PLAYERSELECT.P3)
-			this.scenarioPlayers = PLAYERSELECT.P4;
-		else if(this.scenarioPlayers == PLAYERSELECT.P4)
-			this.scenarioPlayers = PLAYERSELECT.P1;
-	}
-	
-	private void cyclePlayerPrev(){
-		if(this.scenarioPlayers == PLAYERSELECT.P1)
-			this.scenarioPlayers = PLAYERSELECT.P4;
-		else if(this.scenarioPlayers == PLAYERSELECT.P2)
-			this.scenarioPlayers = PLAYERSELECT.P1;
-		else if(this.scenarioPlayers == PLAYERSELECT.P3)
-			this.scenarioPlayers = PLAYERSELECT.P2;
-		else if(this.scenarioPlayers == PLAYERSELECT.P4)
-			this.scenarioPlayers = PLAYERSELECT.P3;
-	}
-	
-	private void cycleRegionNext(){
-		if(this.hqPlacementRegion == REGIONSELECT.R1)
-			this.hqPlacementRegion = REGIONSELECT.R2;
-		else if(this.hqPlacementRegion == REGIONSELECT.R2)
-			this.hqPlacementRegion = REGIONSELECT.R3;
-		else if(this.hqPlacementRegion == REGIONSELECT.R3)
-			this.hqPlacementRegion = REGIONSELECT.R4;
-		else if(this.hqPlacementRegion == REGIONSELECT.R4)
-			this.hqPlacementRegion = REGIONSELECT.R5;
-		else if(this.hqPlacementRegion == REGIONSELECT.R5)
-			this.hqPlacementRegion = REGIONSELECT.R6;
-		else if(this.hqPlacementRegion == REGIONSELECT.R6)
-			this.hqPlacementRegion = REGIONSELECT.R7;
-		else if(this.hqPlacementRegion == REGIONSELECT.R7)
-			this.hqPlacementRegion = REGIONSELECT.R8;
-		else if(this.hqPlacementRegion == REGIONSELECT.R8)
-			this.hqPlacementRegion = REGIONSELECT.R9;
-		else if(this.hqPlacementRegion == REGIONSELECT.R9)
-			this.hqPlacementRegion = REGIONSELECT.R1;
-	}
-	
-	private void cycleRegionPrev(){
-		if(this.hqPlacementRegion == REGIONSELECT.R1)
-			this.hqPlacementRegion = REGIONSELECT.R9;
-		else if(this.hqPlacementRegion == REGIONSELECT.R2)
-			this.hqPlacementRegion = REGIONSELECT.R1;
-		else if(this.hqPlacementRegion == REGIONSELECT.R3)
-			this.hqPlacementRegion = REGIONSELECT.R2;
-		else if(this.hqPlacementRegion == REGIONSELECT.R4)
-			this.hqPlacementRegion = REGIONSELECT.R3;
-		else if(this.hqPlacementRegion == REGIONSELECT.R5)
-			this.hqPlacementRegion = REGIONSELECT.R4;
-		else if(this.hqPlacementRegion == REGIONSELECT.R6)
-			this.hqPlacementRegion = REGIONSELECT.R5;
-		else if(this.hqPlacementRegion == REGIONSELECT.R7)
-			this.hqPlacementRegion = REGIONSELECT.R6;
-		else if(this.hqPlacementRegion == REGIONSELECT.R8)
-			this.hqPlacementRegion = REGIONSELECT.R7;
-		else if(this.hqPlacementRegion == REGIONSELECT.R9)
-			this.hqPlacementRegion = REGIONSELECT.R8;
-	}
-	
-	private void cycleScenarioNext(){
-		if(this.scenarioSelect == SCENARIOSELECT.S1)
-			this.scenarioSelect = SCENARIOSELECT.S2;
-		else if(this.scenarioSelect == SCENARIOSELECT.S2)
-			this.scenarioSelect = SCENARIOSELECT.S3;
-		else if(this.scenarioSelect == SCENARIOSELECT.S3)
-			this.scenarioSelect = SCENARIOSELECT.S4;
-		else if(this.scenarioSelect == SCENARIOSELECT.S4)
-			this.scenarioSelect = SCENARIOSELECT.S1;
-	}
-	
-	private void cycleScenarioPrev(){
-		if(this.scenarioSelect == SCENARIOSELECT.S1)
-			this.scenarioSelect = SCENARIOSELECT.S4;
-		else if(this.scenarioSelect == SCENARIOSELECT.S2)
-			this.scenarioSelect = SCENARIOSELECT.S1;
-		else if(this.scenarioSelect == SCENARIOSELECT.S3)
-			this.scenarioSelect = SCENARIOSELECT.S2;
-		else if(this.scenarioSelect == SCENARIOSELECT.S4)
-			this.scenarioSelect = SCENARIOSELECT.S3;
-	}
-	
+		
 	private Location getHqSelectedLocation(){
-		return this.availableHqLocations.elementAt(this.availableHqLocationNumber);
+		return this.availableHqLocations.elementAt(this.optionSelect);
 	}
 	
 	private void increaseColor(){
@@ -873,9 +791,9 @@ public class ScenarioView {
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR) cycleBusinessNext();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT) cycleColorNext();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME) cycleBusinessNext();
-			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_DIFF_SELECT) cycleDifficultyNext();
-			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_PLYR_SELECT) cyclePlayerNext();
-			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_SELECT) cycleScenarioNext();
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_DIFF_SELECT) cycleOptionNext();
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_PLYR_SELECT) cycleOptionNext();
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_SELECT) cycleOptionNext();
 			break;
 		case KeyEvent.VK_ENTER:
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR){
@@ -945,7 +863,7 @@ public class ScenarioView {
 					hqPlacementView = HQPLACEMENTVIEW.REGION;
 				}
 				else if(hqPlacementView == HQPLACEMENTVIEW.REGION){
-					if(availableHqLocationNumber < 0)
+					if(this.availableHqLocations.size() == 0)
 						break;
 					else{
 						getHqSelectedLocation().setLocationIsHub(true, scenarioPlayerConfigure - 1);
@@ -968,154 +886,163 @@ public class ScenarioView {
 				}
 				System.gc();
 			}
+			resetOptionSelect();
 			break;
 		case KeyEvent.VK_LEFT:
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_CONFIG) cycleBcoPrev();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT) decreaseColor();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_CONFIRM) yesNo = true;
-			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ){
-				if(hqPlacementView == HQPLACEMENTVIEW.WORLD) cycleRegionPrev();
-				else if(hqPlacementView == HQPLACEMENTVIEW.REGION) cycleLocationPrev();
-			}
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ) cycleOptionPrev();
+	//		else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ){
+	//			if(hqPlacementView == HQPLACEMENTVIEW.WORLD) cycleRegionPrev();
+	//			else if(hqPlacementView == HQPLACEMENTVIEW.REGION) cycleLocationPrev();
+	//		}
 			break;
 		case KeyEvent.VK_RIGHT:
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_CONFIG) cycleBcoNext();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT) increaseColor();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_CONFIRM) yesNo = false;
-			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ){
-				if(hqPlacementView == HQPLACEMENTVIEW.WORLD) cycleRegionNext();
-				else if(hqPlacementView == HQPLACEMENTVIEW.REGION) cycleLocationNext();
-			}
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ) cycleOptionNext();
+	//		else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ){
+	//			if(hqPlacementView == HQPLACEMENTVIEW.WORLD) cycleRegionNext();
+	//			else if(hqPlacementView == HQPLACEMENTVIEW.REGION) cycleLocationNext();
+	//		}
 			break;
 		case KeyEvent.VK_UP:
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR) cycleBusinessPrev();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT) cycleColorPrev();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME) cycleBusinessPrev();
-			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_DIFF_SELECT) cycleDifficultyPrev();
-			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_PLYR_SELECT) cyclePlayerPrev();
-			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_SELECT) cycleScenarioPrev();
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_DIFF_SELECT) cycleOptionPrev();
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_PLYR_SELECT) cycleOptionPrev();
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_SELECT) cycleOptionPrev();
 			break;
 		default:
 			break;
 		}
 	}
-	
+
 	private void loadLocationVector(Vector<Location> v){
-		this.availableHqLocationNumber = -1;
+//		this.availableHqLocationNumber = -1;
 		if(this.availableHqLocations == null)
 			this.availableHqLocations = new Vector<Location>();
 		else
 			this.availableHqLocations.clear();
 		for(int i = 0; i < v.size(); i++){
-			switch(this.hqPlacementRegion){
-			case R1:
+//			switch(this.hqPlacementRegion){
+			switch(this.optionSelect){
+			case 0:
 				if(v.elementAt(i).getLocationRegion() == 0 && !v.elementAt(i).getLocationIsHub())
 					this.availableHqLocations.addElement(v.elementAt(i));
 				break;
-			case R2:
+			case 1:
 				if(v.elementAt(i).getLocationRegion() == 1 && !v.elementAt(i).getLocationIsHub())
 					this.availableHqLocations.addElement(v.elementAt(i));
 				break;
-			case R3:
+			case 2:
 				if(v.elementAt(i).getLocationRegion() == 2 && !v.elementAt(i).getLocationIsHub() && v.elementAt(i).getLocationType() == LOCATIONTYPE.LT_CITY)
 					this.availableHqLocations.addElement(v.elementAt(i));
 				break;
-			case R4:
+			case 3:
 				if(v.elementAt(i).getLocationRegion() == 3 && !v.elementAt(i).getLocationIsHub())
 					this.availableHqLocations.addElement(v.elementAt(i));
 				break;
-			case R5:
+			case 4:
 				if(v.elementAt(i).getLocationRegion() == 4 && !v.elementAt(i).getLocationIsHub())
 					this.availableHqLocations.addElement(v.elementAt(i));
 				break;
-			case R6:
+			case 5:
 				if(v.elementAt(i).getLocationRegion() == 5 && !v.elementAt(i).getLocationIsHub())
 					this.availableHqLocations.addElement(v.elementAt(i));
 				break;
-			case R7:
+			case 6:
 				if(v.elementAt(i).getLocationRegion() == 6 && !v.elementAt(i).getLocationIsHub())
 					this.availableHqLocations.addElement(v.elementAt(i));
 				break;
-			case R8:
+			case 7:
 				if(v.elementAt(i).getLocationRegion() == 7 && !v.elementAt(i).getLocationIsHub())
 					this.availableHqLocations.addElement(v.elementAt(i));
 				break;
-			case R9:
+			case 8:
 				if(v.elementAt(i).getLocationRegion() == 8 && !v.elementAt(i).getLocationIsHub())
 					this.availableHqLocations.addElement(v.elementAt(i));
 				break;
 			}
 		}
-		if(this.availableHqLocations.size() > 0)
-			this.availableHqLocationNumber = 0;
-		else
-			this.availableHqLocationNumber = -1;
+		
+//		if(this.availableHqLocations.size() > 0)
+//			this.availableHqLocationNumber = 0;
+//		else
+//			this.availableHqLocationNumber = -1;
 	}
 
 	private void loadRegionMap(SpriteSheet map){
-		switch(this.hqPlacementRegion){
-		case R1:
+		switch(this.optionSelect){
+		case 0:
 			region = map.grabImage(1, 1, 736, 288);
 			break;
-		case R2:
+		case 1:
 			region = map.grabImage(2, 1, 736, 288);
 			break;
-		case R3:
+		case 2:
 			region = map.grabImage(3, 1, 736, 288);
 			break;
-		case R4:
+		case 3:
 			region = map.grabImage(1, 2, 736, 288);
 			break;
-		case R5:
+		case 4:
 			region = map.grabImage(2, 2, 736, 288);
 			break;
-		case R6:
+		case 5:
 			region = map.grabImage(3, 2, 736, 288);
 			break;
-		case R7:
+		case 6:
 			region = map.grabImage(1, 3, 736, 288);
 			break;
-		case R8:
+		case 7:
 			region = map.grabImage(2, 3, 736, 288);
 			break;
-		case R9:
+		case 8:
 			region = map.grabImage(3, 3, 736, 288);
 			break;		
 		}
 	}
 	
+	private void resetOptionSelect(){
+		this.optionSelect = 0;
+	}
+	
 	private void setDifficulty(){
-		switch(this.scenarioDifficulty){
-		case DIFF1:
+		switch(this.optionSelect){
+		case 0:
 			ab.getScenario().setScenarioDifficulty(1);
 			break;
-		case DIFF2:
+		case 1:
 			ab.getScenario().setScenarioDifficulty(1);
 			break;
-		case DIFF3:
+		case 2:
 			ab.getScenario().setScenarioDifficulty(1);
 			break;
-		case DIFF4:
+		case 3:
 			ab.getScenario().setScenarioDifficulty(1);
 			break;
 		}
 	}
 	
 	private void setPlayers(Scenario s){
-		switch(scenarioPlayers){
-		case P1:
+		switch(this.optionSelect){
+		case 0:
 			s.setScenarioPlayers(1);
 			scenarioPlayersToConfigure = 1;
 			break;
-		case P2:
+		case 1:
 			s.setScenarioPlayers(2);
 			scenarioPlayersToConfigure = 2;
 			break;
-		case P3:
+		case 2:
 			s.setScenarioPlayers(3);
 			this.scenarioPlayersToConfigure = 3;
 			break;
-		case P4:
+		case 3:
 			s.setScenarioPlayers(4);
 			this.scenarioPlayersToConfigure = 4;
 			break;
@@ -1124,17 +1051,17 @@ public class ScenarioView {
 	}
 	
 	private void setScenario(){
-		switch(this.scenarioSelect){
-		case S1:
+		switch(this.optionSelect){
+		case 0:
 			ab.getScenario().loadScenario(0);
 			break;
-		case S2:
+		case 1:
 			ab.getScenario().loadScenario(1);
 			break;
-		case S3:
+		case 2:
 			ab.getScenario().loadScenario(2);
 			break;
-		case S4:
+		case 3:
 			ab.getScenario().loadScenario(3);
 			break;
 		}

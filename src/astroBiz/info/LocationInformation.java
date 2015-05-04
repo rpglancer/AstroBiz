@@ -8,7 +8,7 @@ package astroBiz.info;
  *
  */
 public class LocationInformation {
-	
+@Deprecated	
 	public static String[] earthLocationNames = {
 		"Los Angeles",
 		"New York", 
@@ -20,7 +20,7 @@ public class LocationInformation {
 		"Sao Paolo",
 		"Johannesburg"
 		};
-	
+@Deprecated	
 	public static int[] earthLocationDemandBusiness = {
 		110, 
 		145, 
@@ -32,7 +32,7 @@ public class LocationInformation {
 		100,
 		75
 		};
-	
+@Deprecated	
 	public static int[] earthLocationDemandIndustry = {
 		43, 
 		31, 
@@ -44,7 +44,7 @@ public class LocationInformation {
 		131,
 		50
 		};
-	
+@Deprecated	
 	public static int[] earthLocationDemandTourism = {
 		164, 
 		180, 
@@ -56,7 +56,7 @@ public class LocationInformation {
 		197,
 		100
 		};
-
+@Deprecated
 	public static int[] earthLocationX = {
 		150, 
 		255, 
@@ -68,7 +68,7 @@ public class LocationInformation {
 		300,
 		445
 		};
-	
+@Deprecated	
 	public static int[] earthLocationY = {
 		120, 
 		112, 
@@ -80,7 +80,7 @@ public class LocationInformation {
 		230,
 		240
 		};
-	
+@Deprecated	
 	public static double[] earthPopulation = {
 		8.0,
 		11.0,
@@ -92,7 +92,7 @@ public class LocationInformation {
 		7.5,
 		0.4
 	};
-
+@Deprecated
 	public static String[] lunaLocationNames = {
 		"Luna 1",
 		"Luna 2", 
@@ -103,7 +103,7 @@ public class LocationInformation {
 		"Luna 7", 
 		"Luna 8"
 		};
-	
+@Deprecated
 	public static int[] lunaLocationDemandBusiness = {
 		110, 
 		145, 
@@ -114,7 +114,7 @@ public class LocationInformation {
 		172, 
 		100
 		};
-	
+@Deprecated	
 	public static int[] lunaLocationDemandIndustry = {
 		43, 
 		31, 
@@ -125,7 +125,7 @@ public class LocationInformation {
 		75, 
 		131
 		};
-	
+@Deprecated
 	public static int[] lunaLocationDemandTourism = {
 		164, 
 		180, 
@@ -136,7 +136,7 @@ public class LocationInformation {
 		224, 
 		197
 		};
-
+@Deprecated
 	public static int[] lunaLocationX = {
 		150, 
 		255, 
@@ -147,7 +147,7 @@ public class LocationInformation {
 		395, 
 		300
 		};
-	
+@Deprecated
 	public static int[] lunaLocationY = {
 		120, 
 		112, 
