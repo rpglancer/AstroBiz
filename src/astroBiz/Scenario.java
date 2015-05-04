@@ -2,9 +2,8 @@ package astroBiz;
 
 import java.util.Vector;
 
-import astroBiz.info.ManufacturerInformation;
 import astroBiz.info.ManufacturerInformation.MI;
-import astroBiz.info.ScenarioInformation;
+import astroBiz.info.ScenarioInformation.SI;
 
 /**
  * Contains the information about the currently active scenario.
@@ -53,6 +52,7 @@ public class Scenario {
 	}
 	
 	public Vector<Manufacturer> getManufacturersAvailable(){
+		updateManufacturersAvailable();
 		return this.scenarioManufacturersAvailable;
 	}
 	
@@ -73,14 +73,46 @@ public class Scenario {
 	}
 	
 	public void loadScenario(int scenario){
-		scenarioName = ScenarioInformation.scenarioInfoName[scenario];
-		scenarioDescription = ScenarioInformation.scenarioInfoDescription[scenario];
-		scenarioStartingYear = ScenarioInformation.scenarioInfoStartingYear[scenario];
-		scenarioEndingYear = ScenarioInformation.scenarioInfoEndingYear[scenario];
-		scenarioHubsRequired = ScenarioInformation.scenarioInfoHubsRequired[scenario];
-		scenarioCurrentYear = scenarioStartingYear;
-		scenarioQuarter = 1;
-		updateManufacturersAvailable();
+		if(scenario == 0){
+			scenarioName = SI.SCEN1.getName();
+			scenarioDescription = SI.SCEN1.getDesc();
+			scenarioStartingYear = SI.SCEN1.getYearStart();
+			scenarioEndingYear = SI.SCEN1.getYearEnd();
+			scenarioHubsRequired = 7;
+			scenarioCurrentYear = scenarioStartingYear;
+			scenarioQuarter = 1;
+			updateManufacturersAvailable();
+		}
+		else if(scenario == 1){
+			scenarioName = SI.SCEN2.getName();
+			scenarioDescription = SI.SCEN2.getDesc();
+			scenarioStartingYear = SI.SCEN2.getYearStart();
+			scenarioEndingYear = SI.SCEN2.getYearEnd();
+			scenarioHubsRequired = 7;
+			scenarioCurrentYear = scenarioStartingYear;
+			scenarioQuarter = 1;
+			updateManufacturersAvailable();
+		}
+		else if(scenario == 2){
+			scenarioName = SI.SCEN3.getName();
+			scenarioDescription = SI.SCEN3.getDesc();
+			scenarioStartingYear = SI.SCEN3.getYearStart();
+			scenarioEndingYear = SI.SCEN3.getYearEnd();
+			scenarioHubsRequired = 7;
+			scenarioCurrentYear = scenarioStartingYear;
+			scenarioQuarter = 1;
+			updateManufacturersAvailable();
+		}
+		else if(scenario == 3){
+			scenarioName = SI.SCEN4.getName();
+			scenarioDescription = SI.SCEN4.getDesc();
+			scenarioStartingYear = SI.SCEN4.getYearStart();
+			scenarioEndingYear = SI.SCEN4.getYearEnd();
+			scenarioHubsRequired = 7;
+			scenarioCurrentYear = scenarioStartingYear;
+			scenarioQuarter = 1;
+			updateManufacturersAvailable();
+		}
 	}
 	
 	public void setScenarioDifficulty(int difficulty){

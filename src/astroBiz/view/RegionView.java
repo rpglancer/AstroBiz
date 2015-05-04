@@ -11,6 +11,7 @@ import astroBiz.AstroBiz;
 import astroBiz.Location;
 import astroBiz.Manufacturer;
 import astroBiz.info.LocationInformation;
+import astroBiz.info.LocationInformation.LI;
 import astroBiz.util.ImageUtilities;
 import astroBiz.util.textUtilities;
 
@@ -26,26 +27,14 @@ public class RegionView {
 		VM_BUY_SELECT_MFG,
 		VM_REGION,
 	}
-	private static enum REGIONBUTTON{
-		RB_ROUTEOPEN,
-		RB_ROUTEADJUST,
-		RB_SLOTBID,
-		RB_BUY,
-		RB_BUDGET,
-		RB_VENTURE,
-		RB_HUBOPEN,
-		RB_AD,
-		RB_MEETING,
-		RB_STATUS,
-		RB_SETTING,
-		RB_TURN;
-	}
+
 	private REGIONVM regionVm = REGIONVM.VM_REGION;
-	private REGIONBUTTON regionButton = REGIONBUTTON.RB_ROUTEOPEN;
+	private REGIONVM regionVmPrevious = regionVm;
 	private Vector<Location> mapLocations = new Vector<Location>();
 	private Vector<Manufacturer> manufacturersAvailable = new Vector<Manufacturer>();
 	private byte activeRegion = 2;
-	private byte selectedMfg = 0;
+	private int selectedOption = 0;
+	private int previousOption = selectedOption;
 
 	private AstroBiz ab;
 	private BufferedImage[] buttons;	// Contains the buttons displayed on the regional map.
@@ -62,16 +51,9 @@ public class RegionView {
 				i++;
 			}
 		}
-// TODO: Find a way of populating the regions with locations that doesn't involve manual creation of every one.
-		for(int l = 0; l < LocationInformation.earthLocationNames.length; l++){
-			Location location = new Location();
-			location.generateEarthLocation(l);
-			mapLocations.addElement(location);
-		}
-		for(int l = 0; l < 8; l++){
-			Location location = new Location();
-			location.generateLunaLocation(l);
-			mapLocations.addElement(location);
+		
+		for(LI li : LI.values()){
+			mapLocations.addElement(new Location(li));
 		}
 	}
 	
@@ -122,67 +104,23 @@ public class RegionView {
 	}
 	
 	private void buttonHilight(Graphics g){
+		int x = 192;
+		int y = 320;
+		int width = 96;
+		int height = 64;
+		for(int i = 0; i != selectedOption; i++){
+			if(i == 5){
+				x = 192;
+				y += height;
+			}
+			else{
+				x+=width;
+			}
+		}
 		g.setColor(Color.red);
-		if(regionButton == REGIONBUTTON.RB_ROUTEOPEN){
-			BufferedImage temp = buttons[0];
-			temp = ImageUtilities.colorizeImage(temp, new Color(buttons[0].getRGB(48, 32)), Color.red);
-			g.drawImage(temp, 192, 320, null);
-		}
-		if(regionButton == REGIONBUTTON.RB_ROUTEADJUST){
-			BufferedImage temp = buttons[1];
-			temp = ImageUtilities.colorizeImage(temp, new Color(buttons[1].getRGB(48, 32)), Color.red);
-			g.drawImage(temp, 288, 320, null);
-		}
-		if(regionButton == REGIONBUTTON.RB_SLOTBID){
-			BufferedImage temp = buttons[2];
-			temp = ImageUtilities.colorizeImage(temp, new Color(buttons[2].getRGB(48, 32)), Color.red);
-			g.drawImage(temp, 384, 320, null);
-		}
-		if(regionButton == REGIONBUTTON.RB_BUY){
-			BufferedImage temp = buttons[3];
-			temp = ImageUtilities.colorizeImage(temp, new Color(buttons[3].getRGB(48, 32)), Color.red);
-			g.drawImage(temp, 480, 320, null);
-		}
-		if(regionButton == REGIONBUTTON.RB_BUDGET){
-			BufferedImage temp = buttons[4];
-			temp = ImageUtilities.colorizeImage(temp, new Color(buttons[4].getRGB(48, 32)), Color.red);
-			g.drawImage(temp, 576, 320, null);
-		}
-		if(regionButton == REGIONBUTTON.RB_VENTURE){
-			BufferedImage temp = buttons[5];
-			temp = ImageUtilities.colorizeImage(temp, new Color(buttons[5].getRGB(48, 32)), Color.red);
-			g.drawImage(temp, 672, 320, null);
-		}
-		if(regionButton == REGIONBUTTON.RB_HUBOPEN){
-			BufferedImage temp = buttons[6];
-			temp = ImageUtilities.colorizeImage(temp, new Color(buttons[6].getRGB(48, 32)), Color.red);
-			g.drawImage(temp, 192, 384, null);
-		}
-		if(regionButton == REGIONBUTTON.RB_AD){
-			BufferedImage temp = buttons[7];
-			temp = ImageUtilities.colorizeImage(temp, new Color(buttons[7].getRGB(48, 32)), Color.red);
-			g.drawImage(temp, 288, 384, null);
-		}
-		if(regionButton == REGIONBUTTON.RB_MEETING){
-			BufferedImage temp = buttons[8];
-			temp = ImageUtilities.colorizeImage(temp, new Color(buttons[8].getRGB(48, 32)), Color.red);
-			g.drawImage(temp, 384, 384, null);
-		}
-		if(regionButton == REGIONBUTTON.RB_STATUS){
-			BufferedImage temp = buttons[9];
-			temp = ImageUtilities.colorizeImage(temp, new Color(buttons[9].getRGB(48, 32)), Color.red);
-			g.drawImage(temp, 480, 384, null);
-		}
-		if(regionButton == REGIONBUTTON.RB_SETTING){
-			BufferedImage temp = buttons[10];
-			temp = ImageUtilities.colorizeImage(temp, new Color(buttons[10].getRGB(48, 32)), Color.red);
-			g.drawImage(temp, 576, 384, null);
-		}
-		if(regionButton == REGIONBUTTON.RB_TURN){
-			BufferedImage temp = buttons[11];
-			temp = ImageUtilities.colorizeImage(temp, new Color(buttons[11].getRGB(48, 32)), Color.red);
-			g.drawImage(temp, 672, 384, null);
-		}
+		BufferedImage temp = buttons[selectedOption];
+		temp = ImageUtilities.colorizeImage(temp, new Color(buttons[selectedOption].getRGB(48, 32)), Color.red);
+		g.drawImage(temp, x, y, null);
 	}
 	
 	private void drawMinimap(Graphics g){
@@ -229,7 +167,7 @@ public class RegionView {
 	private void drawBuySelectMfg(Graphics g){
 		g.setColor(Color.white);
 		for(int i = 0; i < this.manufacturersAvailable.size(); i++){
-			if(i == selectedMfg){
+			if(i == selectedOption){
 				textUtilities.boxText(g, this.manufacturersAvailable.elementAt(i).getX(), this.manufacturersAvailable.elementAt(i).getY(), 4, Color.darkGray, Color.green, this.manufacturersAvailable.elementAt(i).getSymbol());
 				textUtilities.drawString(g, AstroBiz.WIDTH - (this.manufacturersAvailable.elementAt(i).getName().length() * 16), 0, this.manufacturersAvailable.elementAt(i).getName());
 			}
@@ -237,91 +175,99 @@ public class RegionView {
 		}
 	}
 	
-	private void cycleButtonDown(){
-		if(regionButton == REGIONBUTTON.RB_ROUTEOPEN) regionButton = REGIONBUTTON.RB_HUBOPEN;
-		else if(regionButton == REGIONBUTTON.RB_ROUTEADJUST) regionButton = REGIONBUTTON.RB_AD;
-		else if(regionButton == REGIONBUTTON.RB_SLOTBID) regionButton = REGIONBUTTON.RB_MEETING;
-		else if(regionButton == REGIONBUTTON.RB_BUY) regionButton = REGIONBUTTON.RB_STATUS;
-		else if(regionButton == REGIONBUTTON.RB_BUDGET) regionButton = REGIONBUTTON.RB_SETTING;
-		else if(regionButton == REGIONBUTTON.RB_VENTURE) regionButton = REGIONBUTTON.RB_TURN;
-	}
-	
-	private void cycleButtonLeft(){	
-		if(regionButton == REGIONBUTTON.RB_VENTURE) regionButton = REGIONBUTTON.RB_BUDGET;
-		else if(regionButton == REGIONBUTTON.RB_BUDGET) regionButton = REGIONBUTTON.RB_BUY;
-		else if(regionButton == REGIONBUTTON.RB_BUY) regionButton = REGIONBUTTON.RB_SLOTBID;
-		else if(regionButton == REGIONBUTTON.RB_SLOTBID) regionButton = REGIONBUTTON.RB_ROUTEADJUST;
-		else if(regionButton == REGIONBUTTON.RB_ROUTEADJUST) regionButton = REGIONBUTTON.RB_ROUTEOPEN;
-		
-		else if(regionButton == REGIONBUTTON.RB_TURN) regionButton = REGIONBUTTON.RB_SETTING;
-		else if(regionButton == REGIONBUTTON.RB_SETTING) regionButton = REGIONBUTTON.RB_STATUS;
-		else if(regionButton == REGIONBUTTON.RB_STATUS) regionButton = REGIONBUTTON.RB_MEETING;
-		else if(regionButton == REGIONBUTTON.RB_MEETING) regionButton = REGIONBUTTON.RB_AD;
-		else if(regionButton == REGIONBUTTON.RB_AD) regionButton = REGIONBUTTON.RB_HUBOPEN;
-	}
-	
-	private void cycleButtonRight(){
-		if(regionButton == REGIONBUTTON.RB_ROUTEOPEN) regionButton = REGIONBUTTON.RB_ROUTEADJUST;
-		else if(regionButton == REGIONBUTTON.RB_ROUTEADJUST) regionButton = REGIONBUTTON.RB_SLOTBID;
-		else if(regionButton == REGIONBUTTON.RB_SLOTBID) regionButton = REGIONBUTTON.RB_BUY;
-		else if(regionButton == REGIONBUTTON.RB_BUY) regionButton = REGIONBUTTON.RB_BUDGET;
-		else if(regionButton == REGIONBUTTON.RB_BUDGET) regionButton = REGIONBUTTON.RB_VENTURE;
-		
-		else if(regionButton == REGIONBUTTON.RB_HUBOPEN) regionButton = REGIONBUTTON.RB_AD;
-		else if(regionButton == REGIONBUTTON.RB_AD) regionButton = REGIONBUTTON.RB_MEETING;
-		else if(regionButton == REGIONBUTTON.RB_MEETING) regionButton = REGIONBUTTON.RB_STATUS;
-		else if(regionButton == REGIONBUTTON.RB_STATUS) regionButton = REGIONBUTTON.RB_SETTING;
-		else if(regionButton == REGIONBUTTON.RB_SETTING) regionButton = REGIONBUTTON.RB_TURN;
-	}
-	
-	private void cycleButtonUp(){
-		if(regionButton == REGIONBUTTON.RB_HUBOPEN) regionButton = REGIONBUTTON.RB_ROUTEOPEN;
-		else if(regionButton == REGIONBUTTON.RB_AD) regionButton = REGIONBUTTON.RB_ROUTEADJUST;
-		else if(regionButton == REGIONBUTTON.RB_MEETING) regionButton = REGIONBUTTON.RB_SLOTBID;
-		else if(regionButton == REGIONBUTTON.RB_STATUS) regionButton = REGIONBUTTON.RB_BUY;
-		else if(regionButton == REGIONBUTTON.RB_SETTING) regionButton = REGIONBUTTON.RB_BUDGET;
-		else if(regionButton == REGIONBUTTON.RB_TURN) regionButton = REGIONBUTTON.RB_VENTURE;
-	}
-	
-	private void cycleMfgNext(){
-		if(selectedMfg < manufacturersAvailable.size() - 1){
-			selectedMfg++;
+	private void cycleOptionDown(){
+		int maxOpt = 0;
+		if(regionVm == REGIONVM.VM_BUY_SELECT_MFG){
+			maxOpt = manufacturersAvailable.size() - 1;
+			if(selectedOption < maxOpt) selectedOption++;
+			else selectedOption = 0;
 		}
-		else selectedMfg = 0;	
+		if(regionVm == REGIONVM.VM_REGION){
+			if(selectedOption < 6) selectedOption += 6;
+		}
 	}
 	
-	private void cycleMfgPrev(){
-		if(selectedMfg > 0){
-			selectedMfg--;
+	private void cycleOptionLeft(){
+		int maxOpt = 0;
+		if(regionVm == REGIONVM.VM_BUY_SELECT_MFG){
+			maxOpt = manufacturersAvailable.size() - 1;
+			if(selectedOption > 0) selectedOption--;
+			else selectedOption = maxOpt;
+			
 		}
-		else selectedMfg = (byte) (manufacturersAvailable.size() - 1);
+		if(regionVm == REGIONVM.VM_REGION){
+			if(selectedOption < 12){
+				if(selectedOption == 6) return;
+				else if(selectedOption == 0) return;
+				else selectedOption--;
+			}
+		}
+	}
+	
+	private void cycleOptionRight(){
+		int maxOpt = 0;
+		if(regionVm == REGIONVM.VM_BUY_SELECT_MFG){
+			maxOpt = manufacturersAvailable.size() - 1;
+			if(selectedOption < maxOpt) selectedOption++;
+			else selectedOption = 0;
+		}
+		if(regionVm == REGIONVM.VM_REGION){
+			if(selectedOption < 12){
+				if(selectedOption == 5) return;
+				else if(selectedOption == 11) return;
+				else selectedOption++;
+			}
+		}
+	}
+	
+	private void cycleOptionUp(){
+		int maxOpt = 0;
+		if(this.regionVm == REGIONVM.VM_BUY_SELECT_MFG){
+			maxOpt = manufacturersAvailable.size() - 1;
+			if(selectedOption > 0) selectedOption--;
+			else selectedOption = maxOpt;
+		}
+		if(this.regionVm == REGIONVM.VM_REGION){
+			if (selectedOption > 5) selectedOption -= 6;
+		}
 	}
 	
 	public void keyAction(KeyEvent e){
 		switch(e.getKeyCode()){
 
 		case KeyEvent.VK_DOWN:
-			if(regionVm == REGIONVM.VM_REGION)cycleButtonDown();
+			if(regionVm == REGIONVM.VM_BUY_SELECT_MFG) cycleOptionDown();
+			else if(regionVm == REGIONVM.VM_REGION)cycleOptionDown();
 			break;
 		case KeyEvent.VK_ENTER:
 			if(regionVm == REGIONVM.VM_REGION){
-				if(regionButton == REGIONBUTTON.RB_BUY){
+				previousOption = selectedOption;
+				regionVmPrevious = regionVm;
+				if(selectedOption == 3){	// Buy Vehicles
 					this.manufacturersAvailable.clear();
+					System.out.println("manufacturersAvailable Vector cleared!");
 					this.manufacturersAvailable = ab.getScenario().getManufacturersAvailable();
+					System.out.println("Got " + this.manufacturersAvailable.size() + " elements for manufacturersAvailable Vector!");
 					regionVm = REGIONVM.VM_BUY_SELECT_MFG;
+					resetSelectedOpt();
 				}
-			}
+			}	
+			break;
+		case KeyEvent.VK_ESCAPE:
+			regionVm = regionVmPrevious;
+			selectedOption = previousOption;
 			break;
 		case KeyEvent.VK_LEFT:
-			if(regionVm == REGIONVM.VM_BUY_SELECT_MFG) cycleMfgPrev();
-			else if(regionVm == REGIONVM.VM_REGION)cycleButtonLeft();
+			if(regionVm == REGIONVM.VM_BUY_SELECT_MFG) cycleOptionLeft();
+			else if(regionVm == REGIONVM.VM_REGION)cycleOptionLeft();
 			break;
 		case KeyEvent.VK_UP:
-			if(regionVm == REGIONVM.VM_REGION)cycleButtonUp();
+			if(regionVm == REGIONVM.VM_BUY_SELECT_MFG) cycleOptionUp();
+			else if(regionVm == REGIONVM.VM_REGION)cycleOptionUp();
 			break;
 		case KeyEvent.VK_RIGHT:
-			if(regionVm == REGIONVM.VM_BUY_SELECT_MFG) cycleMfgNext();
-			else if(regionVm == REGIONVM.VM_REGION)cycleButtonRight();
+			if(regionVm == REGIONVM.VM_BUY_SELECT_MFG) cycleOptionRight();
+			else if(regionVm == REGIONVM.VM_REGION)cycleOptionRight();
 			break;
 		default:
 			break;
@@ -342,6 +288,10 @@ public class RegionView {
 	
 	public Vector<Location> getLocationVector(){
 		return this.mapLocations;
+	}
+	
+	private void resetSelectedOpt(){
+		this.selectedOption = 0;
 	}
 
 }

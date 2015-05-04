@@ -42,14 +42,14 @@ public class ScenarioInformation {
 	}
 	
 
-	public static String[] scenarioInfoName = {
+	private static String[] scenarioInfoName = {
 			"Scenario 1: The New Dawn",
 			"Scenario 2: Scenario Name Number 2",
 			"Scenario 3: Scenario Name Number 3",
 			"Scenario 4: Scenario Name Number 4"
 	};
 	
-	public static final String[] scenarioInfoDescription = {
+	private static final String[] scenarioInfoDescription = {
 			"After a century of conflict the human race once again sets its eyes upon the stars. Offworld mining and trading begins to flourish as the demand for resources vastly outpaces the ability of the Earth to provide them. The empires of humanity once again embark on campaigns of conquest to determine which of them will control the vast resources of the solar system.",
 			"Description 2",
 			"Description 3",

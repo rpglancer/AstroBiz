@@ -26,61 +26,17 @@ public class ScenarioView {
 	public static final int SBHEIGHT = 40;
 	private final int MAINTEXTWIDTH = 704;
 	private final int MAINTEXTINDENT = 48;
-
-	private astroBiz.AstroBiz ab;
-	/**
-	 * Contains the sprite for the employee guiding the user through the setup process.
-	 */
-	private BufferedImage employeeSprite;
-	/**
-	 * Contains the image of the desired region pulled from {@link AstroBiz#worldMap}
-	 */
-	private BufferedImage region;
-	/**
-	 * Contains a simple sprite that is moved around for the purposes of selection.
-	 */
-	private BufferedImage selectSprite;
-	/**
-	 * Boolean value for confirmation window purposes.
-	 */
-	private boolean yesNo = true;
 	
-	private Font sbfont = new Font("sans", Font.BOLD, 16);
-	private Font sbconf	= new Font("sans", Font.BOLD, 32);
-	/**
-	 * Contains the number of the business to be configured.
-	 */
-	private int businessSelect = 0;
-	private int colorSelect = 0;
-	/**
-	 * Integer variable used for an attempt to replace the numerous enums in this class with a single selection mechanism.
-	 */
-	private int optionSelect = 0;
-	/**
-	 * Contains the number of the player currently being configured.
-	 */
-	private int scenarioPlayerConfigure = 0;
-	/**
-	 * Contains the total number of players needing to be configured.
-	 */
-	private int scenarioPlayersToConfigure = 0;		// Contains the total number of players needing to be configured.
-	/**
-	 * Buffer for editing business names.
-	 */
-	private String businessNameBuffer = null;
-
 	public static enum BUSICONFIGOPTIONS {
 		NAME,
 		COLOR,
 		EXIT,
 		SELECT
 	}
-
 	public static enum HQPLACEMENTVIEW{
 		WORLD,
 		REGION
 	}
-
 	/**
 	 * Enumerator for all the available view modes.
 	 * <br>What is rendered on screen is dependent upon the
@@ -101,25 +57,29 @@ public class ScenarioView {
 		VM_SET_HQ
 	}
 
+	
+	private astroBiz.AstroBiz ab;
+	private BufferedImage employeeSprite;
+	private BufferedImage region;
+	private BufferedImage selectSprite;
+	private boolean yesNo = true;
+	private Font sbfont = new Font("sans", Font.BOLD, 16);
+	private Font sbconf	= new Font("sans", Font.BOLD, 32);
+	private int businessSelect = 0;
+	private int colorSelect = 0;
+	private int optionSelect = 0;
+	private int scenarioPlayerConfigure = 0;		// The number of the player being configured.
+	private int scenarioPlayersToConfigure = 0;		// The total number of players to be configured.
 	/**
-	 * The currently selected business configuration option.
+	 * Buffer for editing business names.
 	 */
-	private BUSICONFIGOPTIONS busiConfigOptions = BUSICONFIGOPTIONS.EXIT;
+	private String businessNameBuffer = null;
 
-	private HQPLACEMENTVIEW hqPlacementView = HQPLACEMENTVIEW.WORLD;
+	private BUSICONFIGOPTIONS busiConfigOptions = BUSICONFIGOPTIONS.EXIT;			//	Active business configuration option
+	private HQPLACEMENTVIEW hqPlacementView = HQPLACEMENTVIEW.WORLD;				//	Active placement view for HQ selection
+	private SCENARIOVIEWMODE scenarioViewMode = SCENARIOVIEWMODE.VM_SCEN_SELECT;	//	Active view mode for scenario selection and setup
+	private Vector<Location> availableHqLocations;									//	Locations available to be selected as a HQ.
 
-	/**
-	 * The currently active Scenario View Mode
-	 */
-	private SCENARIOVIEWMODE scenarioViewMode = SCENARIOVIEWMODE.VM_SCEN_SELECT;
-	/**
-	 * Contains Location elements of all available HQ Locations.
-	 */
-	private Vector<Location> availableHqLocations;
-	/**
-	 * Default ScenarioView constructor.
-	 * @param astrobiz	(AstroBiz) The active AstroBiz class for easy referencing within.
-	 */
 	public ScenarioView(AstroBiz astrobiz){
 		this.ab = astrobiz;
 		this.employeeSprite = ab.getEmployeeSprites().grabImage(1, 1, 128, 128);
@@ -400,7 +360,6 @@ public class ScenarioView {
 		switch(this.hqPlacementView){
 		case REGION:
 			g.drawImage(region, 32, 32, null);
-
 			for(int i = 0; i < this.availableHqLocations.size(); i++){
 				g.drawImage(this.availableHqLocations.elementAt(i).getSprite(ab.getScenario()), 
 							this.availableHqLocations.elementAt(i).getLocationX(), 
@@ -552,17 +511,17 @@ public class ScenarioView {
 		textUtilities.drawString(g, 160, 380, "Please select a scenario to play.");
 		g.dispose();
 	}
-	
+@Deprecated	
 	private void cycleBusinessNext(){
 		if(businessSelect == 3) businessSelect = 0;
 		else businessSelect++;
 	}
-	
+@Deprecated	
 	private void cycleBusinessPrev(){
 		if(businessSelect == 0) businessSelect = 3;
 		else businessSelect--;
 	}
-	
+@Deprecated	
 	private void cycleBcoNext(){
 		if(busiConfigOptions == BUSICONFIGOPTIONS.NAME)
 			busiConfigOptions = BUSICONFIGOPTIONS.EXIT;
@@ -571,7 +530,7 @@ public class ScenarioView {
 		else if(busiConfigOptions == BUSICONFIGOPTIONS.EXIT)
 			busiConfigOptions = BUSICONFIGOPTIONS.COLOR;
 	}
-	
+@Deprecated	
 	private void cycleBcoPrev(){
 		if(busiConfigOptions == BUSICONFIGOPTIONS.NAME)
 			busiConfigOptions = BUSICONFIGOPTIONS.COLOR;
@@ -580,55 +539,37 @@ public class ScenarioView {
 		else if(busiConfigOptions == BUSICONFIGOPTIONS.EXIT)
 			busiConfigOptions = BUSICONFIGOPTIONS.NAME;
 	}
-	
+@Deprecated	
 	private void cycleColorNext(){
 		if(colorSelect == 2) colorSelect = 0;
 		else colorSelect++;
 	}
-	
+@Deprecated	
 	private void cycleColorPrev(){
 		if(colorSelect == 0) colorSelect = 2;
 		else colorSelect--;
 	}
 		
 	private void cycleOptionNext(){
-		switch(scenarioViewMode){
-		case VM_BUSI_COLOR:
-			break;
-		case VM_BUSI_COLOR_SELECT:
-			break;
-		case VM_BUSI_CONFIG:
-			break;
-		case VM_BUSI_NAME:
-			break;
-		case VM_BUSI_NAME_SELECT:
-			break;
-		case VM_DIFF_SELECT:
-			if(optionSelect < 3)optionSelect++;
-			else optionSelect = 0;
-			break;
-		case VM_PLYR_SELECT:
-			if(optionSelect < 3)optionSelect++;
-			else optionSelect = 0;
-			break;
-		case VM_SCEN_CONFIRM:
-			break;
-		case VM_SCEN_SELECT:
-			if(optionSelect < 3) optionSelect++;
-			else optionSelect = 0;
-			break;
-		case VM_SET_HQ:
-			if(hqPlacementView == HQPLACEMENTVIEW.WORLD){
-				if(this.optionSelect < 8) optionSelect++;
-				else optionSelect = 0;
-			}
-			else if(hqPlacementView == HQPLACEMENTVIEW.REGION){
-				if(this.availableHqLocations.size() == 0) return;
-				if(this.optionSelect < this.availableHqLocations.size() - 1) optionSelect++;
-				else optionSelect = 0;
-			}
-			break;
+		int maxOption = 0;
+		if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR);
+		if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT);
+		if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_CONFIG) maxOption = 3;
+		if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME);
+		if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME_SELECT);
+		if(scenarioViewMode == SCENARIOVIEWMODE.VM_DIFF_SELECT) maxOption = 3;
+		if(scenarioViewMode == SCENARIOVIEWMODE.VM_PLYR_SELECT) maxOption = 3;
+		if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_CONFIRM);
+		if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_SELECT) maxOption = 3;
+		if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ){
+			if(hqPlacementView == HQPLACEMENTVIEW.WORLD) maxOption = 8;
+			if(hqPlacementView == HQPLACEMENTVIEW.REGION) maxOption = this.availableHqLocations.size() - 1;
 		}
+
+		if(maxOption < 0) return;
+
+		if(optionSelect < maxOption)optionSelect++;
+		else optionSelect = 0;
 	}
 	
 	private void cycleOptionPrev(){
@@ -859,6 +800,7 @@ public class ScenarioView {
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ){
 				if(hqPlacementView == HQPLACEMENTVIEW.WORLD){
 					loadRegionMap(AstroBiz.worldMap);
+					System.out.println("Region Location Vector Size: " + ab.getRegion().getLocationVector().size());
 					loadLocationVector(ab.getRegion().getLocationVector());
 					hqPlacementView = HQPLACEMENTVIEW.REGION;
 				}
@@ -920,15 +862,24 @@ public class ScenarioView {
 			break;
 		}
 	}
-
+	
 	private void loadLocationVector(Vector<Location> v){
-//		this.availableHqLocationNumber = -1;
-		if(this.availableHqLocations == null)
+		if(this.availableHqLocations == null){
 			this.availableHqLocations = new Vector<Location>();
-		else
+		}
+		else{
 			this.availableHqLocations.clear();
+		}
 		for(int i = 0; i < v.size(); i++){
-//			switch(this.hqPlacementRegion){
+			if(v.elementAt(i).getLocationRegion() == optionSelect &&
+				!v.elementAt(i).getLocationIsHub() &&
+				v.elementAt(i).getLocationType() == LOCATIONTYPE.LT_CITY){
+				this.availableHqLocations.addElement(v.elementAt(i));
+			}
+		}
+		
+	/*	
+		for(int i = 0; i < v.size(); i++){
 			switch(this.optionSelect){
 			case 0:
 				if(v.elementAt(i).getLocationRegion() == 0 && !v.elementAt(i).getLocationIsHub())
@@ -939,8 +890,11 @@ public class ScenarioView {
 					this.availableHqLocations.addElement(v.elementAt(i));
 				break;
 			case 2:
-				if(v.elementAt(i).getLocationRegion() == 2 && !v.elementAt(i).getLocationIsHub() && v.elementAt(i).getLocationType() == LOCATIONTYPE.LT_CITY)
+				if(v.elementAt(i).getLocationRegion() == 2 && !v.elementAt(i).getLocationIsHub() && v.elementAt(i).getLocationType() == LOCATIONTYPE.LT_CITY){
 					this.availableHqLocations.addElement(v.elementAt(i));
+					System.out.println("Adding element " + v.elementAt(i) + " to availableHqLocations!");
+					System.out.println("availableHqLocations Vector size now " + this.availableHqLocations.size());
+				}
 				break;
 			case 3:
 				if(v.elementAt(i).getLocationRegion() == 3 && !v.elementAt(i).getLocationIsHub())
@@ -968,11 +922,8 @@ public class ScenarioView {
 				break;
 			}
 		}
+	*/
 		
-//		if(this.availableHqLocations.size() > 0)
-//			this.availableHqLocationNumber = 0;
-//		else
-//			this.availableHqLocationNumber = -1;
 	}
 
 	private void loadRegionMap(SpriteSheet map){
