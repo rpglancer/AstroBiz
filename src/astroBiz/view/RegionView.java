@@ -177,6 +177,14 @@ public class RegionView {
 		g.setColor(Color.darkGray);
 		g.fillRect(32, 32, 736, 288);
 		
+		// Toggle Model Arrows
+		if(selectedManufacturer.getModeslAvailable(ab.getScenario()).size() > 1){
+			if(selectedOption > 0)
+				g.drawImage(AstroBiz.regionSprites.grabImage(1, 4, 16, 16), 128, 168, null);
+			if(selectedOption < selectedManufacturer.getModeslAvailable(ab.getScenario()).size() - 1)
+				g.drawImage(AstroBiz.regionSprites.grabImage(2, 4, 16, 16), 672 - 16, 168, null);
+		}
+		
 		//	Manufacturer Name Box
 		g.setColor(Color.gray);
 		g.fillRect(160, 64, 480, 32);
@@ -271,20 +279,24 @@ public class RegionView {
 	private void drawBuySelectMfg(Graphics g){
 		g.setColor(Color.white);
 		for(int i = 0; i < this.manufacturersAvailable.size(); i++){
-			if(i == selectedOption){
-				textUtilities.boxText(g, this.manufacturersAvailable.elementAt(i).getX(), this.manufacturersAvailable.elementAt(i).getY(), 4, Color.darkGray, Color.green, this.manufacturersAvailable.elementAt(i).getSymbol());
-				textUtilities.drawString(g, AstroBiz.WIDTH - (this.manufacturersAvailable.elementAt(i).getName().length() * 16), 0, this.manufacturersAvailable.elementAt(i).getName());
+			if(this.manufacturersAvailable.elementAt(i).getModeslAvailable(ab.getScenario()).size() > 0){
+				if(i == selectedOption){
+					textUtilities.boxText(g, this.manufacturersAvailable.elementAt(i).getX(), this.manufacturersAvailable.elementAt(i).getY(), 4, Color.darkGray, Color.green, this.manufacturersAvailable.elementAt(i).getSymbol());
+					textUtilities.drawString(g, AstroBiz.WIDTH - (this.manufacturersAvailable.elementAt(i).getName().length() * 16), 0, this.manufacturersAvailable.elementAt(i).getName());
+				}
+				else textUtilities.boxText(g, this.manufacturersAvailable.elementAt(i).getX(), this.manufacturersAvailable.elementAt(i).getY(), 4, Color.darkGray, Color.black, this.manufacturersAvailable.elementAt(i).getSymbol());
 			}
-			else textUtilities.boxText(g, this.manufacturersAvailable.elementAt(i).getX(), this.manufacturersAvailable.elementAt(i).getY(), 4, Color.darkGray, Color.black, this.manufacturersAvailable.elementAt(i).getSymbol());
 		}
 	}
 	
 	private void cycleOptionDown(){
 		int maxOpt = 0;
 		if(regionVm == REGIONVM.VM_BUY_SELECT_MFG){
-			maxOpt = manufacturersAvailable.size() - 1;
-			if(selectedOption < maxOpt) selectedOption++;
-			else selectedOption = 0;
+			for(int i = 0; i < manufacturersAvailable.size(); i++){
+				if(manufacturersAvailable.elementAt(i).getModeslAvailable(ab.getScenario()).size() > 0) maxOpt++;
+			}
+			if(selectedOption > 0) selectedOption--;
+			else selectedOption = maxOpt - 1;
 		}
 		if(regionVm == REGIONVM.VM_REGION){
 			if(selectedOption < 6) selectedOption += 6;
@@ -294,10 +306,11 @@ public class RegionView {
 	private void cycleOptionLeft(){
 		int maxOpt = 0;
 		if(regionVm == REGIONVM.VM_BUY_SELECT_MFG){
-			maxOpt = manufacturersAvailable.size() - 1;
+			for(int i = 0; i < manufacturersAvailable.size(); i++){
+				if(manufacturersAvailable.elementAt(i).getModeslAvailable(ab.getScenario()).size() > 0) maxOpt++;
+			}
 			if(selectedOption > 0) selectedOption--;
-			else selectedOption = maxOpt;
-			
+			else selectedOption = maxOpt - 1;
 		}
 		if(regionVm == REGIONVM.VM_REGION){
 			if(selectedOption < 12){
@@ -311,8 +324,10 @@ public class RegionView {
 	private void cycleOptionRight(){
 		int maxOpt = 0;
 		if(regionVm == REGIONVM.VM_BUY_SELECT_MFG){
-			maxOpt = manufacturersAvailable.size() - 1;
-			if(selectedOption < maxOpt) selectedOption++;
+			for(int i = 0; i < manufacturersAvailable.size(); i++){
+				if(manufacturersAvailable.elementAt(i).getModeslAvailable(ab.getScenario()).size() > 0) maxOpt++;
+			}
+			if(selectedOption < maxOpt - 1) selectedOption++;
 			else selectedOption = 0;
 		}
 		if(regionVm == REGIONVM.VM_REGION){
@@ -327,9 +342,11 @@ public class RegionView {
 	private void cycleOptionUp(){
 		int maxOpt = 0;
 		if(this.regionVm == REGIONVM.VM_BUY_SELECT_MFG){
-			maxOpt = manufacturersAvailable.size() - 1;
-			if(selectedOption > 0) selectedOption--;
-			else selectedOption = maxOpt;
+			for(int i = 0; i < manufacturersAvailable.size(); i++){
+				if(manufacturersAvailable.elementAt(i).getModeslAvailable(ab.getScenario()).size() > 0) maxOpt++;
+			}
+			if(selectedOption < maxOpt - 1) selectedOption++;
+			else selectedOption = 0;
 		}
 		if(this.regionVm == REGIONVM.VM_REGION){
 			if (selectedOption > 5) selectedOption -= 6;

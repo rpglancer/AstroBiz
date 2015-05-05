@@ -14,15 +14,6 @@ public class Manufacturer {
 	private int x = 0;
 	private int y = 0;
 	
-//	public Manufacturer(int index){
-//		this.name = ManufacturerInformation.names[index];
-//		this.yearDissolved = ManufacturerInformation.yearsDissolved[index];
-//		this.yearIncorporated = ManufacturerInformation.yearsIncorporated[index];
-//		this.x = ManufacturerInformation.locationsX[index];
-//		this.y = ManufacturerInformation.locationsY[index];
-//		loadModels();
-//	}
-	
 	public Manufacturer(MI mi){
 		this.name = mi.getCorpName();
 		this.symbol = mi.getSymbol();
@@ -70,15 +61,10 @@ public class Manufacturer {
 	}
 	
 	public void loadModels(){
-		switch(this.symbol){
-		case "DCO":
-			for(CI ci : CI.values()){
-				if(ci.getMfg() == this.symbol){
-					SpaceCraft temp = new SpaceCraft(ci);
-					this.models.addElement(temp);
-				}
+		for(CI ci : CI.values()){
+			if(ci.getMfg() == this.symbol){
+				this.models.addElement(new SpaceCraft(ci));
 			}
-			break;
 		}
 	}
 }

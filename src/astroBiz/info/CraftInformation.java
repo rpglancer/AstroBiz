@@ -9,7 +9,9 @@ package astroBiz.info;
 public class CraftInformation {
 	public static enum CI{
 //		enumval (symbol, name, intro, retire, speed, range, capacity, fuelE, maintR, cost, col, row		//
-		DCO_X1 ("DCO", "X-1", 2200, 2260, 100, 0.05, 10, 65, 80, 7200, 1, 1);
+		DCO_X1 		("DCO", "X-1", 2200, 2260, 100, 0.05, 10, 65, 80, 7200, 1, 1),
+		DCO_X2 		("DCO", "X-2", 2200, 2260, 100, 0.10, 25, 70, 75, 9500, 1, 1),
+		GHI_LW1		("GHI", "LW-1", 2200, 2260, 85, 0.10, 30, 60, 85, 10000, 1, 1);
 		
 		private final String mfg;
 		private final String name;
