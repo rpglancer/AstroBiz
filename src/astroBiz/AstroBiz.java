@@ -29,7 +29,7 @@ public class AstroBiz extends Canvas implements Runnable{
 	public static final int VERSION = 0;
 	public static final int MAJOR = 0;
 	public static final int MINOR = 2;
-	public static final int PATCH = 0;
+	public static final int PATCH = 1;
 	public final String TITLE = "AstroBiz Prototype version " + VERSION + "." + MAJOR + "." + MINOR + "." + PATCH;
 
 	/*

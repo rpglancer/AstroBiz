@@ -68,6 +68,7 @@ public class ScenarioView {
 	private int businessSelect = 0;
 	private int colorSelect = 0;
 	private int optionSelect = 0;
+	private int previousOption = optionSelect;
 	private int scenarioPlayerConfigure = 0;		// The number of the player being configured.
 	private int scenarioPlayersToConfigure = 0;		// The total number of players to be configured.
 	/**
@@ -714,20 +715,29 @@ public class ScenarioView {
 				break;
 			}
 			break;
+			
 		case KeyEvent.VK_BACK_SPACE:
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME_SELECT){
 				if(businessNameBuffer.length() == 0) break;
 				else businessNameBuffer = textUtilities.deleteEndChar(businessNameBuffer);
 			}
 			break;
+			
 		case KeyEvent.VK_ESCAPE:
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR) scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_CONFIG;
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME) scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_CONFIG;
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ){
-				if(hqPlacementView == HQPLACEMENTVIEW.WORLD) scenarioViewMode = SCENARIOVIEWMODE.VM_PLYR_SELECT;
-				else if(hqPlacementView == HQPLACEMENTVIEW.REGION) hqPlacementView = HQPLACEMENTVIEW.WORLD;
+				if(hqPlacementView == HQPLACEMENTVIEW.WORLD){
+					scenarioViewMode = SCENARIOVIEWMODE.VM_PLYR_SELECT;
+					optionSelect = 0;
+				}
+				else if(hqPlacementView == HQPLACEMENTVIEW.REGION){
+					optionSelect = previousOption;
+					hqPlacementView = HQPLACEMENTVIEW.WORLD;
+				}
 			}
 			break;
+			
 		case KeyEvent.VK_DOWN:
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR) cycleBusinessNext();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT) cycleColorNext();
@@ -801,6 +811,7 @@ public class ScenarioView {
 				if(hqPlacementView == HQPLACEMENTVIEW.WORLD){
 					loadRegionMap(AstroBiz.worldMap);
 					loadLocationVector(ab.getRegion().getLocationVector());
+					previousOption = optionSelect;
 					hqPlacementView = HQPLACEMENTVIEW.REGION;
 				}
 				else if(hqPlacementView == HQPLACEMENTVIEW.REGION){
@@ -834,20 +845,12 @@ public class ScenarioView {
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT) decreaseColor();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_CONFIRM) yesNo = true;
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ) cycleOptionPrev();
-	//		else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ){
-	//			if(hqPlacementView == HQPLACEMENTVIEW.WORLD) cycleRegionPrev();
-	//			else if(hqPlacementView == HQPLACEMENTVIEW.REGION) cycleLocationPrev();
-	//		}
 			break;
 		case KeyEvent.VK_RIGHT:
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_CONFIG) cycleBcoNext();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT) increaseColor();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_CONFIRM) yesNo = false;
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ) cycleOptionNext();
-	//		else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ){
-	//			if(hqPlacementView == HQPLACEMENTVIEW.WORLD) cycleRegionNext();
-	//			else if(hqPlacementView == HQPLACEMENTVIEW.REGION) cycleLocationNext();
-	//		}
 			break;
 		case KeyEvent.VK_UP:
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR) cycleBusinessPrev();
