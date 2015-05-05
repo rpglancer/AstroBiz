@@ -9,7 +9,7 @@ import astroBiz.info.CraftInformation.CI;
  * @author Matt Bangert
  *
  */
-public class SpaceCraft {
+public class SpaceCraft{
 	// TODO: Remove craft from all these variable names.
 	private int cost = 0;
 	private String craftName;
@@ -34,6 +34,17 @@ public class SpaceCraft {
 		this.range = ci.getRange();
 		this.craftSpeed = ci.getSpeed();
 		this.fuelE = ci.getFuelE();
+	}
+	SpaceCraft(SpaceCraft sc){
+		this.cost = sc.cost;
+		this.craftName = sc.craftName;
+		this.craftYearIntroduced = sc.craftYearIntroduced;
+		this.craftYearRetired = sc.craftYearRetired;
+		this.craftCapacity = sc.craftCapacity;
+		this.maintenanceRating = sc.maintenanceRating;
+		this.range = sc.range;
+		this.craftSpeed = sc.craftSpeed;
+		this.fuelE = sc.fuelE;
 	}
 	
 	public int getCost(){

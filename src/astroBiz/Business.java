@@ -49,6 +49,10 @@ public class Business {
 		return spaceCraftHangar.get(index);
 	}
 	
+	public Vector<SpaceCraft> getHangar(){
+		return this.spaceCraftHangar;
+	}
+	
 	public int getCraftInHangar(SpaceCraft type){
 		int count = 0;
 		if(spaceCraftHangar.size() == 0) return count;

@@ -4,6 +4,8 @@ import java.util.Vector;
 
 import astroBiz.info.ManufacturerInformation.MI;
 import astroBiz.info.ScenarioInformation.SI;
+import astroBiz.lib.Message;
+import astroBiz.lib.Queue;
 
 /**
  * Contains the information about the currently active scenario.
@@ -28,6 +30,8 @@ public class Scenario {
 	private Vector<Manufacturer> scenarioManufacturers = new Vector<Manufacturer>();
 	private Vector<Manufacturer> scenarioManufacturersAvailable = new Vector<Manufacturer>();
 	
+	private static Queue msgQueue = new Queue();
+	
 	public Scenario(){
 		for(int i = 0; i < 4; i++){
 			Business b = new Business();
@@ -41,6 +45,17 @@ public class Scenario {
 		for(MI mi : MI.values()){
 			scenarioManufacturers.addElement(new Manufacturer(mi));
 		}
+	}
+	
+	public void endTurn(){
+		if(scenarioQuarter == 4){
+			scenarioQuarter = 1;
+			scenarioCurrentYear++;
+		}
+		else scenarioQuarter++;
+		if(activeBusiness == 3) activeBusiness = 0;
+		else activeBusiness++;
+		processQueue();
 	}
 	
 	public Vector<Business> getBusinesses(){
@@ -62,6 +77,10 @@ public class Scenario {
 	
 	public int getCurrentYear(){
 		return this.scenarioCurrentYear;
+	}
+	
+	public int getQuarter(){
+		return this.scenarioQuarter;
 	}
 	
 	public String getScenarioName(){
@@ -112,6 +131,33 @@ public class Scenario {
 			scenarioCurrentYear = scenarioStartingYear;
 			scenarioQuarter = 1;
 			updateManufacturersAvailable();
+		}
+	}
+	
+	public void placeOrder(Business busi, Manufacturer mfg, SpaceCraft sc, int qty){
+		msgQueue.addMsg(new Message(busi, mfg, sc, qty, this.getCurrentYear(), this.getQuarter()));
+	}
+	
+	private void processQueue(){
+		for(int i = 0; i < msgQueue.getQueueSize(); i++){
+			Message msg = msgQueue.getMessage(i);
+			switch(msg.getType()){
+			case MSG_NEGOTIATE:
+				break;
+			case MSG_ORDER:
+				if(msg.getBusiness() == this.scenarioBusinesses.elementAt(activeBusiness)){
+					int qty = msg.getVar()[0];
+					int year = msg.getVar()[1];
+					int qtr = msg.getVar()[2];
+					if(qtr < this.scenarioQuarter || year < this.scenarioCurrentYear){
+						for(int add = 0; add < qty; add++){
+							msg.getBusiness().addCraft(new SpaceCraft(msg.getCraft()));
+						}
+						msgQueue.removeMsg(msg);
+					}
+				}
+				break;
+			}
 		}
 	}
 	

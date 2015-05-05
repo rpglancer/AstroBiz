@@ -312,6 +312,10 @@ public class RegionView {
 			if(selectedOption > 0) selectedOption--;
 			else selectedOption = maxOpt - 1;
 		}
+		if(regionVm == REGIONVM.VM_BUY_SELECT_MODEL){
+			maxOpt = selectedManufacturer.getModeslAvailable(ab.getScenario()).size() - 1;
+			if(selectedOption > 0) selectedOption--;
+		}
 		if(regionVm == REGIONVM.VM_REGION){
 			if(selectedOption < 12){
 				if(selectedOption == 6) return;
@@ -329,6 +333,10 @@ public class RegionView {
 			}
 			if(selectedOption < maxOpt - 1) selectedOption++;
 			else selectedOption = 0;
+		}
+		if(regionVm == REGIONVM.VM_BUY_SELECT_MODEL){
+			maxOpt = selectedManufacturer.getModeslAvailable(ab.getScenario()).size() - 1;
+			if(selectedOption < maxOpt) selectedOption++;
 		}
 		if(regionVm == REGIONVM.VM_REGION){
 			if(selectedOption < 12){
@@ -355,11 +363,11 @@ public class RegionView {
 	
 	public void keyAction(KeyEvent e){
 		switch(e.getKeyCode()){
-
 		case KeyEvent.VK_DOWN:
 			if(regionVm == REGIONVM.VM_BUY_SELECT_MFG) cycleOptionDown();
 			else if(regionVm == REGIONVM.VM_REGION)cycleOptionDown();
 			break;
+			
 		case KeyEvent.VK_ENTER:
 			if(regionVm == REGIONVM.VM_BUY_SELECT_MFG){
 				previousOption = selectedOption;
@@ -368,16 +376,10 @@ public class RegionView {
 				regionVm = REGIONVM.VM_BUY_SELECT_MODEL;
 				resetSelectedOpt();
 			}
-			else if(regionVm == REGIONVM.VM_REGION){
-				previousOption = selectedOption;
-				regionVmPrevious = regionVm;
-				if(selectedOption == 3){	// Buy Vehicles
-					this.manufacturersAvailable.clear();
-					this.manufacturersAvailable = ab.getScenario().getManufacturersAvailable();
-					regionVm = REGIONVM.VM_BUY_SELECT_MFG;
-					resetSelectedOpt();
-				}
-			}	
+			else if(regionVm == REGIONVM.VM_BUY_SELECT_MODEL){
+				resetSelectedOpt();
+			}
+			else if(regionVm == REGIONVM.VM_REGION) processButton();
 			
 			break;
 		case KeyEvent.VK_ESCAPE:
@@ -390,16 +392,21 @@ public class RegionView {
 				resetSelectedOpt();
 			}
 			break;
+			
 		case KeyEvent.VK_LEFT:
 			if(regionVm == REGIONVM.VM_BUY_SELECT_MFG) cycleOptionLeft();
+			else if(regionVm == REGIONVM.VM_BUY_SELECT_MODEL) cycleOptionLeft();
 			else if(regionVm == REGIONVM.VM_REGION)cycleOptionLeft();
 			break;
+			
 		case KeyEvent.VK_UP:
 			if(regionVm == REGIONVM.VM_BUY_SELECT_MFG) cycleOptionUp();
 			else if(regionVm == REGIONVM.VM_REGION)cycleOptionUp();
 			break;
+			
 		case KeyEvent.VK_RIGHT:
 			if(regionVm == REGIONVM.VM_BUY_SELECT_MFG) cycleOptionRight();
+			else if(regionVm == REGIONVM.VM_BUY_SELECT_MODEL) cycleOptionRight();
 			else if(regionVm == REGIONVM.VM_REGION)cycleOptionRight();
 			break;
 		default:
@@ -421,6 +428,34 @@ public class RegionView {
 	
 	public Vector<Location> getLocationVector(){
 		return this.mapLocations;
+	}
+	
+	private void processButton(){
+		previousOption = selectedOption;
+		regionVmPrevious = regionVm;
+		// Open Route
+		if(selectedOption == 1);
+		// Adjust Route
+		else if(selectedOption == 2);
+		// Buy Vehicles
+		else if(selectedOption == 3){
+			this.manufacturersAvailable.clear();
+			this.manufacturersAvailable = ab.getScenario().getManufacturersAvailable();
+			regionVm = REGIONVM.VM_BUY_SELECT_MFG;
+			resetSelectedOpt();
+		}
+		else if(selectedOption == 4);
+		else if(selectedOption == 5);
+		else if(selectedOption == 6);
+		else if(selectedOption == 7);
+		else if(selectedOption == 8);
+		else if(selectedOption == 9);
+		else if(selectedOption == 10);
+		// End Turn
+		else if(selectedOption == 11){
+			ab.getScenario().endTurn();
+			resetSelectedOpt();
+		}
 	}
 	
 	private void resetSelectedOpt(){
