@@ -1,8 +1,8 @@
-package astroBiz;
+package astroBiz.lib;
 import java.awt.image.BufferedImage;
 import java.util.Random;
-import java.util.Vector;
 
+import astroBiz.AstroBiz;
 import astroBiz.info.LocationInformation;
 import astroBiz.info.LocationInformation.LI;
 

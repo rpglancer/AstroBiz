@@ -1,11 +1,9 @@
-package astroBiz;
+package astroBiz.lib;
 
 import java.util.Vector;
 
 import astroBiz.info.ManufacturerInformation.MI;
 import astroBiz.info.ScenarioInformation.SI;
-import astroBiz.lib.Message;
-import astroBiz.lib.Queue;
 
 /**
  * Contains the information about the currently active scenario.

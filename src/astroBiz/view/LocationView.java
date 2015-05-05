@@ -5,7 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 
 import astroBiz.AstroBiz;
-import astroBiz.Location;
+import astroBiz.lib.Location;
 import astroBiz.util.textUtilities;
 
 public class LocationView {

@@ -1,4 +1,4 @@
-package astroBiz;
+package astroBiz.lib;
 
 import java.awt.image.BufferedImage;
 
@@ -24,7 +24,7 @@ public class SpaceCraft{
 	private int craftYearRetired = 0;		// The year production of the craft was ceased by the Manufacturer.
 	private BufferedImage sprite;
 	
-	SpaceCraft(CI ci){
+	public SpaceCraft(CI ci){
 		this.cost = ci.getCost();
 		this.craftName = ci.getName();
 		this.craftYearIntroduced = ci.getIntro();
@@ -35,7 +35,7 @@ public class SpaceCraft{
 		this.craftSpeed = ci.getSpeed();
 		this.fuelE = ci.getFuelE();
 	}
-	SpaceCraft(SpaceCraft sc){
+	public SpaceCraft(SpaceCraft sc){
 		this.cost = sc.cost;
 		this.craftName = sc.craftName;
 		this.craftYearIntroduced = sc.craftYearIntroduced;

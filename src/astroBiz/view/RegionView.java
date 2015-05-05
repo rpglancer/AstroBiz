@@ -8,11 +8,11 @@ import java.awt.image.BufferedImage;
 import java.util.Vector;
 
 import astroBiz.AstroBiz;
-import astroBiz.Business;
-import astroBiz.Location;
-import astroBiz.Manufacturer;
-import astroBiz.SpaceCraft;
 import astroBiz.info.LocationInformation.LI;
+import astroBiz.lib.Business;
+import astroBiz.lib.Location;
+import astroBiz.lib.Manufacturer;
+import astroBiz.lib.SpaceCraft;
 import astroBiz.util.ImageUtilities;
 import astroBiz.util.textUtilities;
 

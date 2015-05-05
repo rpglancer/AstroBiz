@@ -1,4 +1,4 @@
-package astroBiz;
+package astroBiz.lib;
 
 import java.awt.image.BufferedImage;
 

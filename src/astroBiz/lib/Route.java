@@ -1,4 +1,4 @@
-package astroBiz;
+package astroBiz.lib;
 
 import java.util.Vector;
 
@@ -78,7 +78,7 @@ public class Route{
 		else return craft.elementAt(0).getName();
 	}
 
-	Location getRouteDestination(){
+	public Location getRouteDestination(){
 		return routeDestination;
 	}
 	

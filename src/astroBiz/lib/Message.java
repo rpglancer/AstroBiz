@@ -1,9 +1,5 @@
 package astroBiz.lib;
 
-import astroBiz.Business;
-import astroBiz.Location;
-import astroBiz.Manufacturer;
-import astroBiz.SpaceCraft;
 
 public class Message {
 	private MSGTYPE msgType;

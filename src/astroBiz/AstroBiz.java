@@ -10,6 +10,8 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 
+import astroBiz.lib.Scenario;
+import astroBiz.lib.SpriteSheet;
 import astroBiz.util.BufferedImageLoader;
 import astroBiz.util.textUtilities;
 import astroBiz.view.LocationView;

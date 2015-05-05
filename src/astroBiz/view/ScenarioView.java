@@ -9,11 +9,11 @@ import java.util.Vector;
 
 import astroBiz.AstroBiz;
 import astroBiz.AstroBiz.STATE;
-import astroBiz.Location;
-import astroBiz.Location.LOCATIONTYPE;
-import astroBiz.Scenario;
-import astroBiz.SpriteSheet;
 import astroBiz.info.ScenarioInformation.SI;
+import astroBiz.lib.Location;
+import astroBiz.lib.Location.LOCATIONTYPE;
+import astroBiz.lib.Scenario;
+import astroBiz.lib.SpriteSheet;
 import astroBiz.util.textUtilities;
 
 /**

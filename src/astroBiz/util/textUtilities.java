@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import astroBiz.AstroBiz;
-import astroBiz.SpriteSheet;
+import astroBiz.lib.SpriteSheet;
 
 /**
  * All non-standard methods for doing things to Strings go in this class.

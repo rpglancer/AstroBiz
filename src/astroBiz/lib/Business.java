@@ -1,4 +1,4 @@
-package astroBiz;
+package astroBiz.lib;
 import java.awt.Color;
 import java.util.Vector;
 
@@ -24,16 +24,16 @@ public class Business {
 	/**
 	 * Default constructor to make a new Business.
 	 */
-	Business(){
+	public Business(){
 		this.regionalHubs = new Vector<Location>();
 		this.spaceCraftHangar = new Vector<SpaceCraft>();
 	}
 	
-	void addCraft(SpaceCraft sc){
+	public void addCraft(SpaceCraft sc){
 		this.spaceCraftHangar.addElement(sc);
 	}
 
-	void addBusinessAccountBalance(int amount){
+	public void addBusinessAccountBalance(int amount){
 		accountBalance += amount;
 	}
 	
@@ -93,7 +93,7 @@ public class Business {
 		return this.businessName;
 	}
 	
-	void setColor(Business business, int r, int g, int b){
+	public void setColor(Business business, int r, int g, int b){
 		business.businessColor = new Color(r,g,b);
 	}
 	
