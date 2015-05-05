@@ -8,9 +8,10 @@ import java.awt.image.BufferedImage;
 import java.util.Vector;
 
 import astroBiz.AstroBiz;
+import astroBiz.Business;
 import astroBiz.Location;
 import astroBiz.Manufacturer;
-import astroBiz.info.LocationInformation;
+import astroBiz.SpaceCraft;
 import astroBiz.info.LocationInformation.LI;
 import astroBiz.util.ImageUtilities;
 import astroBiz.util.textUtilities;
@@ -24,7 +25,9 @@ public class RegionView {
 	private static enum REGIONVM{
 		VM_BRIEFING,
 		VM_BUY,
+		VM_BUY_SELECT_MODEL,
 		VM_BUY_SELECT_MFG,
+		VM_BUY_SELECT_QTY,
 		VM_REGION,
 	}
 
@@ -32,6 +35,7 @@ public class RegionView {
 	private REGIONVM regionVmPrevious = regionVm;
 	private Vector<Location> mapLocations = new Vector<Location>();
 	private Vector<Manufacturer> manufacturersAvailable = new Vector<Manufacturer>();
+	private Manufacturer selectedManufacturer;
 	private byte activeRegion = 2;
 	private int selectedOption = 0;
 	private int previousOption = selectedOption;
@@ -61,7 +65,8 @@ public class RegionView {
 	}
 	
 	public void render(Graphics g){
-		if(regionVm == REGIONVM.VM_BUY_SELECT_MFG) drawBuySelectMfg(g);
+		if(regionVm == REGIONVM.VM_BUY_SELECT_MODEL) drawBuySelectModel(g);
+		else if(regionVm == REGIONVM.VM_BUY_SELECT_MFG) drawBuySelectMfg(g);
 		else if(regionVm == REGIONVM.VM_REGION){
 			g.setColor(ab.getScenario().getBusinesses().elementAt(ab.getScenario().getActiveBusiness()).getColor());
 			g.fillRect(32, 0, ab.getScenario().getBusinesses().elementAt(ab.getScenario().getActiveBusiness()).getName().length() * 16, 32);
@@ -98,8 +103,7 @@ public class RegionView {
 				}
 			}
 			buttonHilight(g);
-		}
-		
+		}		
 		g.dispose();
 	}
 	
@@ -162,6 +166,106 @@ public class RegionView {
 		g.setColor(Color.BLACK);
 		g.fillOval(41, 369, 15, 15);
 		
+	}
+	
+	private void drawBuySelectModel(Graphics g){
+		SpaceCraft temp = selectedManufacturer.getModeslAvailable(ab.getScenario()).elementAt(selectedOption);
+		Business busi = ab.getScenario().getBusinesses().elementAt(ab.getScenario().getActiveBusiness());
+		int strlen = 0;
+		
+		//	Background
+		g.setColor(Color.darkGray);
+		g.fillRect(32, 32, 736, 288);
+		
+		//	Manufacturer Name Box
+		g.setColor(Color.gray);
+		g.fillRect(160, 64, 480, 32);
+		strlen = selectedManufacturer.getName().length() * 16;
+		textUtilities.drawString(g, 640 - strlen, 72, selectedManufacturer.getName());
+		
+		//	Selected Model Picture Box
+		g.setColor(Color.blue);
+		g.fillRect(160, 96, 192, 128);
+		textUtilities.drawString(g, 160, 208, temp.getName());
+		
+		//	Range Box
+		g.setColor(Color.gray);
+		g.fillRect(384, 96, 96, 32);
+		textUtilities.drawString(g, 384, 96 + 8, "Range:");
+		
+		//	Range Value Box
+		g.setColor(Color.black);
+		g.fillRect(480, 96, 160, 32);
+		strlen = (temp.getRange() + "AU").length() * 16;
+		textUtilities.drawString(g, 640 - strlen, 96 + 8, temp.getRange() + "AU");
+
+		//	Capacity Box
+		g.setColor(Color.gray);
+		g.fillRect(384, 128, 96, 32);
+		textUtilities.drawString(g, 384, 128 + 8, "Seats:");
+		
+		// Capacity Value Box
+		g.setColor(Color.black);
+		g.fillRect(480, 128, 160, 32);
+		strlen = (temp.getCraftCapacity() + "s").length() * 16;
+		textUtilities.drawString(g, 640 - strlen, 128 + 8, temp.getCraftCapacity() + "s");
+		
+		//	Fuel Efficiency
+		g.setColor(Color.gray);
+		g.fillRect(384, 160, 64, 32);
+		textUtilities.drawString(g, 384, 160 + 8, "F/E:");
+		
+		//	Fuel Efficiency Value Box
+		g.setColor(Color.black);
+		g.fillRect(448, 160, 64, 32);
+		strlen = (temp.getFuelE() +"").length() * 16;
+		textUtilities.drawString(g, 512 - strlen, 160 + 8, temp.getFuelE() + "");
+		
+		//	Reliability
+		g.setColor(Color.gray);
+		g.fillRect(512, 160, 64, 32);
+		textUtilities.drawString(g, 512, 160 + 8, "M/R:");
+		
+		//	Reliability Value Box
+		g.setColor(Color.black);
+		g.fillRect(576, 160, 64, 32);
+		strlen = (temp.getMaintR() + "").length() * 16;
+		textUtilities.drawString(g, 640 - strlen, 160 + 8, temp.getMaintR() + "");
+		
+		//	# in Use
+		g.setColor(Color.gray);
+		g.fillRect(384, 192, 64, 32);
+		textUtilities.drawString(g, 384, 192 + 8, "#USE");
+		
+		//	# in Use Value Box
+		g.setColor(Color.black);
+		g.fillRect(448, 192, 64, 32);
+		strlen = (busi.getCraftInService(temp) + "").length() * 16;
+		textUtilities.drawString(g, 512 - strlen, 192 + 8, busi.getCraftInService(temp) + "");
+		
+		//	# Hangar
+		g.setColor(Color.gray);
+		g.fillRect(512, 192, 64, 32);
+		textUtilities.drawString(g, 512, 192 + 8, "#HGR");
+		
+		//	# in Hangar Value Box
+		g.setColor(Color.black);
+		g.fillRect(576, 192, 64, 32);
+		strlen = (busi.getCraftInHangar(temp) + "").length() * 16;
+		textUtilities.drawString(g, 640 - strlen, 192 + 8, busi.getCraftInHangar(temp) + "");
+		
+		//	Footer Box
+		g.setColor(Color.gray);
+		g.fillRect(160, 224, 480, 32);
+		textUtilities.drawString(g, 160, 224 + 8, "Introduced: " + temp.getYearIntroduced());
+		strlen = ("Cost: " + temp.getCost() + "K").length() * 16;
+		textUtilities.drawString(g, 640 - strlen, 224 + 8, "Cost: " + temp.getCost() + "K");
+		
+		//	Corporate Box
+		g.setColor(busi.getColor());
+		g.fillRect(352, 256, 288, 32);
+		strlen = ("Balance: " + busi.getAccountBalance() + "K").length() * 16;
+		textUtilities.drawString(g, 640 - strlen, 256 + 8, "Balance: " + busi.getAccountBalance() + "K");
 	}
 	
 	private void drawBuySelectMfg(Graphics g){
@@ -240,22 +344,34 @@ public class RegionView {
 			else if(regionVm == REGIONVM.VM_REGION)cycleOptionDown();
 			break;
 		case KeyEvent.VK_ENTER:
-			if(regionVm == REGIONVM.VM_REGION){
+			if(regionVm == REGIONVM.VM_BUY_SELECT_MFG){
+				previousOption = selectedOption;
+				regionVmPrevious = regionVm;
+				selectMfg(selectedOption);
+				regionVm = REGIONVM.VM_BUY_SELECT_MODEL;
+				resetSelectedOpt();
+			}
+			else if(regionVm == REGIONVM.VM_REGION){
 				previousOption = selectedOption;
 				regionVmPrevious = regionVm;
 				if(selectedOption == 3){	// Buy Vehicles
 					this.manufacturersAvailable.clear();
-					System.out.println("manufacturersAvailable Vector cleared!");
 					this.manufacturersAvailable = ab.getScenario().getManufacturersAvailable();
-					System.out.println("Got " + this.manufacturersAvailable.size() + " elements for manufacturersAvailable Vector!");
 					regionVm = REGIONVM.VM_BUY_SELECT_MFG;
 					resetSelectedOpt();
 				}
 			}	
+			
 			break;
 		case KeyEvent.VK_ESCAPE:
-			regionVm = regionVmPrevious;
-			selectedOption = previousOption;
+			if(regionVm == REGIONVM.VM_BUY_SELECT_MODEL){
+				regionVm = REGIONVM.VM_BUY_SELECT_MFG;
+				selectedOption = previousOption;
+			}
+			else if(regionVm == REGIONVM.VM_BUY_SELECT_MFG){
+				regionVm = REGIONVM.VM_REGION;
+				resetSelectedOpt();
+			}
 			break;
 		case KeyEvent.VK_LEFT:
 			if(regionVm == REGIONVM.VM_BUY_SELECT_MFG) cycleOptionLeft();
@@ -292,6 +408,10 @@ public class RegionView {
 	
 	private void resetSelectedOpt(){
 		this.selectedOption = 0;
+	}
+	
+	private void selectMfg(int index){
+		this.selectedManufacturer = this.manufacturersAvailable.elementAt(index);
 	}
 
 }

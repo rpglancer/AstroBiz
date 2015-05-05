@@ -14,7 +14,7 @@ public class Business {
 	private double advertisingCosts = 0;
 	private double maintenanceCosts = 0;
 	private double serviceCosts = 0;
-	private	Vector<SpaceCraft> spaceCraftHangar = null;
+	private	Vector<SpaceCraft> spaceCraftHangar = new Vector<SpaceCraft>();
 	private Location headQuarters = null;
 	private Vector<Location> regionalHubs = null;
 	
@@ -47,6 +47,30 @@ public class Business {
 	
 	SpaceCraft getCraft(int index){
 		return spaceCraftHangar.get(index);
+	}
+	
+	public int getCraftInHangar(SpaceCraft type){
+		int count = 0;
+		if(spaceCraftHangar.size() == 0) return count;
+		else{
+			for(int i = 0; i < spaceCraftHangar.size(); i++){
+				if(spaceCraftHangar.elementAt(i).getName() == type.getName()) count++;
+			}
+		}
+		return count;
+	}
+	
+	public int getCraftInService(SpaceCraft type){
+		int count = 0;
+		if(businessRoutes.size() == 0) return count;
+		else{
+			for(int i = 0; i < businessRoutes.size(); i++){
+				if(businessRoutes.elementAt(i).getCraftModel() == type.getName()){
+					count += businessRoutes.elementAt(i).getCraftCount();
+				}
+			}
+		}
+		return count;
 	}
 	
 	public Vector<Location> getHubs(){

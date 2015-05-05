@@ -1,12 +1,8 @@
 package astroBiz.info;
 
-import java.awt.image.BufferedImage;
 
-// All craft can be merged into a single enum, it just has to include the MFG
-// so that when populating the manufacturer craft list it can search for itself.
-// Use the ticker symbol rather than the long name to keep things simple.
 /**
- * Contains all the information for SpaceCraft.
+ * Contains all the information to be loaded into a SpaceCraft object.
  * @author Matt Bangert
  *
  */

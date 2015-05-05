@@ -1,5 +1,7 @@
 package astroBiz;
 
+import java.util.Vector;
+
 /**
  * Contains all the information required for a route to operate for a Business.
  * @author Matt Bangert
@@ -7,13 +9,17 @@ package astroBiz;
  */
 public class Route{
 
+	private Vector<SpaceCraft> craft = new Vector<SpaceCraft>();
+	@Deprecated
 	private SpaceCraft routeCraft;
 	private int routeDistance;
+	@Deprecated
 	private int routeCraftNumber;
 	private int routeFlightsPerWeek;
-	private Location routeDestination;
+
 	private int routeFare;
 	private Location routeHome;
+	private Location routeDestination;
 	
 	Route(){
 		routeCraft = null;
@@ -41,7 +47,7 @@ public class Route{
 		routeDistance = calcRouteDistance(this);
 	}
 	
-	int calcRouteDistance(Route r){
+	private int calcRouteDistance(Route r){
 		int d = 0;
 		if(r.routeHome == null || r.routeDestination == null){
 			return 0;
@@ -62,11 +68,14 @@ public class Route{
 		}
 		
 	}
-	SpaceCraft getRouteCraft(){
-		return routeCraft;
-	}	
-	int getRouteCraftNumber(){
-		return routeCraftNumber;
+	
+	public int getCraftCount(){
+		return craft.size();
+	}
+	
+	public String getCraftModel(){
+		if(craft.size() == 0) return null;
+		else return craft.elementAt(0).getName();
 	}
 
 	Location getRouteDestination(){

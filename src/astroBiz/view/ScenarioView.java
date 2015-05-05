@@ -800,7 +800,6 @@ public class ScenarioView {
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ){
 				if(hqPlacementView == HQPLACEMENTVIEW.WORLD){
 					loadRegionMap(AstroBiz.worldMap);
-					System.out.println("Region Location Vector Size: " + ab.getRegion().getLocationVector().size());
 					loadLocationVector(ab.getRegion().getLocationVector());
 					hqPlacementView = HQPLACEMENTVIEW.REGION;
 				}
