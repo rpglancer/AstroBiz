@@ -31,7 +31,7 @@ public class MainMenu {
 	
 	private MENUSELECT menuSelect = MENUSELECT.NEWGAME;
 	
-	public void render(Graphics g){	
+	public void render(Graphics g){
 		g2d = (Graphics2D) g;
 		g.setFont(fnt0);
 		g.setColor(Color.white);

@@ -4,7 +4,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
@@ -92,6 +94,10 @@ public class textUtilities{
 		textMap.put('{', new Point(7,11)); textMap.put('}', new Point(8,11));
 	}
 
+	//////////////////////////////////
+	//	SpriteSheet based Methods	//
+	//////////////////////////////////
+	@Deprecated
 	/**
 	 * Create a single-line text box
 	 * @param g	(Graphics) Graphics to draw it with
@@ -114,7 +120,7 @@ public class textUtilities{
 		g.fillRoundRect(x, y, boxwidth, charHeight, borderwidth/2, borderwidth/2);
 		drawString(g, x, y, text);
 	}
-	
+	@Deprecated
 	/**
 	 * Change the color of the default sprite-based text.
 	 * @param img	(BufferedImage)	The sprite text character to be changed in color.
@@ -136,7 +142,7 @@ public class textUtilities{
 			}
 		return temp;
 	}
-	
+	@Deprecated
 	/**
 	 * Method to draw a sprite based text string to the screen.
 	 * @param g	(Graphics) The desired Graphics buffer.
@@ -153,7 +159,7 @@ public class textUtilities{
 			x+=charWidth;
 		}
 	}
-
+	@Deprecated
 	/**
 	 * Method to draw a sprite based string of the specified color.
 	 * @param g	(Graphics) The desired Graphics buffer.
@@ -170,7 +176,7 @@ public class textUtilities{
 			x+=charWidth;
 		}
 	}
-
+	@Deprecated
 	/**
 	 * Method to draw sprite based text across multiple lines.
 	 * @param g	(Graphics) The desired Graphics buffer.
@@ -203,7 +209,7 @@ public class textUtilities{
 			}
 		}
 	}
-
+	@Deprecated
 	/**
 	 * Method to draw sprite based text of a specified color across multiple lines.
 	 * @param g (Graphics) The desired Graphics buffer.
@@ -237,7 +243,27 @@ public class textUtilities{
 			}
 		}
 	}
+
+	//////////////////////////////////////////////
+	//		Native Java String based Methods	//
+	//////////////////////////////////////////////
+	public static int getTextHeight(Graphics g, Font f, String text){
+		Graphics temp = g.create(0, 0, 800, 480);
+		FontMetrics m = g.getFontMetrics(f);
+		temp.clipRect(0, 0, m.stringWidth(text), m.getHeight());
+		Rectangle2D bounds = m.getStringBounds(text, temp);
+		int theight = (int)bounds.getHeight();
+		temp.dispose();
+		return theight;
+	}
 	
+	public static void drawStringCenterV(Graphics g, Font f, int x, int y, int height, String text){
+		FontMetrics m = g.getFontMetrics(f);
+		y += (height - getTextHeight(g,f,text)) / 2 + m.getAscent();
+		g.setFont(f);
+		g.drawString(text, x, y);
+	}
+
 	/**
 	 * Automagically splits a string over multiple lines.
 	 * <br><b>Note:</b> <i>The string must contain spaces to be split!</i><br>
@@ -249,7 +275,9 @@ public class textUtilities{
 	 * @param text	The actual string.
 	 */
 	public static void drawStringMultiLine(Graphics g, Font f, int x, int y, int lineWidth, String text){
+		g.setFont(f);
 		FontMetrics m = g.getFontMetrics(f);
+		y += m.getAscent();
 		if(m.stringWidth(text) < lineWidth){
 			g.drawString(text, x, y);
 		}
@@ -257,12 +285,12 @@ public class textUtilities{
 			String[] words = text.split(" ");
 			String currentLine = words[0];
 			for(int i = 1; i < words.length; i++){
-				if(m.stringWidth(currentLine + words[i]) < lineWidth){
+				if(m.stringWidth(currentLine + " " + words[i]) < lineWidth){
 					currentLine += " " + words[i];
 				}
 				else{
 					g.drawString(currentLine, x, y);
-					y += m.getHeight();
+					y += m.getAscent();
 					currentLine = words[i];
 				}
 			}
@@ -271,41 +299,34 @@ public class textUtilities{
 			}
 		}
 	}
-	
-	/**Method to draw a box around text.
-	 * @deprecated
-	 * <br>Use {@link #boxText(Graphics, int, int, int, Color, Color, String)}
-	 * @param g (Graphics) The graphics buffer.
-	 * @param x (int) The X coordinate of the box.
-	 * @param y (int) The Y coordinate of the box.
-	 * @param width (int) The width of the box.
-	 * @param height (int) The height of the box.
-	 */
-	@Deprecated
-	public static void drawMenuTextBox(Graphics g, int x, int y, int width, int height){
-		g.setColor(Color.darkGray);
-		g.drawRoundRect(x-8, y-8, width + 8, height + 8, 16, 16);
-	}
-	
-	/**
-	 * Method to draw text within a box.
-	 * @deprecated
-	 * <br>Use {@link #boxText(Graphics, int, int, int, Color, Color, String)}
-	 * @param g (Graphics) The graphics buffer.
-	 * @param f (Font) The desired Font.
-	 * @param x (int) The X coordinate of the box.
-	 * @param y (int) The Y coordinate of the box.
-	 * @param width (int) The width of the box.
-	 * @param height (int) The height of the box.
-	 * @param text (String) The text to be drawn inside the box.
-	 */
-	@Deprecated
-	public static void drawMenuTextBox(Graphics g, Font f, int x, int y, int width, int height, String text){
-		g.setColor(Color.darkGray);
-		g.drawRoundRect(x-8, y-8, width + 8, height + 8, 16, 16);
-		g.setColor(Color.white);
-		drawStringMultiLine(g, f, x + 8, y + 8, width - 8, text);
-	}
+
+	public static void drawStringMultiLine(Graphics g, Font f, int x, int y, int lineWidth, int padding, String text){
+		FontMetrics m = g.getFontMetrics(f);
+		g.setFont(f);
+		y+=m.getAscent();
+		x+=padding;
+		lineWidth-=padding;
+		if(m.stringWidth(text) < lineWidth){
+			g.drawString(text, x, y);
+		}
+		else{
+			String[] words = text.split(" ");
+			String currentLine = words[0];
+			for(int i = 1; i < words.length; i++){
+				if(m.stringWidth(currentLine + " " + words[i]) < lineWidth){
+					currentLine += " " + words[i];
+				}
+				else{
+					g.drawString(currentLine, x, y);
+					y += m.getAscent();
+					currentLine = words[i];
+				}
+			}
+			if(currentLine.trim().length() > 0){
+				g.drawString(currentLine, x, y);
+			}
+		}
+	}	
 	
 	/**
 	 * Method to determine the number of lines that text will occupy<br>
@@ -340,12 +361,8 @@ public class textUtilities{
 	 * @return (String) A new String comprised of the original String and the specified character.
 	 */
 	public static String addEndChar(String string, char c){
-		char[] charArray = new char[string.length() + 1];
-		for(int i = 0; i < string.length(); i++){
-			charArray[i] = string.charAt(i);
-		}
-		charArray[string.length()] = c;
-		return new String(charArray);
+		string += c;
+		return string;
 	}
 	
 	/**

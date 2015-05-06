@@ -176,12 +176,9 @@ public class Scenario {
 	}
 	
 	/**
-	 * Updates the Vector of available manufacturers
-	 * <br>as some incorporate and some become insolvent
-	 * <br>during the course of the game.
+	 * Updates the Vector of available manufacturers, as some incorporate and some become insolvent during the course of the game.
 	 * <br><br>
-	 * This should be used during the loading of a Scenario<br>
-	 * and during a yearly rollover.
+	 * This should be used during the loading of a Scenario and during a yearly roll-over.
 	 */
 	private void updateManufacturersAvailable(){
 		scenarioManufacturersAvailable.clear();

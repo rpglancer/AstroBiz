@@ -9,6 +9,7 @@ import java.util.Vector;
 
 import astroBiz.AstroBiz;
 import astroBiz.AstroBiz.STATE;
+import astroBiz.info.FontInformation;
 import astroBiz.info.ScenarioInformation.SI;
 import astroBiz.lib.Location;
 import astroBiz.lib.Location.LOCATIONTYPE;
@@ -83,8 +84,8 @@ public class ScenarioView {
 
 	public ScenarioView(AstroBiz astrobiz){
 		this.ab = astrobiz;
-		this.employeeSprite = ab.getEmployeeSprites().grabImage(1, 1, 128, 128);
-		this.selectSprite = ab.getRegionSprites().grabImage(2, 3, 16, 16);
+		this.employeeSprite = AstroBiz.employeeSprites.grabImage(1, 1, 128, 128);
+		this.selectSprite = AstroBiz.regionSprites.grabImage(2, 3, 16, 16);
 	}
 	
 	public void tick(){
@@ -283,7 +284,8 @@ public class ScenarioView {
 		g.setFont(sbfont);
 		g.setColor(Color.white);
 		g.drawRect(32, 32, 736, 272);
-		textUtilities.drawStringMultiLine(g, 40, 40, MAINTEXTWIDTH + 16, ab.getScenario().getScenarioDescription());
+		textUtilities.drawStringMultiLine(g, FontInformation.briefing, 32, 32, 736, 5, ab.getScenario().getScenarioDescription());
+//		textUtilities.drawStringMultiLine(g, 40, 40, MAINTEXTWIDTH + 16, ab.getScenario().getScenarioDescription());
 		g.drawImage(this.employeeSprite, 32, 320, null);
 		textUtilities.drawString(g, 160, 380, "Is this scenario OK?");
 		g.setFont(sbconf);
@@ -489,8 +491,10 @@ public class ScenarioView {
 		int nameX = 64; int nameY = 48;
 		int yearX = 96; int yearY = 64;
 		for(SI si : SI.values()){
-			textUtilities.drawString(g, nameX, nameY, si.getName());
-			textUtilities.drawString(g, yearX, yearY, "("+si.getYearStart() + " - " + si.getYearEnd() +")");
+			textUtilities.drawStringCenterV(g, FontInformation.modelheader, nameX, nameY, 16, si.getName());
+			textUtilities.drawStringCenterV(g, FontInformation.modelstat, yearX, yearY, 16, "("+si.getYearStart() + " - " + si.getYearEnd() +")");
+//			textUtilities.drawString(g, nameX, nameY, si.getName());
+//			textUtilities.drawString(g, yearX, yearY, "("+si.getYearStart() + " - " + si.getYearEnd() +")");
 			nameY += 64; yearY += 64;
 		}
 		
@@ -508,9 +512,17 @@ public class ScenarioView {
 			g.drawImage(this.selectSprite, 48, 256-16, null);
 			break;
 		}
-		g.drawImage(this.employeeSprite, 32, 320, null);
-		textUtilities.drawString(g, 160, 380, "Please select a scenario to play.");
-		g.dispose();
+		g.setColor(Color.DARK_GRAY);
+		g.fillRect(96, 352, 672, 96);
+		g.drawImage(AstroBiz.employeeSprites.grabImage(1, 1, 128, 128), 32, 320, null);
+		g.setColor(Color.white);
+		textUtilities.drawStringMultiLine(g, FontInformation.chitchat, 160, 352, 608, "Please select a scenario to play.");
+//		textUtilities.drawStringMultiLine(g, 160, 352, 608, "Nice to meet you. Which model are you interested in?");
+		
+		
+//		g.drawImage(this.employeeSprite, 32, 320, null);
+//		textUtilities.drawString(g, 160, 380, "Please select a scenario to play.");
+//		g.dispose();
 	}
 @Deprecated	
 	private void cycleBusinessNext(){
@@ -749,63 +761,51 @@ public class ScenarioView {
 		case KeyEvent.VK_ENTER:
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR){
 				scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT;
-				System.gc();
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT){
 				scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_COLOR;
-				System.gc();
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_CONFIG){
 				if(busiConfigOptions == BUSICONFIGOPTIONS.COLOR) {
 					scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_COLOR;
-					System.gc();
 				}
 				else if(busiConfigOptions == BUSICONFIGOPTIONS.NAME){
 					scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_NAME;
-					System.gc();
 				}
 				else if(busiConfigOptions == BUSICONFIGOPTIONS.EXIT){
 					AstroBiz.State = STATE.REGIONVIEW;
-					System.gc();
 				}
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME){
 				businessNameBuffer = ab.getScenario().getBusinesses().elementAt(businessSelect).getName();
 				scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_NAME_SELECT;
-				System.gc();
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME_SELECT){
 				ab.getScenario().getBusinesses().elementAt(businessSelect).setName(businessNameBuffer);
 				scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_NAME;
-				System.gc();
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_DIFF_SELECT){
 				setDifficulty();
 				scenarioViewMode = SCENARIOVIEWMODE.VM_PLYR_SELECT;
-				System.gc();
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_PLYR_SELECT){
 				setPlayers(ab.getScenario());
 				scenarioViewMode = SCENARIOVIEWMODE.VM_SET_HQ;
-				System.gc();
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_CONFIRM){
 				if(yesNo){
 					ab.setScenario(new Scenario());
 					setScenario();
 					scenarioViewMode = SCENARIOVIEWMODE.VM_DIFF_SELECT;
-					System.gc();
 				}
 				else{
 					yesNo = true;
 					scenarioViewMode = SCENARIOVIEWMODE.VM_SCEN_SELECT;
-					System.gc();
 				}
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_SELECT){
 				setScenario();
 				scenarioViewMode = SCENARIOVIEWMODE.VM_SCEN_CONFIRM;
-				System.gc();
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ){
 				if(hqPlacementView == HQPLACEMENTVIEW.WORLD){
@@ -836,7 +836,6 @@ public class ScenarioView {
 						// Switch to AI HQ placement
 					}
 				}
-				System.gc();
 			}
 			resetOptionSelect();
 			break;

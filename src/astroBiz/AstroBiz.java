@@ -127,11 +127,9 @@ public class AstroBiz extends Canvas implements Runnable{
 	public void run(){
 		init();
 		long lastTime = System.nanoTime();
-		final double amountOfTicks = 60.0;
+		final double amountOfTicks = 30.0;			//	Keep @ 30 for now, no need to run 60fps, may drop lower.
 		double ns = 1000000000 / amountOfTicks;
 		double delta = 0;
-//		int updates = 0;		// Tick counter
-//		int frames = 0;			// FPS counter
 		long timer = System.currentTimeMillis();
 		
 		while(running){
@@ -141,17 +139,11 @@ public class AstroBiz extends Canvas implements Runnable{
 			if(delta >= 1){
 				tick();
 				render();		// Tick Limited FPS
-//				frames++;		// Tick Limited FPS
-//				updates++;
 				delta--;
 			}
-//			render();			// Processor Limited FPS
-//			frames++;			// Processor Limited FPS
 			
 			if(System.currentTimeMillis() - timer > 1000){
 				timer += 1000;
-//				updates = 0;
-//				frames = 0;
 			}
 		}
 		stop();
@@ -183,7 +175,7 @@ public class AstroBiz extends Canvas implements Runnable{
 			return;
 		}
 		Graphics g = bs.getDrawGraphics();
-		g = bs.getDrawGraphics();
+		
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
 		
 		switch(State){
@@ -202,7 +194,6 @@ public class AstroBiz extends Canvas implements Runnable{
 		default:
 			break;
 		}
-
 		g.dispose();
 		bs.show();
 	}
@@ -273,16 +264,22 @@ public class AstroBiz extends Canvas implements Runnable{
 		astrobiz.start();
 	}
 
-	/*
+	/**
+	 * @deprecated
+	 * <br>
+	 * use {@link #employeeSprites}
+	 * <br>
 	 * With the SpriteSheets now being public static these
 	 * methods are pointless and should be removed once
 	 * everything depending upon them has been updated to
 	 * access the SpriteSheets in a static manner.
+	 * @return The employee SpriteSheet
 	 */
+	@Deprecated
 	public SpriteSheet getEmployeeSprites(){
 		return employeeSprites;
 	}
-	
+	@Deprecated
 	public SpriteSheet getRegionSprites(){
 		return regionSprites;
 	}

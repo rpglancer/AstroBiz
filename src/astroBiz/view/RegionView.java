@@ -2,12 +2,14 @@ package astroBiz.view;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.Vector;
 
 import astroBiz.AstroBiz;
+import astroBiz.info.FontInformation;
 import astroBiz.info.LocationInformation.LI;
 import astroBiz.lib.Business;
 import astroBiz.lib.Location;
@@ -29,6 +31,7 @@ public class RegionView {
 		VM_BUY_SELECT_MFG,
 		VM_BUY_SELECT_QTY,
 		VM_REGION,
+		VM_REGIONSWAP,
 	}
 
 	private REGIONVM regionVm = REGIONVM.VM_REGION;
@@ -104,7 +107,8 @@ public class RegionView {
 			}
 			buttonHilight(g);
 		}		
-		g.dispose();
+		else if(regionVm == REGIONVM.VM_REGIONSWAP) drawRegionSwap(g);
+//		g.dispose();
 	}
 	
 	private void buttonHilight(Graphics g){
@@ -171,6 +175,7 @@ public class RegionView {
 	private void drawBuySelectModel(Graphics g){
 		SpaceCraft temp = selectedManufacturer.getModeslAvailable(ab.getScenario()).elementAt(selectedOption);
 		Business busi = ab.getScenario().getBusinesses().elementAt(ab.getScenario().getActiveBusiness());
+		FontMetrics m = g.getFontMetrics(FontInformation.modelheader);
 		int strlen = 0;
 		
 		//	Background
@@ -188,46 +193,58 @@ public class RegionView {
 		//	Manufacturer Name Box
 		g.setColor(Color.gray);
 		g.fillRect(160, 64, 480, 32);
-		strlen = selectedManufacturer.getName().length() * 16;
-		textUtilities.drawString(g, 640 - strlen, 72, selectedManufacturer.getName());
+		strlen = m.stringWidth(selectedManufacturer.getName());
+		g.setColor(Color.white);
+		textUtilities.drawStringCenterV(g, FontInformation.modelheader, 640 - strlen, 64, 32, selectedManufacturer.getName());
 		
 		//	Selected Model Picture Box
 		g.setColor(Color.blue);
 		g.fillRect(160, 96, 192, 128);
-		textUtilities.drawString(g, 160, 208, temp.getName());
+		g.setColor(Color.white);
+		g.drawString(temp.getName(), 160, 224);
 		
 		//	Range Box
 		g.setColor(Color.gray);
 		g.fillRect(384, 96, 96, 32);
-		textUtilities.drawString(g, 384, 96 + 8, "Range:");
+		g.setColor(Color.white);
+		textUtilities.drawStringCenterV(g, FontInformation.modelheader, 384, 96, 32, "Range:");
 		
 		//	Range Value Box
 		g.setColor(Color.black);
 		g.fillRect(480, 96, 160, 32);
-		strlen = (temp.getRange() + "AU").length() * 16;
-		textUtilities.drawString(g, 640 - strlen, 96 + 8, temp.getRange() + "AU");
+		g.setColor(Color.white);
+		g.getFontMetrics(FontInformation.modelstat);
+		strlen = m.stringWidth(temp.getRange() + "AU");
+		textUtilities.drawStringCenterV(g, FontInformation.modelstat, 640 - strlen, 96, 32, temp.getRange() + "AU");
 
 		//	Capacity Box
 		g.setColor(Color.gray);
 		g.fillRect(384, 128, 96, 32);
-		textUtilities.drawString(g, 384, 128 + 8, "Seats:");
+		g.setColor(Color.white);
+		textUtilities.drawStringCenterV(g, FontInformation.modelheader, 384, 128, 32, "Seats:");
 		
 		// Capacity Value Box
 		g.setColor(Color.black);
 		g.fillRect(480, 128, 160, 32);
-		strlen = (temp.getCraftCapacity() + "s").length() * 16;
-		textUtilities.drawString(g, 640 - strlen, 128 + 8, temp.getCraftCapacity() + "s");
+		g.setColor(Color.white);
+		g.setFont(FontInformation.modelstat);
+		strlen = m.stringWidth(temp.getCraftCapacity() + "s");
+		textUtilities.drawStringCenterV(g, FontInformation.modelstat, 640 - strlen, 128, 32, temp.getCraftCapacity() + "s");
 		
 		//	Fuel Efficiency
 		g.setColor(Color.gray);
 		g.fillRect(384, 160, 64, 32);
-		textUtilities.drawString(g, 384, 160 + 8, "F/E:");
+		g.setColor(Color.white);
+		textUtilities.drawStringCenterV(g, FontInformation.modelheader, 384, 160, 32, "FuelE:");
+//		textUtilities.drawString(g, 384, 160 + 8, "F/E:");
 		
 		//	Fuel Efficiency Value Box
 		g.setColor(Color.black);
 		g.fillRect(448, 160, 64, 32);
-		strlen = (temp.getFuelE() +"").length() * 16;
-		textUtilities.drawString(g, 512 - strlen, 160 + 8, temp.getFuelE() + "");
+		g.setColor(Color.white);
+		g.setFont(FontInformation.modelstat);
+		strlen = m.stringWidth(temp.getFuelE() + "");
+		textUtilities.drawStringCenterV(g, FontInformation.modelstat, 512 - strlen, 160, 32, temp.getFuelE() + "");
 		
 		//	Reliability
 		g.setColor(Color.gray);
@@ -274,6 +291,12 @@ public class RegionView {
 		g.fillRect(352, 256, 288, 32);
 		strlen = ("Balance: " + busi.getAccountBalance() + "K").length() * 16;
 		textUtilities.drawString(g, 640 - strlen, 256 + 8, "Balance: " + busi.getAccountBalance() + "K");
+		
+		//	Manufacturer Representative
+		g.setColor(Color.DARK_GRAY);
+		g.fillRect(96, 352, 672, 96);
+		g.drawImage(AstroBiz.employeeSprites.grabImage(1, 1, 128, 128), 32, 320, null);
+		textUtilities.drawStringMultiLine(g, 160, 352, 608, "Nice to meet you. Which model are you interested in?");
 	}
 	
 	private void drawBuySelectMfg(Graphics g){
@@ -287,6 +310,89 @@ public class RegionView {
 				else textUtilities.boxText(g, this.manufacturersAvailable.elementAt(i).getX(), this.manufacturersAvailable.elementAt(i).getY(), 4, Color.darkGray, Color.black, this.manufacturersAvailable.elementAt(i).getSymbol());
 			}
 		}
+	}
+	
+	private void drawRegionSwap(Graphics g){
+		if(this.selectedOption == 0){
+			g.setColor(Color.green);
+			g.drawString("Mercury", 96+15, 177+15);
+		}
+		else{
+			g.setColor(Color.white);
+		}
+		g.fillOval(96, 177, 15, 15);		// Mercury
+		
+		if(this.selectedOption == 1){
+			g.setColor(Color.green);
+			g.drawString("Venus", 160+32, 160+32);
+		}
+		else{
+			g.setColor(Color.white);
+		}
+		g.fillOval(160, 160, 32, 32);		// Venus
+		
+		if(this.selectedOption == 2){
+			g.setColor(Color.green);
+			g.drawString("Earth", 224+32, 64+32);
+		}
+		else{
+			g.setColor(Color.white);
+		}
+		g.fillOval(224, 64, 32, 32);		// Earth
+		
+		if(this.selectedOption == 3){
+			g.setColor(Color.green);
+			g.drawString("Luna", 256+10, 54+10);
+		}
+		else{
+			g.setColor(Color.white);
+		}
+		g.fillOval(256, 54, 10, 10);		// Luna
+		
+		if(this.selectedOption == 4){
+			g.setColor(Color.green);
+			g.drawString("Mars", 288+24, 160+24);
+		}
+		else{
+			g.setColor(Color.white);
+		}
+		g.fillOval(288, 160, 24, 24);		// Mars
+		
+		if(this.selectedOption == 5){
+			g.setColor(Color.green);
+			g.drawString("Jupiter", 352+96, 192+96);
+		}
+		else{
+			g.setColor(Color.white);
+		}
+		g.fillOval(352, 192, 96, 96);		// Jupiter
+		
+		if(this.selectedOption == 6){
+			g.setColor(Color.green);
+			g.drawString("Saturn", 480+64, 128+64);
+		}
+		else{
+			g.setColor(Color.white);
+		}
+		g.fillOval(480, 128, 64, 64);		// Saturn
+		
+		if(this.selectedOption == 7){
+			g.setColor(Color.green);
+			g.drawString("Uranus", 576+64, 192+64);
+		}
+		else{
+			g.setColor(Color.white);
+		}
+		g.fillOval(576, 192, 64, 64);		// Uranus
+		
+		if(this.selectedOption == 8){
+			g.setColor(Color.green);
+			g.drawString("Neptune", 676+64, 96+64);
+		}
+		else{
+			g.setColor(Color.white);
+		}
+		g.fillOval(676, 96, 64, 64);		// Neptune
 	}
 	
 	private void cycleOptionDown(){
@@ -323,6 +429,10 @@ public class RegionView {
 				else selectedOption--;
 			}
 		}
+		if(regionVm == REGIONVM.VM_REGIONSWAP){
+			maxOpt = 8;
+			if(selectedOption > 0) selectedOption--;
+		}
 	}
 	
 	private void cycleOptionRight(){
@@ -345,6 +455,10 @@ public class RegionView {
 				else selectedOption++;
 			}
 		}
+		if(regionVm == REGIONVM.VM_REGIONSWAP){
+			maxOpt = 8;
+			if(selectedOption < maxOpt)selectedOption++;
+		}
 	}
 	
 	private void cycleOptionUp(){
@@ -363,6 +477,10 @@ public class RegionView {
 	
 	public void keyAction(KeyEvent e){
 		switch(e.getKeyCode()){
+		case KeyEvent.VK_R:
+			if(regionVm == REGIONVM.VM_REGION) regionVm = REGIONVM.VM_REGIONSWAP;
+			selectedOption = this.activeRegion;
+			break;
 		case KeyEvent.VK_DOWN:
 			if(regionVm == REGIONVM.VM_BUY_SELECT_MFG) cycleOptionDown();
 			else if(regionVm == REGIONVM.VM_REGION)cycleOptionDown();
@@ -380,6 +498,11 @@ public class RegionView {
 				resetSelectedOpt();
 			}
 			else if(regionVm == REGIONVM.VM_REGION) processButton();
+			else if(regionVm == REGIONVM.VM_REGIONSWAP){
+				this.activeRegion = (byte)selectedOption;
+				this.getActiveRegionMap();
+				regionVm = REGIONVM.VM_REGION;
+			}
 			
 			break;
 		case KeyEvent.VK_ESCAPE:
@@ -391,12 +514,17 @@ public class RegionView {
 				regionVm = REGIONVM.VM_REGION;
 				resetSelectedOpt();
 			}
+			else if(regionVm == REGIONVM.VM_REGIONSWAP){
+				regionVm = REGIONVM.VM_REGION;
+				resetSelectedOpt();
+			}
 			break;
 			
 		case KeyEvent.VK_LEFT:
 			if(regionVm == REGIONVM.VM_BUY_SELECT_MFG) cycleOptionLeft();
 			else if(regionVm == REGIONVM.VM_BUY_SELECT_MODEL) cycleOptionLeft();
 			else if(regionVm == REGIONVM.VM_REGION)cycleOptionLeft();
+			else if(regionVm == REGIONVM.VM_REGIONSWAP)cycleOptionLeft();
 			break;
 			
 		case KeyEvent.VK_UP:
@@ -408,6 +536,7 @@ public class RegionView {
 			if(regionVm == REGIONVM.VM_BUY_SELECT_MFG) cycleOptionRight();
 			else if(regionVm == REGIONVM.VM_BUY_SELECT_MODEL) cycleOptionRight();
 			else if(regionVm == REGIONVM.VM_REGION)cycleOptionRight();
+			else if(regionVm == REGIONVM.VM_REGIONSWAP)cycleOptionRight();
 			break;
 		default:
 			break;
