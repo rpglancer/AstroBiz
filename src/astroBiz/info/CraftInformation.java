@@ -1,12 +1,14 @@
 package astroBiz.info;
 
+import astroBiz.view.VM;
+
 
 /**
  * Contains all the information to be loaded into a SpaceCraft object.
  * @author Matt Bangert
  *
  */
-public class CraftInformation {
+public class CraftInformation implements VM {
 	public static enum CI{
 //		enumval (symbol, name, intro, retire, speed, range, capacity, fuelE, maintR, cost, col, row		//
 		DCO_X1 		("DCO", "X-1", 2200, 2260, 100, 0.05, 10, 65, 80, 7200, 1, 1),
