@@ -146,8 +146,9 @@ public class RegionView implements Manager {
 	
 	private void drawBuySelectModel(Graphics g){
 		SpaceCraft temp;
-		if(regionVm == REGIONVM.VM_BUY_SELECT_MODEL) temp = selectedManufacturer.getModeslAvailable(ab.getScenario()).elementAt(selectedOption);
-		else temp = selectedManufacturer.getModeslAvailable(ab.getScenario()).elementAt(previousOption);
+		if(c.getIsActive()) temp = selectedSpaceCraft;
+		else if(regionVm == REGIONVM.VM_BUY_SELECT_MODEL) temp = selectedManufacturer.getModeslAvailable(ab.getScenario()).elementAt(selectedOption);
+		else temp = selectedSpaceCraft;
 		Business busi = ab.getScenario().getBusinesses().elementAt(ab.getScenario().getActiveBusiness());
 		FontMetrics m = g.getFontMetrics(FontInformation.modelheader);
 		int strlen = 0;
@@ -583,7 +584,6 @@ public class RegionView implements Manager {
 			}
 			else if(regionVm == REGIONVM.VM_BUY_SELECT_MODEL){
 				selectedSpaceCraft = selectedManufacturer.getModeslAvailable(ab.getScenario()).elementAt(selectedOption);
-				previousOption = selectedOption;
 				c.setConfirmVM(this, REGIONVM.VM_BUY_SELECT_MODEL, REGIONVM.VM_BUY_SELECT_QTY, AstroBiz.employeeSprites.grabImage(1, 1, 128, 128), selectedSpaceCraft.getDesc());
 				resetSelectedOpt();
 			}
