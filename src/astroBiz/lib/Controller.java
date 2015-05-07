@@ -33,6 +33,22 @@ public class Controller{
 	public void addEntity(Entity block){
 		e.add(block);
 	}
+
+	public boolean containsEntity(Entity block){
+		for(int i = 0; i < e.size(); i++){
+			ent = e.get(i);
+			if(block == ent) return true;
+		}
+		return false;
+	}
+
+	public void purge(){
+		for(int i = 0; i < e.size(); i++){
+			ent = e.get(i);
+			removeEntity(ent);
+		}
+	}
+	
 	public void removeEntity(Entity block){
 		e.remove(block);
 	}

@@ -16,6 +16,7 @@ import astroBiz.lib.Location.LOCATIONTYPE;
 import astroBiz.lib.Scenario;
 import astroBiz.lib.SpriteSheet;
 import astroBiz.lib.TextWindow;
+import astroBiz.util.Confirmation;
 import astroBiz.util.textUtilities;
 
 /**
@@ -24,22 +25,20 @@ import astroBiz.util.textUtilities;
  *
  */
 public class ScenarioView implements Manager{
-	public static final int SBWIDTH = 672;
-	public static final int SBHEIGHT = 40;
-	public static enum BUSICONFIGOPTIONS implements VM{
+	public static enum BUSICONFIGOPTIONS {
 		NAME,
 		COLOR,
 		EXIT,
 		SELECT
 	}
-	public static enum HQPLACEMENTVIEW implements VM{
+	public static enum HQPLACEMENTVIEW {
 		WORLD,
 		REGION
 	}
 	/**
 	 * Enumerator for all the available view modes.
-	 * <br>What is rendered on screen is dependent upon the
-	 * <br>selected view mode.
+	 * What is rendered on screen is dependent upon the
+	 * selected view mode.
 	 * @author Matt Bangert
 	 *
 	 */
@@ -61,6 +60,7 @@ public class ScenarioView implements Manager{
 	private BufferedImage employeeSprite;
 	private BufferedImage region;
 	private BufferedImage selectSprite;
+	private Confirmation c = new Confirmation();
 	private boolean yesNo = true;
 	private Font sbfont = new Font("sans", Font.BOLD, 16);
 	private Font sbconf	= new Font("sans", Font.BOLD, 32);
@@ -74,6 +74,8 @@ public class ScenarioView implements Manager{
 	 * Buffer for editing business names.
 	 */
 	private String businessNameBuffer = null;
+	
+	private TextWindow textWin;
 
 	private BUSICONFIGOPTIONS busiConfigOptions = BUSICONFIGOPTIONS.EXIT;			//	Active business configuration option
 	private HQPLACEMENTVIEW hqPlacementView = HQPLACEMENTVIEW.WORLD;				//	Active placement view for HQ selection
@@ -95,6 +97,7 @@ public class ScenarioView implements Manager{
 		case VM_SCEN_CONFIRM:
 			break;
 		case VM_SCEN_SELECT:
+
 			break;
 		default:
 			break;
@@ -148,6 +151,9 @@ public class ScenarioView implements Manager{
 			
 		default:
 			break;
+		}
+		if(c.getIsActive()){
+			c.render(g);
 		}
 	}
 	/**
@@ -282,30 +288,10 @@ public class ScenarioView implements Manager{
 		g.setColor(Color.white);
 		g.drawRect(32, 32, 736, 272);
 		textUtilities.drawStringMultiLine(g, FontInformation.briefing, 32, 32, 736, 5, ab.getScenario().getScenarioDescription());
-//		textUtilities.drawStringMultiLine(g, 40, 40, MAINTEXTWIDTH + 16, ab.getScenario().getScenarioDescription());
-		g.drawImage(this.employeeSprite, 32, 320, null);
-		textUtilities.drawString(g, 160, 380, "Is this scenario OK?");
+		if(!c.getIsActive()){
+			c.setConfirmVM(this, SCENARIOVIEWMODE.VM_SCEN_SELECT, SCENARIOVIEWMODE.VM_PLYR_SELECT, employeeSprite, "Is this scenario OK?");
+		}
 		g.setFont(sbconf);
-		if(yesNo){
-			g.setColor(Color.red);
-			g.fillRect(192, 416, 64, 32);
-			g.setColor(Color.white);
-			g.drawString("YES", 194, 444);
-			g.setColor(Color.blue);
-			g.fillRect(192+64, 416, 64, 32);
-			g.setColor(Color.gray);
-			g.drawString("NO", 192+73, 444);
-		}
-		else{
-			g.setColor(Color.blue);
-			g.fillRect(192, 416, 64, 32);
-			g.setColor(Color.gray);
-			g.drawString("YES", 194, 444);
-			g.setColor(Color.red);
-			g.fillRect(192+64, 416, 64, 32);
-			g.setColor(Color.white);
-			g.drawString("NO", 192+73, 444);		
-		}
 	}
 	/**
 	 * Method for drawing all things related to player count selection.
@@ -487,8 +473,6 @@ public class ScenarioView implements Manager{
 		for(SI si : SI.values()){
 			textUtilities.drawStringCenterV(g, FontInformation.modelheader, nameX, nameY, 16, si.getName());
 			textUtilities.drawStringCenterV(g, FontInformation.modelstat, yearX, yearY, 16, "("+si.getYearStart() + " - " + si.getYearEnd() +")");
-//			textUtilities.drawString(g, nameX, nameY, si.getName());
-//			textUtilities.drawString(g, yearX, yearY, "("+si.getYearStart() + " - " + si.getYearEnd() +")");
 			nameY += 64; yearY += 64;
 		}
 		
@@ -506,12 +490,12 @@ public class ScenarioView implements Manager{
 			g.drawImage(this.selectSprite, 48, 256-16, null);
 			break;
 		}
-		g.setColor(Color.DARK_GRAY);
-		g.fillRect(96, 352, 672, 96);
-		g.drawImage(AstroBiz.employeeSprites.grabImage(1, 1, 128, 128), 32, 320, null);
-		g.setColor(Color.white);
-		textUtilities.drawStringMultiLine(g, FontInformation.chitchat, 160, 352, 608, "Please select a scenario to play.");
+		if(!AstroBiz.getController().containsEntity(textWin)){
+			textWin = new TextWindow("Please select a scenario to play.", this.employeeSprite);
+			AstroBiz.getController().addEntity(textWin);
+		}
 	}
+	
 @Deprecated	
 	private void cycleBusinessNext(){
 		if(businessSelect == 3) businessSelect = 0;
@@ -670,6 +654,10 @@ public class ScenarioView implements Manager{
 	}
 	
 	public void keyAction(KeyEvent e){
+		if(c.getIsActive()){
+			c.keyAction(e);
+			return;
+		}
 		switch(e.getKeyCode()){
 		case KeyEvent.VK_A:			
 		case KeyEvent.VK_B:
@@ -747,6 +735,7 @@ public class ScenarioView implements Manager{
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_SELECT) cycleOptionNext();
 			break;
 		case KeyEvent.VK_ENTER:
+			ab.getController().purge();
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR){
 				scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT;
 			}

@@ -9,13 +9,14 @@ package astroBiz.info;
  */
 public class CraftInformation{
 	public static enum CI{
-//		enumval (symbol, name, intro, retire, speed, range, capacity, fuelE, maintR, cost, col, row		//
-		DCO_X1 		("DCO", "X-1", 2200, 2260, 100, 0.05, 10, 65, 80, 7200, 1, 1),
-		DCO_X2 		("DCO", "X-2", 2200, 2260, 100, 0.10, 25, 70, 75, 9500, 1, 1),
-		GHI_LW1		("GHI", "LW-1", 2200, 2260, 85, 0.10, 30, 60, 85, 10000, 1, 1);
+//		enumval (symbol, name, intro, retire, speed, range, capacity, fuelE, maintR, cost, col, row, description		//
+		DCO_X1 		("DCO", "X-1", 2200, 2260, 100, 0.05, 10, 65, 80, 7200, 1, 1, "Description"),
+		DCO_X2 		("DCO", "X-2", 2200, 2260, 100, 0.10, 25, 70, 75, 9500, 1, 1, "Description"),
+		GHI_LW1		("GHI", "LW-1", 2200, 2260, 85, 0.10, 30, 60, 85, 10000, 1, 1, "Description");
 		
 		private final String mfg;
 		private final String name;
+		private final String desc;
 		private final int introduced;
 		private final int retired;
 		private final int speed;
@@ -27,9 +28,10 @@ public class CraftInformation{
 		private final int spriteCol;
 		private final int spriteRow;
 		
-		CI(String mfg, String name, int introduced, int retired, int speed, double range, int capacity, int fuele, int maintr, int cost, int spriteCol, int spriteRow){
+		CI(String mfg, String name, int introduced, int retired, int speed, double range, int capacity, int fuele, int maintr, int cost, int spriteCol, int spriteRow, String desc){
 			this.mfg = mfg;
 			this.name = name;
+			this.desc = desc;
 			this.introduced = introduced;
 			this.retired = retired;
 			this.speed = speed;
@@ -42,40 +44,44 @@ public class CraftInformation{
 			this.spriteRow = spriteRow;
 		}
 		
+		public int getCapacity(){
+			return this.capacity;
+		}
+		
+		public int getCost(){
+			return this.cost;
+		}
+		
+		public String getDesc(){
+			return this.desc;
+		}
+
 		public String getMfg(){
 			return this.mfg;
+		}
+		
+		public int getFuelE(){
+			return this.fuelefficiency;
+		}
+		
+		public int getIntro(){
+			return this.introduced;
+		}
+				
+		public int getRetire(){
+			return this.retired;
+		}
+		
+		public int getMaintR(){
+			return this.maintenancerating;
 		}
 		
 		public String getName(){
 			return this.name;
 		}
 		
-		public int getIntro(){
-			return this.introduced;
-		}
-		
-		public int getRetire(){
-			return this.retired;
-		}
-		
 		public double getRange(){
 			return this.range;
-		}
-		
-		public int getCapacity(){
-			return this.capacity;
-		}
-		
-		public int getFuelE(){
-			return this.fuelefficiency;
-		}
-
-		public int getMaintR(){
-			return this.maintenancerating;
-		}
-		
-		public int getCost(){
-			return this.cost;
 		}
 
 		public int getSpeed(){

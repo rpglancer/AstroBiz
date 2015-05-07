@@ -6,9 +6,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
-import astroBiz.AstroBiz;
-import astroBiz.lib.TextWindow;
-
 /**
  * Displays the Main Menu at the start of the game.
  * @author Matt Bangert
@@ -29,8 +26,6 @@ public class MainMenu {
 	Font fnt1 = new Font("arial", Font.BOLD, 15);
 
 	Graphics2D g2d;
-	
-//	boolean buttonStatus[] = {false, false, false};
 	
 	private MENUSELECT menuSelect = MENUSELECT.NEWGAME;
 	
@@ -58,13 +53,7 @@ public class MainMenu {
 		else
 			return Color.white;
 	}
-	
-//	public void setButtonStatus(int button, boolean status){
-//		if(button < 0 || button > 2)
-//			return;
-//		this.buttonStatus[button] = status;
-//	}
-	
+		
 	public void cycleMenuNext(){
 		if(this.menuSelect == MENUSELECT.NEWGAME)
 			this.menuSelect = MENUSELECT.LOADGAME;

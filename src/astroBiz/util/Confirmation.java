@@ -5,29 +5,21 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
+import astroBiz.AstroBiz;
 import astroBiz.info.FontInformation;
+import astroBiz.lib.TextWindow;
 import astroBiz.view.Manager;
 import astroBiz.view.VM;
 
 public class Confirmation {
-	private static final int boxX = 96;
-	private static final int boxY = 352;
-	private static final int boxW = 672;
-	private static final int boxH = 96;
-	
 	private static final int confW = 64;
 	private static final int confH = 32;
 	
-	private static final int textX = 160;
-	private static final int textY = 352;
-	private static final int textW = 608;
-	
-	private static final int spriteX = 32;
-	private static final int spriteY = 320;
 	/**
 	 * The Manager from which the Confirmation was requested and for which the VM is changed based upon Confirmation outcome.
 	 */
 	private Manager manager;
+	private TextWindow textWin;
 	/**
 	 * The VM to which the Manager will resume upon a negative confirmation.
 	 */
@@ -49,11 +41,10 @@ public class Confirmation {
 
 	public void render(Graphics g){
 		if(withText){
-			g.setColor(Color.darkGray);
-			g.fillRect(boxX, boxY, boxW, boxH);
-			g.drawImage(sprite, spriteX, spriteY, null);
-			g.setColor(Color.white);
-			textUtilities.drawStringMultiLine(g, FontInformation.chitchat, textX, textY, textW, text);	
+			if(!AstroBiz.getController().containsEntity(textWin)){
+				textWin = new TextWindow(text, this.sprite);
+				AstroBiz.getController().addEntity(textWin);
+			}
 		}
 		
 		g.setFont(FontInformation.confirm);
@@ -108,13 +99,11 @@ public class Confirmation {
 	private void confirmOption(){
 		if(opt == 0){
 			isActive = false;
-			System.out.println(next);
 			manager.setVM(next);
 			this.flush();
 		}
 		else{
 			isActive = false;
-			System.out.println(prev);
 			manager.setVM(prev);
 			this.flush();
 		}
@@ -150,6 +139,7 @@ public class Confirmation {
 		this.sprite = sprite;
 		this.text = text;
 		this.opt = 0;
+		this.withCoords = false;
 		this.withText = true;
 		this.isActive = true;
 	}
@@ -176,6 +166,7 @@ public class Confirmation {
 		this.isActive = false;
 		this.withCoords = false;
 		this.withText = false;
+		AstroBiz.getController().purge();
 	}
 	
 	public void keyAction(KeyEvent e){
@@ -187,6 +178,7 @@ public class Confirmation {
 			opt = 1;
 			break;
 		case KeyEvent.VK_ENTER:
+			AstroBiz.getController().purge();
 			confirmOption();
 			break;
 		}

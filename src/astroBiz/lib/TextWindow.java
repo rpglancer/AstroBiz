@@ -2,19 +2,27 @@ package astroBiz.lib;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 import astroBiz.info.FontInformation;
 import astroBiz.util.textUtilities;
 
 
 public class TextWindow implements Entity {
-	private int x, y, width, height;
+	private Boolean doesTick = false;
+	private Boolean hasSprite = false;
+	
+	private BufferedImage sprite;
+	
+	private int tickCount;
+	private int tickSpeed = 0;
+	private int height;
+	private int width;
+	private int x;
+	private int y;
+	
 	private String text = "";
 	private String textOutput = "";
-	private int tickSpeed = 3;
-	private int tickCount;
-	
-	private Boolean doesTick = false;
 	
 	public TextWindow(int x, int y, int width, int height, String text, boolean doestick){
 		this.x = x;
@@ -30,6 +38,18 @@ public class TextWindow implements Entity {
 			this.text = text;
 			this.textOutput = text;
 		}
+	}
+	
+	public TextWindow(String text, BufferedImage sprite){
+		this.x = 96;
+		this.y = 352;
+		this.width = 672;
+		this.height = 96;
+		this.sprite = sprite;
+		this.text = text;
+		this.textOutput += this.text.charAt(0);
+		this.doesTick = true;
+		this.hasSprite = true;
 	}
 
 	@Override
@@ -50,9 +70,14 @@ public class TextWindow implements Entity {
 	public void render(Graphics g) {
 		g.setColor(Color.darkGray);
 		g.fillRect(this.x, this.y, this.width, this.height);
-		g.fillRect(100, 100, 100, 100);
 		g.setColor(Color.white);
-		textUtilities.drawStringMultiLine(g, FontInformation.chitchat, x, y, width, textOutput);
+		if(hasSprite){
+			g.drawImage(sprite, 32, 320, null);
+			textUtilities.drawStringMultiLine(g, FontInformation.chitchat, x+64, y, width-64, textOutput);
+		}
+		else{
+			textUtilities.drawStringMultiLine(g, FontInformation.chitchat, x, y, width, textOutput);
+		}
 	}
 
 	@Override

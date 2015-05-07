@@ -81,6 +81,15 @@ public class Scenario {
 		return this.scenarioQuarter;
 	}
 	
+	public int getMaxOrderQty(int craftCost){
+		int count = 0;
+		while(craftCost * count < scenarioBusinesses.elementAt(activeBusiness).getAccountBalance()){
+			count++;
+			if(count == 10)return count;
+		}
+		return count;
+	}
+	
 	public String getScenarioName(){
 		return this.scenarioName;
 	}

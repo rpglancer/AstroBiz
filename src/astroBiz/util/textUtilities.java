@@ -23,19 +23,9 @@ public class textUtilities{
 	public static int charWidth = 16;
 	public static int charHeight = 16;
 	
-	/**
-	 * Hash Map for all usable sprite based text characters.
-	 */
 	public static Map<Character, Point> textMap = new HashMap<Character, Point>();
-	
-/**
- * The Sprite Sheet containing all available characters.
- */
 	public static SpriteSheet textSheet = AstroBiz.textSheet;
 
-	/**
-	 * Default constructor?
-	 */
 	public textUtilities(){
 	}
 
@@ -243,6 +233,32 @@ public class textUtilities{
 		}
 	}
 
+	/**
+	 * Method to determine the number of lines that text will occupy<br>
+	 * if wrapped to a given width.
+	 * @param text	(String) The text to analyze.
+	 * @param width	(int) The width [in pixels] of the text before triggering a  new line.
+	 * @return	(int) The number of lines calculated.
+	 */
+	public static int getLineCount(String text, int width){
+		int lineCount = 1;
+		if(text.length() * charWidth < width) return lineCount;
+		else{
+			String[] words = text.split(" ");
+			String currentLine = words[0];
+			for(int i = 1; i < words.length; i++){
+				if(currentLine.length() * charWidth + words[i].length() * charWidth < width){
+					currentLine += " " + words[i];
+				}
+				else{
+					lineCount++;
+					currentLine = words[i];
+				}
+			}
+			return lineCount;
+		}
+	}
+	
 	//////////////////////////////////////////////
 	//		Native Java String based Methods	//
 	//////////////////////////////////////////////
@@ -254,6 +270,16 @@ public class textUtilities{
 		int theight = (int)bounds.getHeight();
 		temp.dispose();
 		return theight;
+	}
+	
+	public static int getTextWidth(Graphics g, Font f, String text){
+		Graphics temp = g.create(0, 0, 800, 480);
+		FontMetrics m = g.getFontMetrics(f);
+		temp.clipRect(0, 0, m.stringWidth(text), m.getHeight());
+		Rectangle2D bounds = m.getStringBounds(text, temp);
+		int twidth = (int)bounds.getWidth();
+		temp.dispose();
+		return twidth;
 	}
 	
 	public static void drawStringCenterV(Graphics g, Font f, int x, int y, int height, String text){
@@ -299,6 +325,17 @@ public class textUtilities{
 		}
 	}
 
+	/**
+	 * Automagically splits a string over multiple lines and adds padding [spacing] around the string.
+	 * <br><b>Note:</b> <i>The string must contain spaces to be split!</i><br>
+	 * @param g		Graphics
+	 * @param f		The font being used for the string.
+	 * @param x		String X coordinate
+	 * @param y		String Y coordinate
+	 * @param lineWidth		How wide the string can be before splitting.
+	 * @param padding		The amount, in pixels, of padding to be used around the String.
+	 * @param text			The actual string.
+	 */
 	public static void drawStringMultiLine(Graphics g, Font f, int x, int y, int lineWidth, int padding, String text){
 		FontMetrics m = g.getFontMetrics(f);
 		g.setFont(f);
@@ -327,32 +364,6 @@ public class textUtilities{
 		}
 	}	
 	
-	/**
-	 * Method to determine the number of lines that text will occupy<br>
-	 * if wrapped to a given width.
-	 * @param text	(String) The text to analyze.
-	 * @param width	(int) The width [in pixels] of the text before triggering a  new line.
-	 * @return	(int) The number of lines calculated.
-	 */
-	public static int getLineCount(String text, int width){
-		int lineCount = 1;
-		if(text.length() * charWidth < width) return lineCount;
-		else{
-			String[] words = text.split(" ");
-			String currentLine = words[0];
-			for(int i = 1; i < words.length; i++){
-				if(currentLine.length() * charWidth + words[i].length() * charWidth < width){
-					currentLine += " " + words[i];
-				}
-				else{
-					lineCount++;
-					currentLine = words[i];
-				}
-			}
-			return lineCount;
-		}
-	}
-
 	/**
 	 * Method to add a character to the end of the specified String.
 	 * @param string (String) The String to which the character will be added.

@@ -15,6 +15,7 @@ import astroBiz.lib.Business;
 import astroBiz.lib.Location;
 import astroBiz.lib.Manufacturer;
 import astroBiz.lib.SpaceCraft;
+import astroBiz.lib.TextWindow;
 import astroBiz.util.Confirmation;
 import astroBiz.util.ImageUtilities;
 import astroBiz.util.textUtilities;
@@ -31,6 +32,7 @@ public class RegionView implements Manager {
 		VM_BUY_SELECT_MODEL,
 		VM_BUY_SELECT_MFG,
 		VM_BUY_SELECT_QTY,
+		VM_ORDER_CONFIRM,
 		VM_REGION,
 		VM_REGIONSWAP,
 	}
@@ -44,6 +46,7 @@ public class RegionView implements Manager {
 	private int selectedOption = 0;
 	private int previousOption = selectedOption;
 	private Confirmation c = new Confirmation();
+	private TextWindow textWin;
 
 	private AstroBiz ab;
 	private BufferedImage[] buttons;	// Contains the buttons displayed on the regional map.
@@ -72,7 +75,8 @@ public class RegionView implements Manager {
 	public void render(Graphics g){	
 		if(regionVm == REGIONVM.VM_BUY_SELECT_MODEL) drawBuySelectModel(g);
 		else if(regionVm == REGIONVM.VM_BUY_SELECT_MFG) drawBuySelectMfg(g);
-		else if(regionVm == REGIONVM.VM_BUY_SELECT_QTY) drawBuySelectQty(g);
+		else if(regionVm == REGIONVM.VM_BUY_SELECT_QTY) drawBuySelectModel(g);
+		else if(regionVm == REGIONVM.VM_ORDER_CONFIRM) drawOrderConfirm(g);
 		else if(regionVm == REGIONVM.VM_REGION) drawRegion(g);
 		else if(regionVm == REGIONVM.VM_REGIONSWAP) drawRegionSwap(g);
 		
@@ -141,7 +145,9 @@ public class RegionView implements Manager {
 	}
 	
 	private void drawBuySelectModel(Graphics g){
-		SpaceCraft temp = selectedManufacturer.getModeslAvailable(ab.getScenario()).elementAt(selectedOption);
+		SpaceCraft temp;
+		if(regionVm == REGIONVM.VM_BUY_SELECT_MODEL) temp = selectedManufacturer.getModeslAvailable(ab.getScenario()).elementAt(selectedOption);
+		else temp = selectedManufacturer.getModeslAvailable(ab.getScenario()).elementAt(previousOption);
 		Business busi = ab.getScenario().getBusinesses().elementAt(ab.getScenario().getActiveBusiness());
 		FontMetrics m = g.getFontMetrics(FontInformation.modelheader);
 		int strlen = 0;
@@ -196,8 +202,8 @@ public class RegionView implements Manager {
 		g.fillRect(480, 128, 160, 32);
 		g.setColor(Color.white);
 		g.setFont(FontInformation.modelstat);
-		strlen = m.stringWidth(temp.getCraftCapacity() + "s");
-		textUtilities.drawStringCenterV(g, FontInformation.modelstat, 640 - strlen, 128, 32, temp.getCraftCapacity() + "s");
+		strlen = m.stringWidth(temp.getCapacity() + "s");
+		textUtilities.drawStringCenterV(g, FontInformation.modelstat, 640 - strlen, 128, 32, temp.getCapacity() + "s");
 		
 		//	Fuel Efficiency
 		g.setColor(Color.gray);
@@ -217,58 +223,109 @@ public class RegionView implements Manager {
 		//	Reliability
 		g.setColor(Color.gray);
 		g.fillRect(512, 160, 64, 32);
-		textUtilities.drawString(g, 512, 160 + 8, "M/R:");
+		g.setColor(Color.white);
+		textUtilities.drawStringCenterV(g, FontInformation.modelheader, 512, 160, 32, "Maint:");
+//		textUtilities.drawString(g, 512, 160 + 8, "M/R:");
 		
 		//	Reliability Value Box
 		g.setColor(Color.black);
 		g.fillRect(576, 160, 64, 32);
-		strlen = (temp.getMaintR() + "").length() * 16;
-		textUtilities.drawString(g, 640 - strlen, 160 + 8, temp.getMaintR() + "");
+		g.setColor(Color.white);
+		g.setFont(FontInformation.modelstat);
+		strlen = m.stringWidth(temp.getMaintR() + "");
+		textUtilities.drawStringCenterV(g, FontInformation.modelstat, 640 - strlen, 160, 32, temp.getMaintR() + "");
 		
 		//	# in Use
 		g.setColor(Color.gray);
 		g.fillRect(384, 192, 64, 32);
-		textUtilities.drawString(g, 384, 192 + 8, "#USE");
+		g.setColor(Color.white);
+		textUtilities.drawStringCenterV(g, FontInformation.modelheader, 384, 192, 32, "#USE");
 		
 		//	# in Use Value Box
 		g.setColor(Color.black);
 		g.fillRect(448, 192, 64, 32);
-		strlen = (busi.getCraftInService(temp) + "").length() * 16;
-		textUtilities.drawString(g, 512 - strlen, 192 + 8, busi.getCraftInService(temp) + "");
+		g.setColor(Color.white);
+		g.setFont(FontInformation.modelstat);
+		strlen = m.stringWidth(busi.getCraftInService(temp) + "");
+		textUtilities.drawStringCenterV(g, FontInformation.modelstat, 512 - strlen, 192, 32, busi.getCraftInService(temp) + "");
 		
 		//	# Hangar
 		g.setColor(Color.gray);
 		g.fillRect(512, 192, 64, 32);
-		textUtilities.drawString(g, 512, 192 + 8, "#HGR");
+		g.setColor(Color.white);
+		textUtilities.drawStringCenterV(g, FontInformation.modelheader, 512, 192, 32, "#HGR");
 		
 		//	# in Hangar Value Box
 		g.setColor(Color.black);
 		g.fillRect(576, 192, 64, 32);
-		strlen = (busi.getCraftInHangar(temp) + "").length() * 16;
-		textUtilities.drawString(g, 640 - strlen, 192 + 8, busi.getCraftInHangar(temp) + "");
+		g.setColor(Color.white);
+		g.setFont(FontInformation.modelstat);
+		strlen = m.stringWidth(busi.getCraftInHangar(temp) + "");
+		textUtilities.drawStringCenterV(g, FontInformation.modelstat, 640 - strlen, 192, 32, busi.getCraftInHangar(temp) + "");
 		
 		//	Footer Box
 		g.setColor(Color.gray);
 		g.fillRect(160, 224, 480, 32);
-		textUtilities.drawString(g, 160, 224 + 8, "Introduced: " + temp.getYearIntroduced());
-		strlen = ("Cost: " + temp.getCost() + "K").length() * 16;
-		textUtilities.drawString(g, 640 - strlen, 224 + 8, "Cost: " + temp.getCost() + "K");
+		g.setColor(Color.white);
+		textUtilities.drawStringCenterV(g, FontInformation.modelheader, 160, 224, 32, "Introduced: " + temp.getYearIntroduced());
+		g.setFont(FontInformation.modelheader);
+		strlen = m.stringWidth("Cost: " + temp.getCost() + "K");
+		textUtilities.drawStringCenterV(g, FontInformation.modelheader, 640 - strlen, 224, 32, "Cost: " + temp.getCost() + "K");
 		
 		//	Corporate Box
 		g.setColor(busi.getColor());
 		g.fillRect(352, 256, 288, 32);
-		strlen = ("Balance: " + busi.getAccountBalance() + "K").length() * 16;
-		textUtilities.drawString(g, 640 - strlen, 256 + 8, "Balance: " + busi.getAccountBalance() + "K");
+		g.setColor(Color.white);
+		g.setFont(FontInformation.modelheader);
+		strlen = m.stringWidth("Balance: " + busi.getAccountBalance() + "K");
+		textUtilities.drawStringCenterV(g, FontInformation.modelheader, 640 - strlen, 256, 32, "Balance: " + busi.getAccountBalance() + "K");
+	
+//		Manufacturer Representative
+		if(regionVm == REGIONVM.VM_BUY_SELECT_MODEL){
+			if(!c.getIsActive()){
+				if(!AstroBiz.getController().containsEntity(textWin)){
+					textWin = new TextWindow("Nice to meet you. Which model are you interested in?", AstroBiz.employeeSprites.grabImage(1, 1, 128, 128));
+					AstroBiz.getController().addEntity(textWin);
+				}
+			}
+		}
 		
-		//	Manufacturer Representative
-		g.setColor(Color.DARK_GRAY);
-		g.fillRect(96, 352, 672, 96);
-		g.drawImage(AstroBiz.employeeSprites.grabImage(1, 1, 128, 128), 32, 320, null);
-		textUtilities.drawStringMultiLine(g, 160, 352, 608, "Nice to meet you. Which model are you interested in?");
+		if(regionVm == REGIONVM.VM_BUY_SELECT_QTY){
+			int offset = 32;
+			int startY = 256;
+			int startX = 160;
+			g.setColor(Color.gray);
+			for(int y = 0; y < 2; y++){
+				for(int x = 0; x < 5; x++){
+					g.drawRect(startX, startY, offset, offset);
+					startX += offset;
+				}
+				startX = 160;
+				startY += offset;
+			}
+			drawBuySelectQty(g);		
+			if(!AstroBiz.getController().containsEntity(textWin)){
+				textWin = new TextWindow("You can purchase a maximum of " + ab.getScenario().getMaxOrderQty(selectedSpaceCraft.getCost()) + " vehicles. How many would you like to purchase?", AstroBiz.employeeSprites.grabImage(1, 1, 128, 128));
+				AstroBiz.getController().addEntity(textWin);
+			}
+		}
+		
 	}
 
 	private void drawBuySelectQty(Graphics g){
-		
+		BufferedImage craftsprite = ImageUtilities.colorizeImage(AstroBiz.regionSprites.grabImage(2, 3, 16, 16), 
+				new Color(AstroBiz.regionSprites.grabImage(2, 3, 16, 16).getRGB(5, 5)),
+				ab.getScenario().getBusinesses().elementAt(ab.getScenario().getActiveBusiness()).getColor());
+		int x = 168;
+		int y = 264;
+		for(int i = 0; i < selectedOption; i++){
+			g.drawImage(craftsprite, x, y, null);
+			x += 32;
+			if(i == 4){
+				x = 168;
+				y += 32;
+			}
+		}
 	}
 	
 	private void drawBuySelectMfg(Graphics g){
@@ -281,6 +338,14 @@ public class RegionView implements Manager {
 				}
 				else textUtilities.boxText(g, this.manufacturersAvailable.elementAt(i).getX(), this.manufacturersAvailable.elementAt(i).getY(), 4, Color.darkGray, Color.black, this.manufacturersAvailable.elementAt(i).getSymbol());
 			}
+		}
+	}
+	
+	private void drawOrderConfirm(Graphics g){
+		String s = "Thank you for your order of " + selectedOption + " " + selectedSpaceCraft.getName() + "s. Your order will be delivered in 3 months!";
+		if(!AstroBiz.getController().containsEntity(textWin)){
+			textWin = new TextWindow(s, AstroBiz.employeeSprites.grabImage(1, 1, 128, 128));
+			AstroBiz.getController().addEntity(textWin);
 		}
 	}
 	
@@ -458,6 +523,12 @@ public class RegionView implements Manager {
 			maxOpt = selectedManufacturer.getModeslAvailable(ab.getScenario()).size() - 1;
 			if(selectedOption < maxOpt) selectedOption++;
 		}
+		
+		if(regionVm == REGIONVM.VM_BUY_SELECT_QTY){
+			maxOpt = 10;
+			if(selectedOption < maxOpt) selectedOption++;
+		}
+		
 		if(regionVm == REGIONVM.VM_REGION){
 			if(selectedOption < 12){
 				if(selectedOption == 5) return;
@@ -486,6 +557,7 @@ public class RegionView implements Manager {
 	}
 	
 	public void keyAction(KeyEvent e){
+		
 		//	Forward key input to Confirmation if it is active.
 		if(c.getIsActive()){
 			c.keyAction(e);
@@ -502,27 +574,37 @@ public class RegionView implements Manager {
 			break;
 			
 		case KeyEvent.VK_ENTER:
+			AstroBiz.getController().purge();
 			if(regionVm == REGIONVM.VM_BUY_SELECT_MFG){
 				previousOption = selectedOption;
-//				regionVmPrevious = regionVm;
 				selectMfg(selectedOption);
 				regionVm = REGIONVM.VM_BUY_SELECT_MODEL;
 				resetSelectedOpt();
 			}
 			else if(regionVm == REGIONVM.VM_BUY_SELECT_MODEL){
-				//c.setConfirmVM(this, REGIONVM.VM_BUY_SELECT_MODEL, REGIONVM.VM_BUY_SELECT_QTY, 400, 400);
-				c.setConfirmVM(this, REGIONVM.VM_BUY_SELECT_MODEL, REGIONVM.VM_BUY_SELECT_QTY, AstroBiz.employeeSprites.grabImage(1, 1, 128, 128), "Your run of the mill description would go here!");
+				selectedSpaceCraft = selectedManufacturer.getModeslAvailable(ab.getScenario()).elementAt(selectedOption);
+				previousOption = selectedOption;
+				c.setConfirmVM(this, REGIONVM.VM_BUY_SELECT_MODEL, REGIONVM.VM_BUY_SELECT_QTY, AstroBiz.employeeSprites.grabImage(1, 1, 128, 128), selectedSpaceCraft.getDesc());
 				resetSelectedOpt();
+			}
+			else if(regionVm == REGIONVM.VM_BUY_SELECT_QTY){
+				ab.getScenario().placeOrder(ab.getScenario().getBusinesses().elementAt(ab.getScenario().getActiveBusiness()), this.selectedManufacturer, this.selectedSpaceCraft, this.selectedOption);
+				regionVm = REGIONVM.VM_ORDER_CONFIRM;
+			}
+			else if(regionVm == REGIONVM.VM_ORDER_CONFIRM){
+				resetSelectedOpt();
+				regionVm = REGIONVM.VM_BUY_SELECT_MODEL;
 			}
 			else if(regionVm == REGIONVM.VM_REGION) processButton();
 			else if(regionVm == REGIONVM.VM_REGIONSWAP){
 				this.activeRegion = (byte)selectedOption;
 				this.getActiveRegionMap();
 				regionVm = REGIONVM.VM_REGION;
-			}
-			
+			}	
 			break;
+			
 		case KeyEvent.VK_ESCAPE:
+			AstroBiz.getController().purge();
 			if(regionVm == REGIONVM.VM_BUY_SELECT_MODEL){
 				regionVm = REGIONVM.VM_BUY_SELECT_MFG;
 				selectedOption = previousOption;
@@ -552,6 +634,7 @@ public class RegionView implements Manager {
 		case KeyEvent.VK_RIGHT:
 			if(regionVm == REGIONVM.VM_BUY_SELECT_MFG) cycleOptionRight();
 			else if(regionVm == REGIONVM.VM_BUY_SELECT_MODEL) cycleOptionRight();
+			else if(regionVm == REGIONVM.VM_BUY_SELECT_QTY) cycleOptionRight();
 			else if(regionVm == REGIONVM.VM_REGION)cycleOptionRight();
 			else if(regionVm == REGIONVM.VM_REGIONSWAP)cycleOptionRight();
 			break;
@@ -567,8 +650,8 @@ public class RegionView implements Manager {
 		else if(this.activeRegion == 3) return AstroBiz.worldMap.grabImage(1, 2, REGIONWIDTH, REGIONHEIGHT);
 		else if(this.activeRegion == 4) return AstroBiz.worldMap.grabImage(2, 2, REGIONWIDTH, REGIONHEIGHT);
 		else if(this.activeRegion == 5) return AstroBiz.worldMap.grabImage(3, 2, REGIONWIDTH, REGIONHEIGHT);
-		else if(this.activeRegion == 6) return AstroBiz.worldMap.grabImage(3, 1, REGIONWIDTH, REGIONHEIGHT);
-		else if(this.activeRegion == 7) return AstroBiz.worldMap.grabImage(3, 2, REGIONWIDTH, REGIONHEIGHT);
+		else if(this.activeRegion == 6) return AstroBiz.worldMap.grabImage(1, 3, REGIONWIDTH, REGIONHEIGHT);
+		else if(this.activeRegion == 7) return AstroBiz.worldMap.grabImage(2, 3, REGIONWIDTH, REGIONHEIGHT);
 		else return AstroBiz.worldMap.grabImage(3, 3, REGIONWIDTH, REGIONHEIGHT);
 	}
 	

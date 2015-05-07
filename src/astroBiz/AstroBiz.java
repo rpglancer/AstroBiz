@@ -23,60 +23,39 @@ import astroBiz.view.ScenarioView;
 
 public class AstroBiz extends Canvas implements Runnable{
 
-	/*
-	 * Constants
-	 */
-	private static final long serialVersionUID = 1477754103243231171L;	
+	public static enum STATE{
+		MENU,
+		REGIONVIEW,
+		SCENARIOSETUP,
+		LOCATIONVIEW
+	};	
 	public static final int WIDTH = 800;
 	public static final int HEIGHT = 480;
 	public static final int VERSION = 0;
 	public static final int MAJOR = 0;
 	public static final int MINOR = 2;
 	public static final int PATCH = 1;
-	public final String TITLE = "AstroBiz Prototype version " + VERSION + "." + MAJOR + "." + MINOR + "." + PATCH;
-	
-	private static Controller c = new Controller();
-
-	/*
-	 * Buffered Images
-	 */
-	private BufferedImage image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
-	
-	/*
-	 * Sprite Sheets
-	 */
 	public static SpriteSheet employeeSprites = null;
 	public static SpriteSheet regionButtons = null;
 	public static SpriteSheet regionSprites = null;
 	public static SpriteSheet textSheet = null;
 	public static SpriteSheet worldMap = null;
-
-	/*
-	 * Views
-	 */
+	public static STATE State = STATE.MENU;
+	
+	private boolean running = false;
+	
+	private BufferedImage image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
 	private LocationView locationView = null;
 	private MainMenu mainMenu = null;
 	private RegionView regionView = null;
-	private ScenarioView scenarioView = null;
-	
-	public static enum STATE{
-		MENU,
-		REGIONVIEW,
-		SCENARIOSETUP,
-		LOCATIONVIEW
-	};
-
-	/*
-	 * Game State information
-	 */
 	private Scenario activeScenario;
-	
-	/*
-	 * Operational Variables
-	 */
-	public static STATE State = STATE.MENU;
-	private boolean running = false;
+	private ScenarioView scenarioView = null;
 	private Thread thread;
+	
+	private final String TITLE = "AstroBiz Prototype version " + VERSION + "." + MAJOR + "." + MINOR + "." + PATCH;
+
+	private static final long serialVersionUID = 1477754103243231171L;
+	private static Controller c = new Controller();
 	
 	public void init(){
 		BufferedImageLoader loader = new BufferedImageLoader();
@@ -181,6 +160,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		Graphics g = bs.getDrawGraphics();
 		
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
+		c.render(g);
 		switch(State){
 		case LOCATIONVIEW:
 			locationView.render(g, this);
@@ -197,7 +177,6 @@ public class AstroBiz extends Canvas implements Runnable{
 		default:
 			break;
 		}
-		c.render(g);
 		g.dispose();
 		bs.show();
 	}
@@ -268,30 +247,10 @@ public class AstroBiz extends Canvas implements Runnable{
 		astrobiz.start();
 	}
 
-	public Controller getController(){
+	public static Controller getController(){
 		return AstroBiz.c;
 	}
-	
-	/**
-	 * @deprecated
-	 * <br>
-	 * use {@link #employeeSprites}
-	 * <br>
-	 * With the SpriteSheets now being public static these
-	 * methods are pointless and should be removed once
-	 * everything depending upon them has been updated to
-	 * access the SpriteSheets in a static manner.
-	 * @return The employee SpriteSheet
-	 */
-	@Deprecated
-	public SpriteSheet getEmployeeSprites(){
-		return employeeSprites;
-	}
-	@Deprecated
-	public SpriteSheet getRegionSprites(){
-		return regionSprites;
-	}
-	
+		
 	public LocationView getLocationView(){
 		return this.locationView;
 	}
