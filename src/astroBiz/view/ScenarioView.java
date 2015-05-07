@@ -15,6 +15,7 @@ import astroBiz.lib.Location;
 import astroBiz.lib.Location.LOCATIONTYPE;
 import astroBiz.lib.Scenario;
 import astroBiz.lib.SpriteSheet;
+import astroBiz.lib.TextWindow;
 import astroBiz.util.textUtilities;
 
 /**
@@ -22,19 +23,16 @@ import astroBiz.util.textUtilities;
  * @author Matt Bangert
  *
  */
-public class ScenarioView {
+public class ScenarioView implements Manager{
 	public static final int SBWIDTH = 672;
 	public static final int SBHEIGHT = 40;
-	private final int MAINTEXTWIDTH = 704;
-	private final int MAINTEXTINDENT = 48;
-	
-	public static enum BUSICONFIGOPTIONS {
+	public static enum BUSICONFIGOPTIONS implements VM{
 		NAME,
 		COLOR,
 		EXIT,
 		SELECT
 	}
-	public static enum HQPLACEMENTVIEW{
+	public static enum HQPLACEMENTVIEW implements VM{
 		WORLD,
 		REGION
 	}
@@ -45,7 +43,7 @@ public class ScenarioView {
 	 * @author Matt Bangert
 	 *
 	 */
-	public static enum SCENARIOVIEWMODE{
+	public static enum SCENARIOVIEWMODE implements VM{
 		VM_BUSI_NAME,
 		VM_BUSI_NAME_SELECT,
 		VM_BUSI_COLOR,
@@ -151,13 +149,14 @@ public class ScenarioView {
 		default:
 			break;
 		}
-		g.dispose();
 	}
 	/**
 	 * Method for drawing all things related to business configuration based upon the selected view mode.
 	 * @param g	The graphics buffer to be drawn to.
 	 */
 	private void scenarioBusiConfig(Graphics g){
+
+
 		int x = 800 / 2 - 160;
 		int y = 64;
 		int width = 320;
@@ -241,7 +240,6 @@ public class ScenarioView {
 			g.drawImage(this.employeeSprite, 32, 320, null);
 			textUtilities.drawString(g, 160, 384, "Enter the name of your company.");		
 		}
-		g.dispose();
 	}
 	/**
 	 * Method for drawing all things related to difficulty selection.
@@ -274,7 +272,6 @@ public class ScenarioView {
 		
 		g.drawImage(this.employeeSprite, 32, 320, null);
 		g.drawString("Select a difficulty level.", 160, 384);
-		g.dispose();
 	}
 	/**
 	 * A method for drawing a player query for confirmation.
@@ -309,7 +306,6 @@ public class ScenarioView {
 			g.setColor(Color.white);
 			g.drawString("NO", 192+73, 444);		
 		}
-		g.dispose();
 	}
 	/**
 	 * Method for drawing all things related to player count selection.
@@ -342,7 +338,6 @@ public class ScenarioView {
 		
 		g.drawImage(this.employeeSprite, 32, 320, null);
 		g.drawString("Choose the number of players.", 160, 384);
-		g.dispose();
 	}
 	/**
 	 * Method for drawing all things related to player headquarters location selection.
@@ -477,7 +472,6 @@ public class ScenarioView {
 			g.drawString("Select headquarters region for " + s, 160, 384);		
 			break;	//	End	WORLD
 		}
-		g.dispose();
 	}
 	/**
 	 * Method for drawing all things related to Scenario selection.
@@ -517,12 +511,6 @@ public class ScenarioView {
 		g.drawImage(AstroBiz.employeeSprites.grabImage(1, 1, 128, 128), 32, 320, null);
 		g.setColor(Color.white);
 		textUtilities.drawStringMultiLine(g, FontInformation.chitchat, 160, 352, 608, "Please select a scenario to play.");
-//		textUtilities.drawStringMultiLine(g, 160, 352, 608, "Nice to meet you. Which model are you interested in?");
-		
-		
-//		g.drawImage(this.employeeSprite, 32, 320, null);
-//		textUtilities.drawString(g, 160, 380, "Please select a scenario to play.");
-//		g.dispose();
 	}
 @Deprecated	
 	private void cycleBusinessNext(){
@@ -878,53 +866,6 @@ public class ScenarioView {
 				this.availableHqLocations.addElement(v.elementAt(i));
 			}
 		}
-		
-	/*	
-		for(int i = 0; i < v.size(); i++){
-			switch(this.optionSelect){
-			case 0:
-				if(v.elementAt(i).getLocationRegion() == 0 && !v.elementAt(i).getLocationIsHub())
-					this.availableHqLocations.addElement(v.elementAt(i));
-				break;
-			case 1:
-				if(v.elementAt(i).getLocationRegion() == 1 && !v.elementAt(i).getLocationIsHub())
-					this.availableHqLocations.addElement(v.elementAt(i));
-				break;
-			case 2:
-				if(v.elementAt(i).getLocationRegion() == 2 && !v.elementAt(i).getLocationIsHub() && v.elementAt(i).getLocationType() == LOCATIONTYPE.LT_CITY){
-					this.availableHqLocations.addElement(v.elementAt(i));
-					System.out.println("Adding element " + v.elementAt(i) + " to availableHqLocations!");
-					System.out.println("availableHqLocations Vector size now " + this.availableHqLocations.size());
-				}
-				break;
-			case 3:
-				if(v.elementAt(i).getLocationRegion() == 3 && !v.elementAt(i).getLocationIsHub())
-					this.availableHqLocations.addElement(v.elementAt(i));
-				break;
-			case 4:
-				if(v.elementAt(i).getLocationRegion() == 4 && !v.elementAt(i).getLocationIsHub())
-					this.availableHqLocations.addElement(v.elementAt(i));
-				break;
-			case 5:
-				if(v.elementAt(i).getLocationRegion() == 5 && !v.elementAt(i).getLocationIsHub())
-					this.availableHqLocations.addElement(v.elementAt(i));
-				break;
-			case 6:
-				if(v.elementAt(i).getLocationRegion() == 6 && !v.elementAt(i).getLocationIsHub())
-					this.availableHqLocations.addElement(v.elementAt(i));
-				break;
-			case 7:
-				if(v.elementAt(i).getLocationRegion() == 7 && !v.elementAt(i).getLocationIsHub())
-					this.availableHqLocations.addElement(v.elementAt(i));
-				break;
-			case 8:
-				if(v.elementAt(i).getLocationRegion() == 8 && !v.elementAt(i).getLocationIsHub())
-					this.availableHqLocations.addElement(v.elementAt(i));
-				break;
-			}
-		}
-	*/
-		
 	}
 
 	private void loadRegionMap(SpriteSheet map){
@@ -1017,6 +958,11 @@ public class ScenarioView {
 			ab.getScenario().loadScenario(3);
 			break;
 		}
+	}
+
+	@Override
+	public void setVM(VM vm) {
+		this.scenarioViewMode = (SCENARIOVIEWMODE)vm;	
 	}
 
 }

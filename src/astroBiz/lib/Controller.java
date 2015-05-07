@@ -1,4 +1,4 @@
-package astroBiz;
+package astroBiz.lib;
 
 import java.awt.Graphics;
 import java.util.LinkedList;

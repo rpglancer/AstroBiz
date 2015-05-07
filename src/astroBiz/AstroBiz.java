@@ -10,6 +10,7 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 
+import astroBiz.lib.Controller;
 import astroBiz.lib.Scenario;
 import astroBiz.lib.SpriteSheet;
 import astroBiz.util.BufferedImageLoader;
@@ -33,6 +34,8 @@ public class AstroBiz extends Canvas implements Runnable{
 	public static final int MINOR = 2;
 	public static final int PATCH = 1;
 	public final String TITLE = "AstroBiz Prototype version " + VERSION + "." + MAJOR + "." + MINOR + "." + PATCH;
+	
+	private static Controller c = new Controller();
 
 	/*
 	 * Buffered Images
@@ -165,6 +168,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		default:
 			break;
 		}
+		c.tick();
 		// Everything updated in the game world is updated on a tick?
 	}
 	
@@ -177,7 +181,6 @@ public class AstroBiz extends Canvas implements Runnable{
 		Graphics g = bs.getDrawGraphics();
 		
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
-		
 		switch(State){
 		case LOCATIONVIEW:
 			locationView.render(g, this);
@@ -194,6 +197,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		default:
 			break;
 		}
+		c.render(g);
 		g.dispose();
 		bs.show();
 	}
@@ -264,6 +268,10 @@ public class AstroBiz extends Canvas implements Runnable{
 		astrobiz.start();
 	}
 
+	public Controller getController(){
+		return AstroBiz.c;
+	}
+	
 	/**
 	 * @deprecated
 	 * <br>

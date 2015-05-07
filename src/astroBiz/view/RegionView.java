@@ -69,14 +69,14 @@ public class RegionView implements Manager {
 	public void tick(){
 	}
 	
-	public void render(Graphics g){
-		if(c.getIsActive()) c.render(g);
+	public void render(Graphics g){	
 		if(regionVm == REGIONVM.VM_BUY_SELECT_MODEL) drawBuySelectModel(g);
 		else if(regionVm == REGIONVM.VM_BUY_SELECT_MFG) drawBuySelectMfg(g);
 		else if(regionVm == REGIONVM.VM_BUY_SELECT_QTY) drawBuySelectQty(g);
 		else if(regionVm == REGIONVM.VM_REGION) drawRegion(g);
 		else if(regionVm == REGIONVM.VM_REGIONSWAP) drawRegionSwap(g);
-//		g.dispose();
+		
+		if(c.getIsActive()) c.render(g);
 	}
 	
 	private void buttonHilight(Graphics g){
@@ -510,7 +510,8 @@ public class RegionView implements Manager {
 				resetSelectedOpt();
 			}
 			else if(regionVm == REGIONVM.VM_BUY_SELECT_MODEL){
-				c.setConfirmVM(this, REGIONVM.VM_BUY_SELECT_MODEL, REGIONVM.VM_BUY_SELECT_QTY, 32, 32);
+				//c.setConfirmVM(this, REGIONVM.VM_BUY_SELECT_MODEL, REGIONVM.VM_BUY_SELECT_QTY, 400, 400);
+				c.setConfirmVM(this, REGIONVM.VM_BUY_SELECT_MODEL, REGIONVM.VM_BUY_SELECT_QTY, AstroBiz.employeeSprites.grabImage(1, 1, 128, 128), "Your run of the mill description would go here!");
 				resetSelectedOpt();
 			}
 			else if(regionVm == REGIONVM.VM_REGION) processButton();

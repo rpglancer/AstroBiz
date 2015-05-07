@@ -8,7 +8,9 @@ public class FontInformation {
 	 */
 	public static final Font briefing = new Font("Courier New", Font.PLAIN, 18);
 	
-	public static final Font chitchat = new Font("tiny", Font.PLAIN, 18);
+	public static final Font chitchat = new Font("Arial", Font.PLAIN, 18);
+	
+	public static final Font confirm = new Font("sans", Font.BOLD, 32);
 	
 	/**
 	 * Font for use on the SpaceCraft purchase window, used on categories.

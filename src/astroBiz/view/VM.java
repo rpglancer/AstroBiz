@@ -1,10 +1,10 @@
 package astroBiz.view;
 
 /**
- * Empty class exists solely so I can pass multiple different viewmode enums through to Confirmation by [ab]using polymorphism.
+ * Empty interface exists solely for passing multiple different viewmode [VM] enums through to Confirmation by [ab]using polymorphism.
  * @author Matt Bangert
  *
  */
 public interface VM {
-
+	public static VM activeVM = null;
 }
