@@ -33,8 +33,8 @@ public class AstroBiz extends Canvas implements Runnable{
 	public static final int HEIGHT = 480;
 	public static final int VERSION = 0;
 	public static final int MAJOR = 0;
-	public static final int MINOR = 2;
-	public static final int PATCH = 1;
+	public static final int MINOR = 3;
+	public static final int PATCH = 0;
 	public static SpriteSheet employeeSprites = null;
 	public static SpriteSheet regionButtons = null;
 	public static SpriteSheet regionSprites = null;
