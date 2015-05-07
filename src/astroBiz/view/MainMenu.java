@@ -6,8 +6,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
-import astroBiz.util.textUtilities;
-
 /**
  * Displays the Main Menu at the start of the game.
  * @author Matt Bangert
@@ -29,11 +27,9 @@ public class MainMenu {
 
 	Graphics2D g2d;
 	
-//	boolean buttonStatus[] = {false, false, false};
-	
 	private MENUSELECT menuSelect = MENUSELECT.NEWGAME;
 	
-	public void render(Graphics g){	
+	public void render(Graphics g){
 		g2d = (Graphics2D) g;
 		g.setFont(fnt0);
 		g.setColor(Color.white);
@@ -48,7 +44,6 @@ public class MainMenu {
 		g.setColor(getButtonColor(MENUSELECT.QUITGAME));
 		g.drawString("Quit Game", quitGameButton.x + 14, quitGameButton.y + 32);
 		g2d.draw(quitGameButton);
-	//	textUtilities.drawString(g, 32, 32, "Heckler & Koch BITCHES!");
 	}
 	
 	public Color getButtonColor(MENUSELECT button){
@@ -58,13 +53,7 @@ public class MainMenu {
 		else
 			return Color.white;
 	}
-	
-//	public void setButtonStatus(int button, boolean status){
-//		if(button < 0 || button > 2)
-//			return;
-//		this.buttonStatus[button] = status;
-//	}
-	
+		
 	public void cycleMenuNext(){
 		if(this.menuSelect == MENUSELECT.NEWGAME)
 			this.menuSelect = MENUSELECT.LOADGAME;

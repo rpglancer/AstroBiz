@@ -10,6 +10,9 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 
+import astroBiz.lib.Controller;
+import astroBiz.lib.Scenario;
+import astroBiz.lib.SpriteSheet;
 import astroBiz.util.BufferedImageLoader;
 import astroBiz.util.textUtilities;
 import astroBiz.view.LocationView;
@@ -17,63 +20,42 @@ import astroBiz.view.MainMenu;
 import astroBiz.view.MainMenu.MENUSELECT;
 import astroBiz.view.RegionView;
 import astroBiz.view.ScenarioView;
-import astroBiz.view.ScenarioView.HQPLACEMENTVIEW;
-import astroBiz.view.ScenarioView.SCENARIOVIEWMODE;
 
 public class AstroBiz extends Canvas implements Runnable{
 
-	/*
-	 * Constants
-	 */
-	private static final long serialVersionUID = 1477754103243231171L;	
-	public static final int WIDTH = 800;
-	public static final int HEIGHT = 480;
-	public static final int VERSION = 0;
-	public static final int MAJOR = 0;
-	public static final int MINOR = 2;
-	public static final int PATCH = 0;
-	public final String TITLE = "AstroBiz Prototype version " + VERSION + "." + MAJOR + "." + MINOR + "." + PATCH;
-
-	/*
-	 * Buffered Images
-	 */
-	private BufferedImage image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
-	
-	/*
-	 * Sprite Sheets
-	 */
-	private SpriteSheet employeeSprites = null;
-	private SpriteSheet regionButtons = null;
-	private SpriteSheet regionSprites = null;
-	private SpriteSheet worldMap = null;
-
-	/*
-	 * Views
-	 */
-	private LocationView locationView = null;
-	private MainMenu mainMenu = null;
-	private RegionView regionView = null;
-	private ScenarioView scenarioView = null;
-	private textUtilities textUtil = null;
-	
 	public static enum STATE{
 		MENU,
 		REGIONVIEW,
 		SCENARIOSETUP,
 		LOCATIONVIEW
-	};
-
-	/*
-	 * Game State information
-	 */
-	private Scenario activeScenario;
-	
-	/*
-	 * Operational Variables
-	 */
+	};	
+	public static final int WIDTH = 800;
+	public static final int HEIGHT = 480;
+	public static final int VERSION = 0;
+	public static final int MAJOR = 0;
+	public static final int MINOR = 3;
+	public static final int PATCH = 0;
+	public static SpriteSheet employeeSprites = null;
+	public static SpriteSheet regionButtons = null;
+	public static SpriteSheet regionSprites = null;
+	public static SpriteSheet textSheet = null;
+	public static SpriteSheet worldMap = null;
 	public static STATE State = STATE.MENU;
+	
 	private boolean running = false;
+	
+	private BufferedImage image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
+	private LocationView locationView = null;
+	private MainMenu mainMenu = null;
+	private RegionView regionView = null;
+	private Scenario activeScenario;
+	private ScenarioView scenarioView = null;
 	private Thread thread;
+	
+	private final String TITLE = "AstroBiz Prototype version " + VERSION + "." + MAJOR + "." + MINOR + "." + PATCH;
+
+	private static final long serialVersionUID = 1477754103243231171L;
+	private static Controller c = new Controller();
 	
 	public void init(){
 		BufferedImageLoader loader = new BufferedImageLoader();
@@ -87,7 +69,8 @@ public class AstroBiz extends Canvas implements Runnable{
 			temp = loader.loadImage("../../data/astrobizmap.png");
 			worldMap = new SpriteSheet(temp);
 			temp = loader.loadImage("../../data/astrobiztext.png");
-			textUtil = new textUtilities(new SpriteSheet(temp));
+			textSheet = new SpriteSheet(temp);
+			textUtilities.init();
 		}catch(IOException e){
 			e.printStackTrace();
 		}
@@ -126,11 +109,9 @@ public class AstroBiz extends Canvas implements Runnable{
 	public void run(){
 		init();
 		long lastTime = System.nanoTime();
-		final double amountOfTicks = 60.0;
+		final double amountOfTicks = 30.0;			//	Keep @ 30 for now, no need to run 60fps, may drop lower.
 		double ns = 1000000000 / amountOfTicks;
 		double delta = 0;
-		int updates = 0;
-		int frames = 0;
 		long timer = System.currentTimeMillis();
 		
 		while(running){
@@ -140,18 +121,11 @@ public class AstroBiz extends Canvas implements Runnable{
 			if(delta >= 1){
 				tick();
 				render();		// Tick Limited FPS
-				frames++;		// Tick Limited FPS
-				updates++;
 				delta--;
 			}
-//			render();			// Processor Limited FPS
-//			frames++;			// Processor Limited FPS
 			
 			if(System.currentTimeMillis() - timer > 1000){
 				timer += 1000;
-				//System.out.println(updates + " Ticks, FPS " + frames);
-				updates = 0;
-				frames = 0;
 			}
 		}
 		stop();
@@ -164,6 +138,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		case LOCATIONVIEW:
 			break;
 		case REGIONVIEW:
+			if(scenarioView != null) scenarioView = null;
 			regionView.tick();
 			break;
 		case SCENARIOSETUP:
@@ -172,6 +147,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		default:
 			break;
 		}
+		c.tick();
 		// Everything updated in the game world is updated on a tick?
 	}
 	
@@ -182,12 +158,12 @@ public class AstroBiz extends Canvas implements Runnable{
 			return;
 		}
 		Graphics g = bs.getDrawGraphics();
-		g = bs.getDrawGraphics();
-		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
 		
+		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
+		c.render(g);
 		switch(State){
 		case LOCATIONVIEW:
-			locationView.render(g);
+			locationView.render(g, this);
 			break;
 		case MENU:
 			mainMenu.render(g);
@@ -201,7 +177,6 @@ public class AstroBiz extends Canvas implements Runnable{
 		default:
 			break;
 		}
-
 		g.dispose();
 		bs.show();
 	}
@@ -215,22 +190,8 @@ public class AstroBiz extends Canvas implements Runnable{
 			break;
 			
 		case REGIONVIEW:
-			switch(key){
-			case KeyEvent.VK_UP:
-				regionView.setRegionY(regionView.getRegionY() - 1);
-				break;
-			case KeyEvent.VK_DOWN:
-				regionView.setRegionY(regionView.getRegionY() + 1);
-				break;
-			case KeyEvent.VK_RIGHT:
-				regionView.setRegionX(regionView.getRegionX() + 1);
-				break;
-			case KeyEvent.VK_LEFT:
-				regionView.setRegionX(regionView.getRegionX() - 1);
-				break;
-			default:
-				break;
-			}
+			regionView.keyAction(e);
+
 			break;		// End REGIONVIEW
 			
 		case MENU:
@@ -248,6 +209,7 @@ public class AstroBiz extends Canvas implements Runnable{
 					break;
 				if(mainMenu.getMenuStatus() == MENUSELECT.QUITGAME)
 					System.exit(1);
+				System.gc();
 				break;
 			}
 			break;
@@ -285,22 +247,10 @@ public class AstroBiz extends Canvas implements Runnable{
 		astrobiz.start();
 	}
 
-	public SpriteSheet getEmployeeSprites(){
-		return employeeSprites;
+	public static Controller getController(){
+		return AstroBiz.c;
 	}
-	
-	public SpriteSheet getRegionButtons(){
-		return this.regionButtons;
-	}
-	
-	public SpriteSheet getRegionSprites(){
-		return regionSprites;
-	}
-
-	public SpriteSheet getWorldMap(){
-		return this.worldMap;
-	}
-	
+		
 	public LocationView getLocationView(){
 		return this.locationView;
 	}
