@@ -1,9 +1,7 @@
 package astroBiz.lib;
 import java.awt.image.BufferedImage;
-import java.util.Random;
 
 import astroBiz.AstroBiz;
-import astroBiz.info.LocationInformation;
 import astroBiz.info.LocationInformation.LI;
 
 /**
@@ -86,6 +84,10 @@ public class Location {
 		return locationDevelopment;
 	}
 
+	public String getID(){
+		return this.locationID;
+	}
+	
 	public boolean getLocationIsHub(){
 		for(int i = 0; i < 4; i++){
 			if(isHub[i]) return isHub[i];
@@ -144,9 +146,7 @@ public class Location {
 	void setLocationName(String name){
 		locationName = name;
 	}
-	void setLocationSize(int size){
-		locationSize = size;
-	}
+
 	void setLocationSlotAvailable(int slots){
 		locationSlotAvailable = slots;
 	}
@@ -163,71 +163,4 @@ public class Location {
 	void setLocationY(int y){
 		locationY = y;
 	}
-
-@Deprecated
-	private int locationRegionX;
-@Deprecated
-	private int locationRegionY;
-@Deprecated
-	private int locationSize;		
-@Deprecated
-	public void generateLocation(int y, int x, int r){
-		Random rand = new Random();
-		this.locationDemandBusiness = rand.nextInt(255);
-		this.locationDemandIndustry = rand.nextInt(255);
-		this.locationDemandTourism = rand.nextInt(255);
-		this.locationDevelopment = (this.locationDemandBusiness + this.locationDemandIndustry + this.getLocationDemandTourism()) / 3;
-		this.locationName = "TODO: Names Generator";
-		this.locationSize = this.locationDevelopment * 10;
-		this.locationSlotTotal = this.locationDevelopment / 10;
-		this.locationSlotAvailable = this.locationSlotTotal;
-		this.locationSlotCost = 500;
-		this.locationX = x;
-		this.locationY = y;
-		this.locationRegion = r;
-	}
-@Deprecated	
-	public void generateEarthLocation(int i){
-		this.locationRegion = 2;
-		this.locationX = LocationInformation.earthLocationX[i];
-		this.locationY = LocationInformation.earthLocationY[i];
-		this.locationName = LocationInformation.earthLocationNames[i];
-		this.locationDemandBusiness = LocationInformation.earthLocationDemandBusiness[i];
-		this.locationDemandIndustry = LocationInformation.earthLocationDemandIndustry[i];
-		this.locationDemandTourism = LocationInformation.earthLocationDemandTourism[i];
-		this.locationDevelopment = (this.locationDemandBusiness + this.locationDemandIndustry + this.locationDemandTourism) / 3;
-		this.locationSize = this.locationDevelopment * 100;
-		this.locationSlotTotal = this.locationDevelopment / 10;
-		this.locationSlotAvailable = this.locationSlotTotal;
-		this.locationSlotCost = 500;
-		this.population = LocationInformation.earthPopulation[i];
-		if(this.population > 1.0) locationType = LOCATIONTYPE.LT_CITY;
-	}
-@Deprecated
-	public void generateLunaLocation(int i){
-		this.locationRegion = 3;
-		this.locationX = LocationInformation.lunaLocationX[i];
-		this.locationY = LocationInformation.lunaLocationY[i];
-		this.locationName = LocationInformation.lunaLocationNames[i];
-		this.locationDemandBusiness = LocationInformation.lunaLocationDemandBusiness[i];
-		this.locationDemandIndustry = LocationInformation.lunaLocationDemandIndustry[i];
-		this.locationDemandTourism = LocationInformation.lunaLocationDemandTourism[i];
-		this.locationDevelopment = (this.locationDemandBusiness + this.locationDemandIndustry + this.locationDemandTourism) / 3;
-		this.locationSize = this.locationDevelopment * 100;
-		this.locationSlotTotal = this.locationDevelopment / 10;
-		this.locationSlotAvailable = this.locationSlotTotal;
-		this.locationSlotCost = 500;	
-	}	
-@Deprecated
-	int getLocationRegionX(){
-		return this.locationRegionX;
-	}
-@Deprecated
-	int getLocationRegionY(){
-		return this.locationRegionY;
-	}
-@Deprecated
-int getLocationSize(){
-	return locationSize;
-}
 }

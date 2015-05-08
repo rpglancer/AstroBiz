@@ -43,16 +43,27 @@ public class ScenarioView implements Manager{
 	 *
 	 */
 	public static enum SCENARIOVIEWMODE implements VM{
-		VM_BUSI_NAME,
-		VM_BUSI_NAME_SELECT,
-		VM_BUSI_COLOR,
-		VM_BUSI_COLOR_SELECT,
-		VM_BUSI_CONFIG,
-		VM_SCEN_CONFIRM,
-		VM_SCEN_SELECT,
-		VM_DIFF_SELECT,
-		VM_PLYR_SELECT,
-		VM_SET_HQ
+		VM_BUSI_NAME			(0),
+		VM_BUSI_NAME_SELECT		(3),	
+		VM_BUSI_COLOR			(3),
+		VM_BUSI_COLOR_SELECT	(2),
+		VM_BUSI_CONFIG			(2),
+		VM_SCEN_CONFIRM			(0),
+		VM_SCEN_SELECT			(3),
+		VM_DIFF_SELECT			(3),
+		VM_PLYR_SELECT			(3),
+		VM_SET_HQ				(0);
+		
+		private int maxopt;
+		
+		SCENARIOVIEWMODE(int opt){
+			this.maxopt = opt;
+		}
+
+		@Override
+		public int getOpt() {
+			return this.maxopt;
+		}
 	}
 
 	
@@ -65,7 +76,6 @@ public class ScenarioView implements Manager{
 	private Font sbfont = new Font("sans", Font.BOLD, 16);
 	private Font sbconf	= new Font("sans", Font.BOLD, 32);
 	private int businessSelect = 0;
-	private int colorSelect = 0;
 	private int optionSelect = 0;
 	private int previousOption = optionSelect;
 	private int scenarioPlayerConfigure = 0;		// The number of the player being configured.
@@ -108,6 +118,10 @@ public class ScenarioView implements Manager{
  * @param g (Graphics) The active graphics buffer
  */
 	public void render(Graphics g){
+		int x = 0;
+		int y = 0;
+		g.setColor(Color.white);
+		textUtilities.drawStringMultiLine(g, FontInformation.debug, x, y, 800, scenarioViewMode.toString());
 		switch(this.scenarioViewMode){
 		case VM_BUSI_COLOR:
 			scenarioBusiConfig(g);
@@ -172,10 +186,10 @@ public class ScenarioView implements Manager{
 			g.fillRoundRect(x-8, y-8, width+16, height * 4 + 3 * 5 + 16, 16, 16);
 			g.setColor(Color.lightGray);
 			g.fillRoundRect(x-4, y-4, width+8, height * 4 + 3 * 5 + 8, 8, 8);
-			if(businessSelect == 0) g.drawImage(selectSprite, x-24, 72, null);
-			else if(businessSelect == 1) g.drawImage(selectSprite, x-24, 110, null);
-			else if(businessSelect == 2) g.drawImage(selectSprite, x-24, 148, null);
-			else if(businessSelect == 3) g.drawImage(selectSprite, x-24, 186, null);
+			if(optionSelect == 0) g.drawImage(selectSprite, x-24, 72, null);
+			else if(optionSelect == 1) g.drawImage(selectSprite, x-24, 110, null);
+			else if(optionSelect == 2) g.drawImage(selectSprite, x-24, 148, null);
+			else if(optionSelect == 3) g.drawImage(selectSprite, x-24, 186, null);
 			for(int i = 0; i < ab.getScenario().getBusinesses().size(); i++){
 				g.setColor(ab.getScenario().getBusinesses().elementAt(i).getColor());
 				g.fillRoundRect(x, y, width, height, 8, 8);
@@ -191,9 +205,16 @@ public class ScenarioView implements Manager{
 		else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT){
 			g.setColor(ab.getScenario().getBusinesses().elementAt(businessSelect).getColor());
 			g.fillRoundRect(x, y, width, height, 8, 8);
-			textUtilities.drawString(g, 400 - 3 * 16, 96, "R: " + ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getRed());
-			textUtilities.drawString(g, 400 - 3 * 16, 96+32, "G: " + ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getGreen());
-			textUtilities.drawString(g, 400 - 3 * 16, 96+64, "B: " + ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getBlue());
+			g.setColor(Color.white);
+			if(optionSelect == 0)g.setColor(Color.red);
+			textUtilities.drawStringMultiLine(g, FontInformation.chitchat, 400, 96, 400, "R: " + ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getRed());
+			g.setColor(Color.white);
+			if(optionSelect == 1)g.setColor(Color.green);
+			textUtilities.drawStringMultiLine(g, FontInformation.chitchat, 400, 96+32, 400, "G: " + ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getGreen());
+			g.setColor(Color.white);
+			if(optionSelect == 2)g.setColor(Color.blue);
+			textUtilities.drawStringMultiLine(g, FontInformation.chitchat, 400, 96+64, 400, "B: " + ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getBlue());
+			g.setColor(Color.white);
 			g.drawImage(this.employeeSprite, 32, 320, null);
 			textUtilities.drawString(g, 160, 384, "Select your desired color.");
 			
@@ -495,17 +516,7 @@ public class ScenarioView implements Manager{
 			AstroBiz.getController().addEntity(textWin);
 		}
 	}
-	
-@Deprecated	
-	private void cycleBusinessNext(){
-		if(businessSelect == 3) businessSelect = 0;
-		else businessSelect++;
-	}
-@Deprecated	
-	private void cycleBusinessPrev(){
-		if(businessSelect == 0) businessSelect = 3;
-		else businessSelect--;
-	}
+
 @Deprecated	
 	private void cycleBcoNext(){
 		if(busiConfigOptions == BUSICONFIGOPTIONS.NAME)
@@ -524,81 +535,20 @@ public class ScenarioView implements Manager{
 		else if(busiConfigOptions == BUSICONFIGOPTIONS.EXIT)
 			busiConfigOptions = BUSICONFIGOPTIONS.NAME;
 	}
-@Deprecated	
-	private void cycleColorNext(){
-		if(colorSelect == 2) colorSelect = 0;
-		else colorSelect++;
-	}
-@Deprecated	
-	private void cycleColorPrev(){
-		if(colorSelect == 0) colorSelect = 2;
-		else colorSelect--;
-	}
-		
+	
 	private void cycleOptionNext(){
-		int maxOption = 0;
-		if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR);
-		if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT);
-		if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_CONFIG) maxOption = 3;
-		if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME);
-		if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME_SELECT);
-		if(scenarioViewMode == SCENARIOVIEWMODE.VM_DIFF_SELECT) maxOption = 3;
-		if(scenarioViewMode == SCENARIOVIEWMODE.VM_PLYR_SELECT) maxOption = 3;
-		if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_CONFIRM);
-		if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_SELECT) maxOption = 3;
+		int maxOption = scenarioViewMode.getOpt();
 		if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ){
 			if(hqPlacementView == HQPLACEMENTVIEW.WORLD) maxOption = 8;
 			if(hqPlacementView == HQPLACEMENTVIEW.REGION) maxOption = this.availableHqLocations.size() - 1;
 		}
-
 		if(maxOption < 0) return;
-
 		if(optionSelect < maxOption)optionSelect++;
-		else optionSelect = 0;
 	}
 	
 	private void cycleOptionPrev(){
-		switch(scenarioViewMode){
-		case VM_BUSI_COLOR:
-			break;
-		case VM_BUSI_COLOR_SELECT:
-			break;
-		case VM_BUSI_CONFIG:
-			break;
-		case VM_BUSI_NAME:
-			break;
-		case VM_BUSI_NAME_SELECT:
-			break;
-		case VM_DIFF_SELECT:
-			if(optionSelect > 0) optionSelect--;
-			else optionSelect = 3;
-			break;
-		case VM_PLYR_SELECT:
-			if(optionSelect > 0) optionSelect--;
-			else optionSelect = 3;
-			break;
-		case VM_SCEN_CONFIRM:
-			break;
-		case VM_SCEN_SELECT:
-			if(optionSelect > 0) optionSelect--;
-			else optionSelect = 3;
-			break;
-		case VM_SET_HQ:
-			if(hqPlacementView == HQPLACEMENTVIEW.WORLD){
-				if(this.optionSelect > 0) optionSelect--;
-				else optionSelect = 8;
-			}
-			else if(hqPlacementView == HQPLACEMENTVIEW.REGION){
-				if(this.availableHqLocations.size() == 0) return;
-				if(this.optionSelect > 0) optionSelect--;
-				else optionSelect = this.availableHqLocations.size() - 1;
-			}
-			break;
-		default:
-			break;
-		
-		}
-		
+		if(optionSelect < 0) optionSelect = 0;
+		if(optionSelect > 0) optionSelect--;
 	}
 		
 	private Location getHqSelectedLocation(){
@@ -609,19 +559,22 @@ public class ScenarioView implements Manager{
 		int r = ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getRed();
 		int g = ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getGreen();
 		int b = ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getBlue();
-		if(colorSelect == 0){
+//		if(colorSelect == 0){
+		if(optionSelect == 0){
 			if(ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getRed() < 255){
 				Color temp = new Color(r+1, g, b);
 				ab.getScenario().getBusinesses().elementAt(businessSelect).setColor(temp);
 			}
 		}
-		else if(colorSelect == 1){
+//		else if(colorSelect == 1){
+		else if(optionSelect == 1){
 			if(ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getGreen() < 255){
 				Color temp = new Color(r, g+1, b);
 				ab.getScenario().getBusinesses().elementAt(businessSelect).setColor(temp);
 			}
 		}
-		else if(colorSelect == 2){
+//		else if(colorSelect == 2){
+		else if(optionSelect == 2){
 			if(ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getBlue() < 255){
 				Color temp = new Color(r, g, b+1);
 				ab.getScenario().getBusinesses().elementAt(businessSelect).setColor(temp);
@@ -633,19 +586,19 @@ public class ScenarioView implements Manager{
 		int r = ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getRed();
 		int g = ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getGreen();
 		int b = ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getBlue();
-		if(colorSelect == 0){
+		if(optionSelect == 0){
 			if(ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getRed() > 0){
 				Color temp = new Color(r-1, g, b);
 				ab.getScenario().getBusinesses().elementAt(businessSelect).setColor(temp);
 			}
 		}
-		else if(colorSelect == 1){
+		else if(optionSelect == 2){
 			if(ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getGreen() > 0){
 				Color temp = new Color(r, g-1, b);
 				ab.getScenario().getBusinesses().elementAt(businessSelect).setColor(temp);
 			}
 		}
-		else if(colorSelect == 2){
+		else if(optionSelect == 3){
 			if(ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getBlue() > 0){
 				Color temp = new Color(r, g, b-1);
 				ab.getScenario().getBusinesses().elementAt(businessSelect).setColor(temp);
@@ -727,16 +680,23 @@ public class ScenarioView implements Manager{
 			break;
 			
 		case KeyEvent.VK_DOWN:
-			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR) cycleBusinessNext();
-			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT) cycleColorNext();
-			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME) cycleBusinessNext();
+			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR){
+				cycleOptionNext();
+//				cycleBusinessNext();
+			}
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT){
+				cycleOptionNext();
+			}
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME) cycleOptionNext();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_DIFF_SELECT) cycleOptionNext();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_PLYR_SELECT) cycleOptionNext();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_SELECT) cycleOptionNext();
 			break;
 		case KeyEvent.VK_ENTER:
-			ab.getController().purge();
+			AstroBiz.getController().purge();
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR){
+				businessSelect = optionSelect;
+				System.out.println(businessSelect);
 				scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT;
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT){
@@ -829,9 +789,14 @@ public class ScenarioView implements Manager{
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ) cycleOptionNext();
 			break;
 		case KeyEvent.VK_UP:
-			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR) cycleBusinessPrev();
-			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT) cycleColorPrev();
-			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME) cycleBusinessPrev();
+			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR){
+				cycleOptionPrev();
+				//cycleBusinessPrev();
+			}
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT){
+				cycleOptionPrev();
+			}
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME) cycleOptionPrev();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_DIFF_SELECT) cycleOptionPrev();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_PLYR_SELECT) cycleOptionPrev();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_SELECT) cycleOptionPrev();

@@ -79,6 +79,10 @@ public class SpaceCraft{
 		return this.name;
 	}
 	
+	public BufferedImage getSprite(){
+		return this.sprite;
+	}
+	
 	public double getRange(){
 		return this.range;
 	}

@@ -12,6 +12,8 @@ public class FontInformation {
 	
 	public static final Font confirm = new Font("sans", Font.BOLD, 32);
 	
+	public static final Font debug = new Font("Courier New", Font.PLAIN, 10);
+	
 	/**
 	 * Font for use on the SpaceCraft purchase window, used on categories.
 	 */

@@ -11,33 +11,32 @@ import astroBiz.info.ScenarioInformation.SI;
  *
  */
 public class Scenario {
-	
-	private String scenarioName;
+
 	private String scenarioDescription;
+	private String scenarioName;
 	
 	private int activeBusiness;
-	
-	private int scenarioDifficultyLevel;
 	private int scenarioCurrentYear;
+	private int scenarioDifficultyLevel;
 	private int scenarioEndingYear;
 	private int scenarioHubsRequired;
 	private int scenarioQuarter;
 	private int scenarioStartingYear;
 	
+	private static Queue msgQueue = new Queue();
+	
 	private Vector<Business> scenarioBusinesses = new Vector<Business>();
 	private Vector<Manufacturer> scenarioManufacturers = new Vector<Manufacturer>();
 	private Vector<Manufacturer> scenarioManufacturersAvailable = new Vector<Manufacturer>();
-	
-	private static Queue msgQueue = new Queue();
-	
+		
 	public Scenario(){
 		for(int i = 0; i < 4; i++){
 			Business b = new Business();
-			if(i == 0) b.setColor(b, 255, 0, 0);
-			if(i == 1) b.setColor(b, 0, 255, 0);
-			if(i == 2) b.setColor(b, 0, 0, 255);
-			if(i == 3) b.setColor(b, 240, 140, 0);
-			b.addBusinessAccountBalance(1500000);
+			if(i == 0) b.setColor(255, 0, 0);
+			if(i == 1) b.setColor(0, 255, 0);
+			if(i == 2) b.setColor(0, 0, 255);
+			if(i == 3) b.setColor(240, 140, 0);
+			b.addToAccount(1500000);
 			scenarioBusinesses.addElement(b);
 		}
 		for(MI mi : MI.values()){
@@ -56,8 +55,24 @@ public class Scenario {
 		processQueue();
 	}
 	
+	public int getActiveBusiness(){
+		return this.activeBusiness;
+	}
+	
 	public Vector<Business> getBusinesses(){
 		return this.scenarioBusinesses;
+	}
+
+	public int getCurrentYear(){
+		return this.scenarioCurrentYear;
+	}
+
+	public int getEndingYear(){
+		return this.scenarioEndingYear;
+	}
+
+	public int getHubsRequired(){
+		return this.scenarioHubsRequired;
 	}
 	
 	public Vector<Manufacturer> getManufacturers(){
@@ -69,18 +84,6 @@ public class Scenario {
 		return this.scenarioManufacturersAvailable;
 	}
 	
-	public int getActiveBusiness(){
-		return this.activeBusiness;
-	}
-	
-	public int getCurrentYear(){
-		return this.scenarioCurrentYear;
-	}
-	
-	public int getQuarter(){
-		return this.scenarioQuarter;
-	}
-	
 	public int getMaxOrderQty(int craftCost){
 		int count = 0;
 		while(craftCost * count < scenarioBusinesses.elementAt(activeBusiness).getAccountBalance()){
@@ -89,15 +92,19 @@ public class Scenario {
 		}
 		return count;
 	}
-	
-	public String getScenarioName(){
-		return this.scenarioName;
+
+	public int getQuarter(){
+		return this.scenarioQuarter;
 	}
-	
+
 	public String getScenarioDescription(){
 		return this.scenarioDescription;
 	}
 	
+	public String getScenarioName(){
+		return this.scenarioName;
+	}
+		
 	public void loadScenario(int scenario){
 		if(scenario == 0){
 			scenarioName = SI.SCEN1.getName();
@@ -174,16 +181,15 @@ public class Scenario {
 		else
 			this.scenarioDifficultyLevel = difficulty;
 		for(int i = 0; i < 4; i++){
-			scenarioBusinesses.elementAt(i).subBusinessAccountBalance((int)(scenarioBusinesses.elementAt(i).getAccountBalance() * (scenarioDifficultyLevel * 0.1)));
+			scenarioBusinesses.elementAt(i).subFromAccount((int)(scenarioBusinesses.elementAt(i).getAccountBalance() * (scenarioDifficultyLevel * 0.1)));
 		}
 	}
 	
 	public void setScenarioPlayers(int players){
 		for(int i = 0; i < players; i++){
-			this.scenarioBusinesses.elementAt(i).setBusinessPlayerOwned(true);
+			this.scenarioBusinesses.elementAt(i).setPlayerOwned(true);
 		}
 	}
-	
 	/**
 	 * Updates the Vector of available manufacturers, as some incorporate and some become insolvent during the course of the game.
 	 * <br><br>

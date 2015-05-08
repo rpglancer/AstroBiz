@@ -34,7 +34,13 @@ public class RegionView implements Manager {
 		VM_BUY_SELECT_QTY,
 		VM_ORDER_CONFIRM,
 		VM_REGION,
-		VM_REGIONSWAP,
+		VM_REGIONSWAP,;
+
+		@Override
+		public int getOpt() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
 	}
 
 	private REGIONVM regionVm = REGIONVM.VM_REGION;
@@ -72,7 +78,12 @@ public class RegionView implements Manager {
 	public void tick(){
 	}
 	
-	public void render(Graphics g){	
+	public void render(Graphics g){
+		int x = 0;
+		int y = 470;
+		g.setColor(Color.white);
+		textUtilities.drawStringMultiLine(g, FontInformation.debug, x, y, 800, regionVm.toString());
+		
 		if(regionVm == REGIONVM.VM_BUY_SELECT_MODEL) drawBuySelectModel(g);
 		else if(regionVm == REGIONVM.VM_BUY_SELECT_MFG) drawBuySelectMfg(g);
 		else if(regionVm == REGIONVM.VM_BUY_SELECT_QTY) drawBuySelectModel(g);

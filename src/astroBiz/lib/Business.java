@@ -8,34 +8,29 @@ import java.util.Vector;
  *
  */
 public class Business {
-	private Integer accountBalance = 0;
-	private Color businessColor;
 	private boolean isPlayerOwned = false;
-	private double advertisingCosts = 0;
-	private double maintenanceCosts = 0;
-	private double serviceCosts = 0;
-	private	Vector<SpaceCraft> spaceCraftHangar = new Vector<SpaceCraft>();
+	
+	private int advertisingCosts = 0;
+	private int maintenanceCosts = 0;
+	private int serviceCosts = 0;
+	
+	private Color businessColor;
+	private Integer accountBalance = 0;
 	private Location headQuarters = null;
-	private Vector<Location> regionalHubs = null;
+	private String businessName = "Untitled Company";
 	
-	String businessName = "Untitled Company";
+	private Vector<Location> regionalHubs = new Vector<Location>();
 	Vector<Route> businessRoutes = new Vector<Route>();
-	
-	/**
-	 * Default constructor to make a new Business.
-	 */
-	public Business(){
-		this.regionalHubs = new Vector<Location>();
-		this.spaceCraftHangar = new Vector<SpaceCraft>();
-	}
+	private	Vector<SpaceCraft> spaceCraftHangar = new Vector<SpaceCraft>();
 	
 	public void addCraft(SpaceCraft sc){
 		this.spaceCraftHangar.addElement(sc);
 	}
 
-	public void addBusinessAccountBalance(int amount){
+	public void addToAccount(int amount){
 		accountBalance += amount;
 	}
+
 	
 	public Color getColor(){
 		return businessColor;
@@ -44,15 +39,15 @@ public class Business {
 	public Integer getAccountBalance(){
 		return this.accountBalance;
 	}
+
+	public int getAdCosts(){
+		return this.advertisingCosts;
+	}
 	
 	SpaceCraft getCraft(int index){
 		return spaceCraftHangar.get(index);
 	}
-	
-	public Vector<SpaceCraft> getHangar(){
-		return this.spaceCraftHangar;
-	}
-	
+
 	public int getCraftInHangar(SpaceCraft type){
 		int count = 0;
 		if(spaceCraftHangar.size() == 0) return count;
@@ -77,6 +72,10 @@ public class Business {
 		return count;
 	}
 	
+	public Vector<SpaceCraft> getHangar(){
+		return this.spaceCraftHangar;
+	}
+
 	public Vector<Location> getHubs(){
 		return this.regionalHubs;
 	}
@@ -84,19 +83,31 @@ public class Business {
 	public Location getHQ(){
 		return this.headQuarters;
 	}
+
+	public boolean getIsPlayerOwned(){
+		return this.isPlayerOwned;
+	}
 	
-	public Vector<Route> getRoutes(){
-		return this.businessRoutes;
+	public int getMaintCosts(){
+		return this.maintenanceCosts;
 	}
 	
 	public String getName(){
 		return this.businessName;
 	}
 	
-	public void setColor(Business business, int r, int g, int b){
-		business.businessColor = new Color(r,g,b);
+	public Vector<Route> getRoutes(){
+		return this.businessRoutes;
+	}
+
+	public int getServiceCosts(){
+		return this.serviceCosts;
 	}
 	
+	public void setColor(int r, int g, int b){
+		this.businessColor = new Color(r,g,b);
+	}
+
 	public void setColor(Color color){
 		this.businessColor = color;
 	}
@@ -107,16 +118,16 @@ public class Business {
 		this.regionalHubs.addElement(hq);
 		this.headQuarters = hq;
 	}
-	
-	public void setBusinessPlayerOwned(boolean p){
-		this.isPlayerOwned = p;
-	}
-	
+
 	public void setName(String name){
 		this.businessName = name;
 	}
 	
-	public void subBusinessAccountBalance(int amount){
+	public void setPlayerOwned(boolean p){
+		this.isPlayerOwned = p;
+	}
+		
+	public void subFromAccount(int amount){
 		accountBalance -= amount;
 	}
 }

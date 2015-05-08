@@ -7,4 +7,5 @@ package astroBiz.view;
  */
 public interface VM {
 	public static VM activeVM = null;
+	public int getOpt();
 }
