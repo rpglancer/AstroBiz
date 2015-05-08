@@ -123,7 +123,6 @@ public class AstroBiz extends Canvas implements Runnable{
 				render();		// Tick Limited FPS
 				delta--;
 			}
-			
 			if(System.currentTimeMillis() - timer > 1000){
 				timer += 1000;
 			}

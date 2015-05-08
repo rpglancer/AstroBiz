@@ -2,7 +2,7 @@ package astroBiz.lib;
 
 import java.util.Vector;
 
-import astroBiz.info.CraftInformation.CI;
+import astroBiz.info.CRAFTINFO;
 import astroBiz.info.ManufacturerInformation.MI;
 
 public class Manufacturer {
@@ -61,10 +61,18 @@ public class Manufacturer {
 	}
 	
 	public void loadModels(){
-		for(CI ci : CI.values()){
+		for(CRAFTINFO ci : CRAFTINFO.values()){
 			if(ci.getMfg() == this.symbol){
 				this.models.addElement(new SpaceCraft(ci));
 			}
 		}
 	}
+	
+//	public void loadModels(){
+//		for(CI ci : CI.values()){
+//			if(ci.getMfg() == this.symbol){
+//				this.models.addElement(new SpaceCraft(ci));
+//			}
+//		}
+//	}
 }

@@ -2,6 +2,7 @@ package astroBiz.view;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -196,27 +197,34 @@ public class ScenarioView implements Manager{
 				g.setColor(Color.black);
 				g.drawRoundRect(x+1, y+1, width-1, height-1, 8, 8);
 				g.setColor(Color.white);
-				textUtilities.drawString(g, x, y+8, ab.getScenario().getBusinesses().elementAt(i).getName(), Color.white);
+				textUtilities.drawStringCenterV(g, FontInformation.modelheader, x + 8, y, 32, ab.getScenario().getBusinesses().elementAt(i).getName());
+		//		textUtilities.drawString(g, x, y+8, ab.getScenario().getBusinesses().elementAt(i).getName(), Color.white);
 				y += height + 5;
 			}
-			g.drawImage(this.employeeSprite, 32, 320, null);
-			textUtilities.drawString(g, 160, 384, "Change color for which company?");
+			if(!AstroBiz.getController().containsEntity(textWin)){
+				textWin = new TextWindow("Change color for which company?", this.employeeSprite);
+				AstroBiz.getController().addEntity(textWin);
+			}	
 		}
 		else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT){
 			g.setColor(ab.getScenario().getBusinesses().elementAt(businessSelect).getColor());
 			g.fillRoundRect(x, y, width, height, 8, 8);
 			g.setColor(Color.white);
+			FontMetrics fm = g.getFontMetrics(FontInformation.chitchat);
 			if(optionSelect == 0)g.setColor(Color.red);
-			textUtilities.drawStringMultiLine(g, FontInformation.chitchat, 400, 96, 400, "R: " + ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getRed());
+			int strlen = fm.stringWidth("R: 255");
+			textUtilities.drawStringMultiLine(g, FontInformation.chitchat, 400 - (strlen/2), 96, 400, "R: " + ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getRed());
 			g.setColor(Color.white);
 			if(optionSelect == 1)g.setColor(Color.green);
-			textUtilities.drawStringMultiLine(g, FontInformation.chitchat, 400, 96+32, 400, "G: " + ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getGreen());
+			textUtilities.drawStringMultiLine(g, FontInformation.chitchat, 400 - (strlen/2), 96+32, 400, "G: " + ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getGreen());
 			g.setColor(Color.white);
 			if(optionSelect == 2)g.setColor(Color.blue);
-			textUtilities.drawStringMultiLine(g, FontInformation.chitchat, 400, 96+64, 400, "B: " + ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getBlue());
+			textUtilities.drawStringMultiLine(g, FontInformation.chitchat, 400 - (strlen/2), 96+64, 400, "B: " + ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getBlue());
 			g.setColor(Color.white);
-			g.drawImage(this.employeeSprite, 32, 320, null);
-			textUtilities.drawString(g, 160, 384, "Select your desired color.");
+			if(!AstroBiz.getController().containsEntity(textWin)){
+				textWin = new TextWindow("Choose a color for this company", this.employeeSprite);
+				AstroBiz.getController().addEntity(textWin);
+			}	
 			
 		}
 		else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_CONFIG){
@@ -231,15 +239,35 @@ public class ScenarioView implements Manager{
 				g.setColor(Color.black);
 				g.drawRoundRect(x+1, y+1, width-1, height-1, 8, 8);
 				g.setColor(Color.white);
-				textUtilities.drawString(g, x, y+8, ab.getScenario().getBusinesses().elementAt(i).getName(), Color.white);
+				textUtilities.drawStringCenterV(g, FontInformation.modelheader, x + 8, y, 32, ab.getScenario().getBusinesses().elementAt(i).getName());
 				y += height + 5;
 			}
-			if(busiConfigOptions == BUSICONFIGOPTIONS.COLOR) textUtilities.drawString(g, 400 - ("COLOR".length() / 2) * 16, 300, "COLOR", Color.green);
-			if(busiConfigOptions == BUSICONFIGOPTIONS.EXIT) textUtilities.drawString(g, 400 - ("EXIT".length() / 2) * 16, 300, "EXIT", Color.green);
-			if(busiConfigOptions == BUSICONFIGOPTIONS.NAME) textUtilities.drawString(g, 400 - ("NAME".length() / 2) * 16, 300, "NAME", Color.green);
+			if(busiConfigOptions == BUSICONFIGOPTIONS.COLOR){
+				FontMetrics fm = g.getFontMetrics(FontInformation.modelheader);
+				int strlen = fm.stringWidth("COLOR");
+				g.setColor(Color.green);
+				textUtilities.drawStringMultiLine(g, FontInformation.modelheader, 400 - (strlen / 2), 300, strlen, "COLOR");
+				
+			}
+			if(busiConfigOptions == BUSICONFIGOPTIONS.EXIT){
+				FontMetrics fm = g.getFontMetrics(FontInformation.modelheader);
+				int strlen = fm.stringWidth("EXIT");
+				g.setColor(Color.green);
+				textUtilities.drawStringMultiLine(g, FontInformation.modelheader, 400 - (strlen / 2), 300, strlen, "EXIT");
+				
+			}
+			if(busiConfigOptions == BUSICONFIGOPTIONS.NAME){
+				FontMetrics fm = g.getFontMetrics(FontInformation.modelheader);
+				int strlen = fm.stringWidth("NAME");
+				g.setColor(Color.green);
+				textUtilities.drawStringMultiLine(g, FontInformation.modelheader, 400 - (strlen / 2), 300, strlen, "NAME");
+				
+			}
 			g.setColor(Color.white);
-			g.drawImage(this.employeeSprite, 32, 320, null);
-			textUtilities.drawString(g, 160, 384, "Customize each company's name and color?");
+			if(!AstroBiz.getController().containsEntity(textWin)){
+				textWin = new TextWindow("Customize each company's name and color?", this.employeeSprite);
+				AstroBiz.getController().addEntity(textWin);
+			}	
 		}
 		else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME){
 			g.setColor(Color.darkGray);
@@ -256,16 +284,24 @@ public class ScenarioView implements Manager{
 				g.setColor(Color.black);
 				g.drawRoundRect(x+1, y+1, width-1, height-1, 8, 8);
 				g.setColor(Color.white);
-				textUtilities.drawString(g, x, y+8, ab.getScenario().getBusinesses().elementAt(i).getName(), Color.white);
+				textUtilities.drawStringCenterV(g, FontInformation.modelheader, x + 8, y, 32, ab.getScenario().getBusinesses().elementAt(i).getName());
 				y += height + 5;
 			}
-			g.drawImage(this.employeeSprite, 32, 320, null);
-			textUtilities.drawString(g, 160, 384, "Change name of which company?");
+			if(!AstroBiz.getController().containsEntity(textWin)){
+				textWin = new TextWindow("Change the name of which company?", this.employeeSprite);
+				AstroBiz.getController().addEntity(textWin);
+			}	
 		}
 		else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME_SELECT){
-			textUtilities.drawString(g, 400 - 10 * 16, 128, businessNameBuffer);
-			g.drawImage(this.employeeSprite, 32, 320, null);
-			textUtilities.drawString(g, 160, 384, "Enter the name of your company.");		
+			FontMetrics fm = g.getFontMetrics(FontInformation.modelheader);
+			int strlen = fm.stringWidth(businessNameBuffer);
+			textUtilities.drawStringMultiLine(g, FontInformation.modelheader, 400 - (strlen/2), 128, 480, businessNameBuffer);
+//			textUtilities.drawString(g, 400 - 10 * 16, 128, businessNameBuffer);
+			g.setColor(Color.white);
+			if(!AstroBiz.getController().containsEntity(textWin)){
+				textWin = new TextWindow("Enter a new name for this company.", this.employeeSprite);
+				AstroBiz.getController().addEntity(textWin);
+			}		
 		}
 	}
 	/**
@@ -343,8 +379,10 @@ public class ScenarioView implements Manager{
 			break;
 		}
 		
-		g.drawImage(this.employeeSprite, 32, 320, null);
-		g.drawString("Choose the number of players.", 160, 384);
+		if(!AstroBiz.getController().containsEntity(textWin)){
+			textWin = new TextWindow("Select the number of players.", this.employeeSprite);
+			AstroBiz.getController().addEntity(textWin);
+		}
 	}
 	/**
 	 * Method for drawing all things related to player headquarters location selection.
@@ -386,8 +424,11 @@ public class ScenarioView implements Manager{
 			
 			g.setFont(sbfont);
 			g.setColor(Color.white);
-			g.drawImage(this.employeeSprite, 32, 320, null);
-			g.drawString("Select headquarters location for " + s, 160, 384);		
+			
+			if(!AstroBiz.getController().containsEntity(textWin)){
+				textWin = new TextWindow("Select headquarters location for " + s + ".", this.employeeSprite);
+				AstroBiz.getController().addEntity(textWin);
+			}	
 			
 			break;	//	End	REGION
 			
@@ -475,8 +516,10 @@ public class ScenarioView implements Manager{
 			
 			g.setFont(sbfont);
 			g.setColor(Color.white);
-			g.drawImage(this.employeeSprite, 32, 320, null);
-			g.drawString("Select headquarters region for " + s, 160, 384);		
+			if(!AstroBiz.getController().containsEntity(textWin)){
+				textWin = new TextWindow("Select headquarters region for " + s + ".", this.employeeSprite);
+				AstroBiz.getController().addEntity(textWin);
+			}	
 			break;	//	End	WORLD
 		}
 	}
@@ -559,21 +602,18 @@ public class ScenarioView implements Manager{
 		int r = ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getRed();
 		int g = ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getGreen();
 		int b = ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getBlue();
-//		if(colorSelect == 0){
 		if(optionSelect == 0){
 			if(ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getRed() < 255){
 				Color temp = new Color(r+1, g, b);
 				ab.getScenario().getBusinesses().elementAt(businessSelect).setColor(temp);
 			}
 		}
-//		else if(colorSelect == 1){
 		else if(optionSelect == 1){
 			if(ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getGreen() < 255){
 				Color temp = new Color(r, g+1, b);
 				ab.getScenario().getBusinesses().elementAt(businessSelect).setColor(temp);
 			}
 		}
-//		else if(colorSelect == 2){
 		else if(optionSelect == 2){
 			if(ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getBlue() < 255){
 				Color temp = new Color(r, g, b+1);
@@ -665,6 +705,7 @@ public class ScenarioView implements Manager{
 			break;
 			
 		case KeyEvent.VK_ESCAPE:
+			AstroBiz.getController().purge();
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR) scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_CONFIG;
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME) scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_CONFIG;
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ){

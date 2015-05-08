@@ -1,16 +1,17 @@
 package astroBiz.util;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
 import astroBiz.AstroBiz;
+import astroBiz.info.HALIGN;
+import astroBiz.info.VALIGN;
 import astroBiz.lib.SpriteSheet;
 
 /**
@@ -20,9 +21,6 @@ import astroBiz.lib.SpriteSheet;
  *
  */
 public class textUtilities{
-	public static int charWidth = 16;
-	public static int charHeight = 16;
-	
 	public static Map<Character, Point> textMap = new HashMap<Character, Point>();
 	public static SpriteSheet textSheet = AstroBiz.textSheet;
 
@@ -83,203 +81,40 @@ public class textUtilities{
 		textMap.put('{', new Point(7,11)); textMap.put('}', new Point(8,11));
 	}
 
-	//////////////////////////////////
-	//	SpriteSheet based Methods	//
-	//////////////////////////////////
-	@Deprecated
 	/**
-	 * Create a single-line text box
-	 * @param g	(Graphics) Graphics to draw it with
-	 * @param x	(int) Starting X coordinate of the box
-	 * @param y	(int) Starting Y coordinate of the box
-	 * @param borderwidth (int) The width of the box's border.
-	 * @param bordercolor	(Color) The color of the box's border.
-	 * @param framecolor	(Color)	The color of the interior of the box.
-	 * @param text	(String) The text contained in the box.
+	 * Method to add a character to the end of the specified String.
+	 * @param string (String) The String to which the character will be added.
+	 * @param c	(char) The character to add.
+	 * @return (String) A new String comprised of the original String and the specified character.
 	 */
-	public static void boxText(Graphics g, int x, int y, int borderwidth, Color bordercolor, Color framecolor, String text){
-		int boxwidth = text.length() * 16;
-		int bcsx = x - borderwidth;
-		int bcsy = y - borderwidth;
-		int bcwidth = boxwidth + borderwidth * 2;
-		int bcheight = charHeight + borderwidth * 2;
-		g.setColor(bordercolor);
-		g.fillRoundRect(bcsx, bcsy, bcwidth, bcheight, borderwidth, borderwidth);
-		g.setColor(framecolor);
-		g.fillRoundRect(x, y, boxwidth, charHeight, borderwidth/2, borderwidth/2);
-		drawString(g, x, y, text);
-	}
-	@Deprecated
-	/**
-	 * Change the color of the default sprite-based text.
-	 * @param img	(BufferedImage)	The sprite text character to be changed in color.
-	 * @param c	(Color)	The color to which the sprite text character will be changed.
-	 * @return	(BufferedImage)	The colorized spriite text character.
-	 */
-	public static BufferedImage colorizeString(BufferedImage img, Color c){
-		BufferedImage temp = new BufferedImage(img.getWidth(), img.getHeight(), img.getType());
-		Graphics g = temp.createGraphics();
-		g.drawImage(img, 0, 0, null);
-		g.dispose();
-		for(int y = 0; y < temp.getHeight(); y++){
-			for(int x = 0; x < temp.getWidth(); x++){
-				Color originalColor = new Color(temp.getRGB(x, y), true);
-				if(originalColor.getAlpha() == 255) {
-                    temp.setRGB(x, y, c.getRGB());
-                    }
-                }
-			}
-		return temp;
-	}
-	@Deprecated
-	/**
-	 * Method to draw a sprite based text string to the screen.
-	 * @param g	(Graphics) The desired Graphics buffer.
-	 * @param x	(int) The X coordinate of the text.
-	 * @param y	(int) The Y coordinate of the text.
-	 * @param text	(String) The string of text to draw.
-	 * <br><i>Note: Sprite based text draws from top-left to bottom-right.
-	 * <br>Ergo, the x,y value is the top-left corner of the text.</i>
-	 */
-	public static void drawString(Graphics g, int x, int y, String text){
-		if(text == null) return;
-		for(int i = 0; i < text.length(); i++){
-			g.drawImage(textSheet.grabImage((int)textMap.get(text.charAt(i)).getX(), (int)textMap.get(text.charAt(i)).getY(), charWidth, charHeight), x, y, null);
-			x+=charWidth;
-		}
-	}
-	@Deprecated
-	/**
-	 * Method to draw a sprite based string of the specified color.
-	 * @param g	(Graphics) The desired Graphics buffer.
-	 * @param x	(int) The X coordinate of the text.
-	 * @param y (int) The Y coordinate of the text.
-	 * @param text (String) The string of text to draw.
-	 * @param c	(Color) The desired color of the text.
-	 * <br><i>Note: Sprite based text draws from top-left to bottom-right.
-	 * <br>Ergo, the x,y value is the top-left corner of the text.</i>
-	 */
-	public static void drawString(Graphics g, int x, int y, String text, Color c){
-		for(int i = 0; i < text.length(); i++){
-			g.drawImage(colorizeString(textSheet.grabImage((int)textMap.get(text.charAt(i)).getX(), (int)textMap.get(text.charAt(i)).getY(), charWidth, charWidth),c), x, y, null);
-			x+=charWidth;
-		}
-	}
-	@Deprecated
-	/**
-	 * Method to draw sprite based text across multiple lines.
-	 * @param g	(Graphics) The desired Graphics buffer.
-	 * @param x	(int) The X coordinate of the text.
-	 * @param y	(int) The Y coordinate of the text.
-	 * @param width (int) The width [in pixels] of the String before it goes to a new line.
-	 * @param text (String) The string of text to draw.
-	 * <br><i>Note: Sprite based text draws from top-left to bottom-right.
-	 * <br>Ergo, the x,y value is the top-left corner of the text.</i>
-	 */
-	public static void drawStringMultiLine(Graphics g, int x, int y, int width, String text){
-		if(text.length() * charWidth < width){
-			drawString(g,x,y,text);
-		}
-		else{
-			String[] words = text.split(" ");
-			String currentLine = words[0];
-			for(int i = 1; i < words.length; i++){
-				if(currentLine.length() * charWidth + words[i].length() * charWidth < width){
-					currentLine += " " + words[i];
-				}
-				else{
-					drawString(g, x, y, currentLine);
-					y += charHeight;
-					currentLine = words[i];
-				}
-			}
-			if(currentLine.trim().length() > 0){
-				drawString(g,x,y,currentLine);
-			}
-		}
-	}
-	@Deprecated
-	/**
-	 * Method to draw sprite based text of a specified color across multiple lines.
-	 * @param g (Graphics) The desired Graphics buffer.
-	 * @param x	(int) The X coordinate of the text.
-	 * @param y	(int) The Y coordinate of the text.
-	 * @param width	(int) The width [in pixels] of the String before it goes to a new line.
-	 * @param text	(String) The string of text to draw.
-	 * @param c	(Color) The desired color of the text.
-	 * <br><i>Note: Sprite based text draws from top-left to bottom-right.
-	 * <br>Ergo, the x,y value is the top-left corner of the text.</i>
-	 */
-	public static void drawStringMultiLine(Graphics g, int x, int y, int width, String text, Color c){
-		if(text.length() * charWidth < width){
-			drawString(g,x,y,text, c);
-		}
-		else{
-			String[] words = text.split(" ");
-			String currentLine = words[0];
-			for(int i = 1; i < words.length; i++){
-				if(currentLine.length() * charWidth + words[i].length() * charWidth < width){
-					currentLine += " " + words[i];
-				}
-				else{
-					drawString(g, x, y, currentLine);
-					y += charHeight;
-					currentLine = words[i];
-				}
-			}
-			if(currentLine.trim().length() > 0){
-				drawString(g,x,y,currentLine, c);
-			}
-		}
-	}
-
-	/**
-	 * Method to determine the number of lines that text will occupy<br>
-	 * if wrapped to a given width.
-	 * @param text	(String) The text to analyze.
-	 * @param width	(int) The width [in pixels] of the text before triggering a  new line.
-	 * @return	(int) The number of lines calculated.
-	 */
-	public static int getLineCount(String text, int width){
-		int lineCount = 1;
-		if(text.length() * charWidth < width) return lineCount;
-		else{
-			String[] words = text.split(" ");
-			String currentLine = words[0];
-			for(int i = 1; i < words.length; i++){
-				if(currentLine.length() * charWidth + words[i].length() * charWidth < width){
-					currentLine += " " + words[i];
-				}
-				else{
-					lineCount++;
-					currentLine = words[i];
-				}
-			}
-			return lineCount;
-		}
+	public static String addEndChar(String string, char c){
+		string += c;
+		return string;
 	}
 	
-	//////////////////////////////////////////////
-	//		Native Java String based Methods	//
-	//////////////////////////////////////////////
-	public static int getTextHeight(Graphics g, Font f, String text){
-		Graphics temp = g.create(0, 0, 800, 480);
-		FontMetrics m = g.getFontMetrics(f);
-		temp.clipRect(0, 0, m.stringWidth(text), m.getHeight());
-		Rectangle2D bounds = m.getStringBounds(text, temp);
-		int theight = (int)bounds.getHeight();
-		temp.dispose();
-		return theight;
+	/**
+	 * Method to remove the final character of a String.
+	 * @param string (String) The string from which the final character will be removed.
+	 * @return (String) The modified String.
+	 */
+	public static String deleteEndChar(String string){
+		char[] charArray = new char[string.length() - 1];
+		for(int i = 0; i < string.length() - 1; i++){
+			charArray[i] = string.charAt(i);
+		}
+		return new String(charArray);
 	}
 	
-	public static int getTextWidth(Graphics g, Font f, String text){
-		Graphics temp = g.create(0, 0, 800, 480);
-		FontMetrics m = g.getFontMetrics(f);
-		temp.clipRect(0, 0, m.stringWidth(text), m.getHeight());
-		Rectangle2D bounds = m.getStringBounds(text, temp);
-		int twidth = (int)bounds.getWidth();
-		temp.dispose();
-		return twidth;
+	private static void drawStringAligned(Graphics g, Font f, int x, int y, int w, int h, HALIGN ha, String text){
+		FontMetrics fm = g.getFontMetrics(f);
+		int strlen = fm.stringWidth(text);
+		if(ha == HALIGN.CENTER) x = (w/2) - (strlen / 2);
+		if(ha == HALIGN.RIGHT) x = w - strlen;
+		y+= fm.getAscent();
+		Font tempf = g.getFont();
+		g.setFont(f);
+		g.drawString(text, x, y);
+		g.setFont(tempf);
 	}
 	
 	public static void drawStringCenterV(Graphics g, Font f, int x, int y, int height, String text){
@@ -364,30 +199,81 @@ public class textUtilities{
 		}
 	}	
 	
-	/**
-	 * Method to add a character to the end of the specified String.
-	 * @param string (String) The String to which the character will be added.
-	 * @param c	(char) The character to add.
-	 * @return (String) A new String comprised of the original String and the specified character.
-	 */
-	public static String addEndChar(String string, char c){
-		string += c;
-		return string;
-	}
-	
-	/**
-	 * Method to remove the final character of a String.
-	 * @param string (String) The string from which the final character will be removed.
-	 * @return (String) The modified String.
-	 */
-	public static String deleteEndChar(String string){
-		char[] charArray = new char[string.length() - 1];
-		for(int i = 0; i < string.length() - 1; i++){
-			charArray[i] = string.charAt(i);
+	public static void drawStringToBox(Graphics g, Font f, Rectangle box, HALIGN ha, VALIGN va, String text){
+		int lc = getLineCount(g, f, (int)(box.getWidth() - box.getY()), text);
+		g.drawString(lc + "", 790, 480);
+		if(lc == 1){
+			drawStringAligned(g, f, (int)box.getX(), (int)box.getY(), (int)(box.getWidth() - box.getX()),
+					(int)(box.getHeight() - box.getY()), ha, text);
 		}
-		return new String(charArray);
+		else{
+			FontMetrics fm = g.getFontMetrics(f);
+			int y = (int)box.getY();
+			int h = (int)(box.getHeight() - box.getY());
+			int w = (int)(box.getWidth() - box.getX());
+			if(va == VALIGN.MIDDLE) y += (h - getTextHeight(g,f,text) * lc) / 2 + fm.getAscent();
+			if(va == VALIGN.BOTTOM) y += h - fm.getAscent() * lc - fm.getDescent();
+			String[] words = text.split(" ");
+			String currentLine = words[0];
+			for(int i = 1; i < words.length; i++){
+				if(fm.stringWidth(currentLine + " " + words[i]) < (int)(box.getWidth() - box.getX())){
+					currentLine += " " + words[i];
+				}
+				else{
+					drawStringAligned(g, f, (int)box.getX(), y, w, fm.getHeight(), ha, currentLine);
+					y += fm.getAscent();
+					currentLine = words[i];
+				}
+			}
+			if(currentLine.trim().length() > 0){
+				drawStringAligned(g,f, (int)box.getX(), y, w, fm.getHeight(), ha, currentLine);
+			}
+		}
 	}
 	
+	public static int getLineCount(Graphics g, Font f, int lineWidth, String text){
+		int count = 1;
+		FontMetrics m = g.getFontMetrics(f);
+		if(m.stringWidth(text) < lineWidth) return count;
+		else{
+			String[] words = text.split(" ");
+			String currentLine = words[0];
+			for(int i = 1; i < words.length; i++){
+				if(m.stringWidth(currentLine + " " + words[i]) < lineWidth){
+					currentLine += words[i];
+				}
+				else{
+					count++;
+					currentLine = words[i];
+				}
+			}
+			if(currentLine.trim().length() > 0){
+			//	count++;
+			}
+		}
+		return count;
+	}
+	
+	public static int getTextHeight(Graphics g, Font f, String text){
+		Graphics temp = g.create(0, 0, 800, 480);
+		FontMetrics m = g.getFontMetrics(f);
+		temp.clipRect(0, 0, m.stringWidth(text), m.getHeight());
+		Rectangle2D bounds = m.getStringBounds(text, temp);
+		int theight = (int)bounds.getHeight();
+		temp.dispose();
+		return theight;
+	}
+	
+	public static int getTextWidth(Graphics g, Font f, String text){
+		Graphics temp = g.create(0, 0, 800, 480);
+		FontMetrics m = g.getFontMetrics(f);
+		temp.clipRect(0, 0, m.stringWidth(text), m.getHeight());
+		Rectangle2D bounds = m.getStringBounds(text, temp);
+		int twidth = (int)bounds.getWidth();
+		temp.dispose();
+		return twidth;
+	}
+		
 	/**
 	 * Method to replace the character at a specific location within a String.
 	 * @param position	(int) The position of the character to be replaced.

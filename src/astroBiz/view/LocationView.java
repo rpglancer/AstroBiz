@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 
 import astroBiz.AstroBiz;
+import astroBiz.info.FontInformation;
 import astroBiz.lib.Location;
 import astroBiz.util.textUtilities;
 
@@ -18,7 +19,7 @@ public class LocationView {
 		Font fnt1 = new Font("arial", Font.BOLD, 25);
 		g.setFont(fnt1);
 		g.setColor(Color.WHITE);
-		textUtilities.drawString(g, 160, 80, location.getLocationName());
+		textUtilities.drawStringMultiLine(g, FontInformation.modelheader, 160, 80, 500, location.getLocationName());
 		g.setColor(Color.BLACK);				// Exit X Button
 		g.fillRect(736, 32, 32, 32);			// Exit X Button
 		g.setColor(Color.WHITE);				// Exit X Button
@@ -26,11 +27,11 @@ public class LocationView {
 		g.setColor(Color.WHITE);				// Exit X Button
 		g.drawString("X", 736 + 8, 32 + 25);	// Exit X Button
 		g.setColor(Color.BLUE);
-		g.fillRect(64, 32, 96, 64);			// Flag
+		g.fillRect(64, 32, 96, 64);				// Flag
 		g.setColor(Color.CYAN);
-		g.fillRect(64, 96, 288, 160); 		// City Drawing
+		g.fillRect(64, 96, 288, 160); 			// City Drawing
 		g.setColor(Color.LIGHT_GRAY);
-		g.fillRect(352, 96, 384, 192);		// Business Ventures
+		g.fillRect(352, 96, 384, 192);			// Business Ventures
 		g.setColor(Color.GREEN);
 		g.fillRect(64, 256, 288, 64);			// Slots : Flights Info
 		g.setColor(ab.getScenario().getBusinesses().elementAt(0).getColor());

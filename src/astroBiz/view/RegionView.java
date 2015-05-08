@@ -14,6 +14,7 @@ import astroBiz.info.LocationInformation.LI;
 import astroBiz.lib.Business;
 import astroBiz.lib.Location;
 import astroBiz.lib.Manufacturer;
+import astroBiz.lib.Scenario;
 import astroBiz.lib.SpaceCraft;
 import astroBiz.lib.TextWindow;
 import astroBiz.util.Confirmation;
@@ -344,11 +345,18 @@ public class RegionView implements Manager {
 		g.setColor(Color.white);
 		for(int i = 0; i < this.manufacturersAvailable.size(); i++){
 			if(this.manufacturersAvailable.elementAt(i).getModeslAvailable(ab.getScenario()).size() > 0){
+				Manufacturer temp = manufacturersAvailable.elementAt(i);
 				if(i == selectedOption){
-					textUtilities.boxText(g, this.manufacturersAvailable.elementAt(i).getX(), this.manufacturersAvailable.elementAt(i).getY(), 4, Color.darkGray, Color.green, this.manufacturersAvailable.elementAt(i).getSymbol());
-					textUtilities.drawString(g, AstroBiz.WIDTH - (this.manufacturersAvailable.elementAt(i).getName().length() * 16), 0, this.manufacturersAvailable.elementAt(i).getName());
+					g.setColor(Color.green);
+					textUtilities.drawStringCenterV(g, FontInformation.modelstat, temp.getX(), temp.getY(), 32, temp.getSymbol());
+					g.drawString(temp.getName(),
+							800 - textUtilities.getTextWidth(g, FontInformation.modelstat, temp.getName()),
+							0 + textUtilities.getTextHeight(g, FontInformation.modelstat, temp.getName()));
 				}
-				else textUtilities.boxText(g, this.manufacturersAvailable.elementAt(i).getX(), this.manufacturersAvailable.elementAt(i).getY(), 4, Color.darkGray, Color.black, this.manufacturersAvailable.elementAt(i).getSymbol());
+				else{
+					g.setColor(Color.white);
+					textUtilities.drawStringCenterV(g, FontInformation.modelstat, temp.getX(), temp.getY(), 32, temp.getSymbol());
+				}
 			}
 		}
 	}
@@ -362,15 +370,25 @@ public class RegionView implements Manager {
 	}
 	
 	private void drawRegion(Graphics g){
-		g.setColor(ab.getScenario().getBusinesses().elementAt(ab.getScenario().getActiveBusiness()).getColor());
-		g.fillRect(32, 0, ab.getScenario().getBusinesses().elementAt(ab.getScenario().getActiveBusiness()).getName().length() * 16, 32);
-		textUtilities.drawString(g, 32, 8, ab.getScenario().getBusinesses().elementAt(ab.getScenario().getActiveBusiness()).getName());
+		Scenario scen = ab.getScenario();
+		Business busi = scen.getBusinesses().elementAt(scen.getActiveBusiness());
+		g.setColor(busi.getColor());
+		g.fillRect(32, 0, textUtilities.getTextWidth(g, FontInformation.modelstat, busi.getName()), 32);
+		g.setColor(Color.white);
+		textUtilities.drawStringCenterV(g, FontInformation.modelstat, 32, 0, 32, busi.getName());
+		
+		
 		g.setColor(Color.darkGray);
 		g.fillRect(544, 0, 224, 32);
-		textUtilities.drawString(g,
-				768 - (ab.getScenario().getBusinesses().elementAt(ab.getScenario().getActiveBusiness()).getAccountBalance().toString().length() + 2) * 16,
-				8,
-				"$" + ab.getScenario().getBusinesses().elementAt(ab.getScenario().getActiveBusiness()).getAccountBalance().toString() + "K");
+		g.setColor(Color.white);
+		textUtilities.drawStringCenterV(g, FontInformation.modelstat,
+				800 - 32 - textUtilities.getTextWidth(g,
+						FontInformation.modelstat,
+						"Balance: " + busi.getAccountBalance().toString() + "K"),
+						0,
+						32,
+						"Balance: " + busi.getAccountBalance().toString() + "K");
+
 		g.drawImage(getActiveRegionMap(), 32, 32, null);
 		g.setFont(sectorfont);
 		g.setColor(Color.WHITE);

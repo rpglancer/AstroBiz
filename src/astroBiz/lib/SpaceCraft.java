@@ -2,7 +2,7 @@ package astroBiz.lib;
 
 import java.awt.image.BufferedImage;
 
-import astroBiz.info.CraftInformation.CI;
+import astroBiz.info.CRAFTINFO;
 
 /**
  * Contains all information pertinent to a space craft.
@@ -27,7 +27,7 @@ public class SpaceCraft{
 	private String desc;
 	private String name;
 	
-	public SpaceCraft(CI ci){
+	public SpaceCraft(CRAFTINFO ci){
 		this.cost = ci.getCost();
 		this.name = ci.getName();
 		this.desc = ci.getDesc();
