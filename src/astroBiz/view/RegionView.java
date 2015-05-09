@@ -10,9 +10,7 @@ import java.util.Vector;
 
 import astroBiz.AstroBiz;
 import astroBiz.info.FontInformation;
-import astroBiz.info.LocationInformation.LI;
 import astroBiz.lib.Business;
-import astroBiz.lib.Location;
 import astroBiz.lib.Manufacturer;
 import astroBiz.lib.Scenario;
 import astroBiz.lib.SpaceCraft;
@@ -45,9 +43,10 @@ public class RegionView implements Manager {
 	}
 
 	private REGIONVM regionVm = REGIONVM.VM_REGION;
-	private Vector<Location> mapLocations = new Vector<Location>();
+//	private Vector<Location> mapLocations = new Vector<Location>();
 	private Vector<Manufacturer> manufacturersAvailable = new Vector<Manufacturer>();
 	private Manufacturer selectedManufacturer;
+	private Scenario scenario;
 	private SpaceCraft selectedSpaceCraft;
 	private byte activeRegion = 2;
 	private int selectedOption = 0;
@@ -60,7 +59,7 @@ public class RegionView implements Manager {
 	
 	private Font sectorfont = new Font("arial", Font.BOLD, 15);
 
-	public RegionView(AstroBiz astrobiz){
+	public RegionView(AstroBiz astrobiz, Scenario scenario){
 		this.ab = astrobiz;
 		buttons = new BufferedImage[12];
 		int i = 0;
@@ -70,10 +69,11 @@ public class RegionView implements Manager {
 				i++;
 			}
 		}
+		this.scenario = scenario;
 		
-		for(LI li : LI.values()){
-			mapLocations.addElement(new Location(li));
-		}
+//		for(LOCINFO li : LOCINFO.values()){
+//			mapLocations.addElement(new Location(li));
+//		}
 	}
 	
 	public void tick(){
@@ -393,9 +393,12 @@ public class RegionView implements Manager {
 		g.setFont(sectorfont);
 		g.setColor(Color.WHITE);
 		// Prototype Render Locations
-		for(int i = 0; i < mapLocations.size(); i++){
-			if(mapLocations.elementAt(i).getLocationRegion() == activeRegion){
-				g.drawImage(mapLocations.elementAt(i).getSprite(ab.getScenario()) , mapLocations.elementAt(i).getLocationX(), mapLocations.elementAt(i).getLocationY(), null);
+//		for(int i = 0; i < mapLocations.size(); i++){
+		for(int i = 0; i < scenario.getLocations().size(); i++){
+//			if(mapLocations.elementAt(i).getLocationRegion() == activeRegion){
+			if(scenario.getLocations().elementAt(i).getLocationRegion() == activeRegion){
+//				g.drawImage(mapLocations.elementAt(i).getSprite(ab.getScenario()) , mapLocations.elementAt(i).getLocationX(), mapLocations.elementAt(i).getLocationY(), null);
+				g.drawImage(scenario.getLocations().elementAt(i).getSprite(scenario), scenario.getLocations().elementAt(i).getLocationX(), scenario.getLocations().elementAt(i).getLocationY(), null);
 			}
 		}
 		
@@ -684,9 +687,9 @@ public class RegionView implements Manager {
 		else return AstroBiz.worldMap.grabImage(3, 3, REGIONWIDTH, REGIONHEIGHT);
 	}
 	
-	public Vector<Location> getLocationVector(){
-		return this.mapLocations;
-	}
+//	public Vector<Location> getLocationVector(){
+//		return this.mapLocations;
+//	}
 	
 	private void processButton(){
 		previousOption = selectedOption;
@@ -723,6 +726,10 @@ public class RegionView implements Manager {
 		this.selectedManufacturer = this.manufacturersAvailable.elementAt(index);
 	}
 
+	public void setScenario(Scenario scenario){
+		this.scenario = scenario;
+	}
+	
 	@Override
 	public void setVM(VM vm) {
 		this.regionVm = (REGIONVM)vm;

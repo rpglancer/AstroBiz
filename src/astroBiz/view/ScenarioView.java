@@ -12,6 +12,7 @@ import astroBiz.AstroBiz;
 import astroBiz.AstroBiz.STATE;
 import astroBiz.info.FontInformation;
 import astroBiz.info.ScenarioInformation.SI;
+import astroBiz.lib.AI;
 import astroBiz.lib.Location;
 import astroBiz.lib.Location.LOCATIONTYPE;
 import astroBiz.lib.Scenario;
@@ -691,7 +692,6 @@ public class ScenarioView implements Manager{
 		case KeyEvent.VK_SPACE:
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME_SELECT){
 				if(businessNameBuffer.length() == 20) break;
-				//else if(e.isShiftDown()) businessNameBuffer = textUtilities.addEndChar(businessNameBuffer, 'A');
 				else businessNameBuffer = textUtilities.addEndChar(businessNameBuffer, e.getKeyChar());
 				break;
 			}
@@ -788,20 +788,25 @@ public class ScenarioView implements Manager{
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ){
 				if(hqPlacementView == HQPLACEMENTVIEW.WORLD){
 					loadRegionMap(AstroBiz.worldMap);
-					loadLocationVector(ab.getRegion().getLocationVector());
+					//loadLocationVector(ab.getRegion().getLocationVector());
+					loadLocationVector(ab.getScenario().getLocations());
 					previousOption = optionSelect;
 					hqPlacementView = HQPLACEMENTVIEW.REGION;
 				}
+				
 				else if(hqPlacementView == HQPLACEMENTVIEW.REGION){
 					if(this.availableHqLocations.size() == 0)
 						break;
 					else{
-						getHqSelectedLocation().setLocationIsHub(true, scenarioPlayerConfigure - 1);
 						ab.getScenario().getBusinesses().elementAt(scenarioPlayerConfigure - 1).setHQ(getHqSelectedLocation());
 					}
 					if(scenarioPlayerConfigure <= scenarioPlayersToConfigure){
 						scenarioPlayerConfigure++;
 						if(scenarioPlayerConfigure > scenarioPlayersToConfigure){
+							AI ai = ab.getScenario().getAI();
+							for(int i = scenarioPlayerConfigure; i <= 4; i++){
+								ai.aiPlaceHq(ab.getScenario(), ab.getScenario().getBusinesses().elementAt(i - 1), ab.getScenario().getLocations());
+							}
 							scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_CONFIG;
 							// Move to business customization
 						}
@@ -811,7 +816,7 @@ public class ScenarioView implements Manager{
 						}		 
 					}
 					else{
-						// Switch to AI HQ placement
+						//??
 					}
 				}
 			}

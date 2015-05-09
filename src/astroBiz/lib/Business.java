@@ -117,6 +117,7 @@ public class Business {
 		if(this.regionalHubs == null) this.regionalHubs = new Vector<Location>();
 		this.regionalHubs.addElement(hq);
 		this.headQuarters = hq;
+		hq.setHQ(this);
 	}
 
 	public void setName(String name){

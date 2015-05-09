@@ -78,10 +78,10 @@ public class AstroBiz extends Canvas implements Runnable{
 		this.addMouseListener(new MouseInput(this));
 		this.addMouseMotionListener(new MouseInput(this));
 		mainMenu = new MainMenu();
-		locationView = new LocationView(null);
-		regionView = new RegionView(this);
-		scenarioView = new ScenarioView(this);
 		activeScenario = new Scenario();
+		locationView = new LocationView(null);
+		regionView = new RegionView(this, activeScenario);
+		scenarioView = new ScenarioView(this);
 	}
 	
 	private synchronized void start(){

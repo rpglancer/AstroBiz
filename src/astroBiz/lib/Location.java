@@ -2,7 +2,7 @@ package astroBiz.lib;
 import java.awt.image.BufferedImage;
 
 import astroBiz.AstroBiz;
-import astroBiz.info.LocationInformation.LI;
+import astroBiz.info.LOCINFO;
 
 /**
  * Contains all the information for a Location on the Map.
@@ -14,6 +14,8 @@ public class Location {
 	private String locationID;
 	
 	private Boolean[] isHub = {false, false, false, false};
+	private Business isHqOf = null;
+	private Business isHubOf = null;
 	
 	private int locationDemandBusiness;				// The location's demand for business [0 - 255]
 	private int locationDemandTourism;				// The location's demand for tourism  [0 - 255]
@@ -37,11 +39,11 @@ public class Location {
 		LT_CITY;
 	}
 	
-	public Location(LI li){
+	public Location(LOCINFO li){
 		this.locationName = li.getName();
 		this.locationID = li.getID();
 		this.locationRegion = li.getRegion();
-		this.locationDemandBusiness = li.getDemandBusiness();
+		this.locationDemandBusiness =  li.getDemandBusiness();
 		this.locationDemandIndustry = li.getDemandIndustry();
 		this.locationDemandTourism = li.getDemandTourism();
 		this.locationX = li.getX();
@@ -89,10 +91,12 @@ public class Location {
 	}
 	
 	public boolean getLocationIsHub(){
-		for(int i = 0; i < 4; i++){
-			if(isHub[i]) return isHub[i];
-		}
+		if(isHqOf != null || isHubOf != null) return true;
 		return false;
+//		for(int i = 0; i < 4; i++){
+//			if(isHub[i]) return isHub[i];
+//		}
+//		return false;
 	}
 	
 	public String getLocationName(){
@@ -139,6 +143,15 @@ public class Location {
 	void setLocationDevelopment(int dev){
 		locationDevelopment = dev;
 	}
+	public void setHub(Business b){
+		isHubOf = b;
+	}
+	
+	public void setHQ(Business b){
+		isHqOf = b;
+		isHubOf = b;
+	}
+	
 	public void setLocationIsHub(boolean tf, int business){
 		this.isHub[business] = tf;
 	}

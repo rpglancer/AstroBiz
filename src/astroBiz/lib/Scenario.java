@@ -2,6 +2,7 @@ package astroBiz.lib;
 
 import java.util.Vector;
 
+import astroBiz.info.LOCINFO;
 import astroBiz.info.ManufacturerInformation.MI;
 import astroBiz.info.ScenarioInformation.SI;
 
@@ -11,6 +12,7 @@ import astroBiz.info.ScenarioInformation.SI;
  *
  */
 public class Scenario {
+	private AI ai = new AI();
 
 	private String scenarioDescription;
 	private String scenarioName;
@@ -26,6 +28,7 @@ public class Scenario {
 	private static Queue msgQueue = new Queue();
 	
 	private Vector<Business> scenarioBusinesses = new Vector<Business>();
+	private Vector<Location> mapLocations = new Vector<Location>();
 	private Vector<Manufacturer> scenarioManufacturers = new Vector<Manufacturer>();
 	private Vector<Manufacturer> scenarioManufacturersAvailable = new Vector<Manufacturer>();
 		
@@ -38,6 +41,9 @@ public class Scenario {
 			if(i == 3) b.setColor(240, 140, 0);
 			b.addToAccount(1500000);
 			scenarioBusinesses.addElement(b);
+		}
+		for(LOCINFO li : LOCINFO.values()){
+			mapLocations.addElement(new Location(li));
 		}
 		for(MI mi : MI.values()){
 			scenarioManufacturers.addElement(new Manufacturer(mi));
@@ -53,6 +59,10 @@ public class Scenario {
 		if(activeBusiness == 3) activeBusiness = 0;
 		else activeBusiness++;
 		processQueue();
+	}
+	
+	public AI getAI(){
+		return this.ai;
 	}
 	
 	public int getActiveBusiness(){
@@ -73,6 +83,10 @@ public class Scenario {
 
 	public int getHubsRequired(){
 		return this.scenarioHubsRequired;
+	}
+	
+	public Vector<Location> getLocations(){
+		return mapLocations;
 	}
 	
 	public Vector<Manufacturer> getManufacturers(){
