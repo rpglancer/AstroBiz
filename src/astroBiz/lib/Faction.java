@@ -1,7 +1,7 @@
 package astroBiz.lib;
 
-import astroBiz.info.FactionInformation.FACTIONINFO;
-import astroBiz.info.FactionInformation.STANDING;
+import astroBiz.info.FACTION;
+import astroBiz.info.STANDING;
 
 public class Faction {
 	private int fID;
@@ -9,12 +9,12 @@ public class Faction {
 	private String abrv;
 	private STANDING[] standing = new STANDING[8];
 	
-	public Faction(FACTIONINFO fi){
-		fID = fi.getID();
-		name = fi.getName();
-		abrv = fi.getAbrv();
+	public Faction(FACTION f){
+		fID = f.getID();
+		name = f.getName();
+		abrv = f.getAbrv();
 		for(int i = 0; i < 8; i++){
-			standing[i] = fi.getRepWith(i);
+			standing[i] = f.getRepWith(i);
 		}
 	}
 	

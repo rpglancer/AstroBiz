@@ -20,7 +20,7 @@ public class Business {
 	private String businessName = "Untitled Company";
 	
 	private Vector<Location> regionalHubs = new Vector<Location>();
-	Vector<Route> businessRoutes = new Vector<Route>();
+	private Vector<Route> businessRoutes = new Vector<Route>();
 	private	Vector<SpaceCraft> spaceCraftHangar = new Vector<SpaceCraft>();
 	
 	public void addCraft(SpaceCraft sc){

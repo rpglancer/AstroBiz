@@ -6,12 +6,14 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 import astroBiz.AstroBiz;
+import astroBiz.info.ENTITY_TYPE;
 import astroBiz.info.FontInformation;
+import astroBiz.lib.Entity;
 import astroBiz.lib.TextWindow;
 import astroBiz.view.Manager;
 import astroBiz.view.VM;
 
-public class Confirmation {
+public class Confirmation implements Entity{
 	private static final int confW = 64;
 	private static final int confH = 32;
 	
@@ -36,8 +38,11 @@ public class Confirmation {
 	int x, y;
 	private byte opt = 0;
 	private Boolean isActive = false;
+	private Boolean doesTick = false;
 	private Boolean withCoords = false;
 	private Boolean withText = false;
+	
+	ENTITY_TYPE type = ENTITY_TYPE.CONFIRMATION;
 
 	public void render(Graphics g){
 		if(withText){
@@ -126,6 +131,7 @@ public class Confirmation {
 		this.next = next;
 		this.opt = 0;
 		this.withCoords = true;
+		this.doesTick = true;
 		this.isActive = true;
 	}
 	
@@ -141,6 +147,7 @@ public class Confirmation {
 		this.opt = 0;
 		this.withCoords = false;
 		this.withText = true;
+		this.doesTick = false;
 		this.isActive = true;
 	}
 	
@@ -166,7 +173,8 @@ public class Confirmation {
 		this.isActive = false;
 		this.withCoords = false;
 		this.withText = false;
-		AstroBiz.getController().purge();
+		AstroBiz.getController().purge(ENTITY_TYPE.CONFIRMATION);
+		AstroBiz.getController().purge(ENTITY_TYPE.TEXT_WINDOW);
 	}
 	
 	public void keyAction(KeyEvent e){
@@ -178,9 +186,29 @@ public class Confirmation {
 			opt = 1;
 			break;
 		case KeyEvent.VK_ENTER:
-			AstroBiz.getController().purge();
 			confirmOption();
 			break;
 		}
+	}
+
+	@Override
+	public boolean isActive() {
+		return isActive;
+	}
+
+	@Override
+	public ENTITY_TYPE getType() {
+		return type;
+	}
+
+	@Override
+	public void tick() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setActive(boolean b) {
+		isActive = b;
 	}
 }

@@ -2,6 +2,8 @@ package astroBiz.lib;
 import java.awt.image.BufferedImage;
 
 import astroBiz.AstroBiz;
+import astroBiz.info.FACILITY;
+import astroBiz.info.FACTION;
 import astroBiz.info.LOCINFO;
 
 /**
@@ -10,27 +12,34 @@ import astroBiz.info.LOCINFO;
  *
  */
 public class Location {	
-	private String locationName;					// The location's name.
-	private String locationID;
-	
+
+	@Deprecated
 	private Boolean[] isHub = {false, false, false, false};
+	
+	private BufferedImage factionFlag;
+	
 	private Business isHqOf = null;
 	private Business isHubOf = null;
+	
+	private double population;
 	
 	private int locationDemandBusiness;				// The location's demand for business [0 - 255]
 	private int locationDemandTourism;				// The location's demand for tourism  [0 - 255]
 	private int locationDemandIndustry;				// The location's demand for industry [0 - 255]
 	private int locationDevelopment;				// The location's developmental level [0 - 255]
 	private int locationRegion;						// The region at which this location is situated
-	private int locationSlotAvailable;				// The location's available slots for landing SpaceCraft on a Route
+	private int[] slotAllocated = {0,0,0,0};		// The number of slots allocated to businesses
 	private int locationSlotCost;					// The cost per slot to lease an available slot
-	private int locationSlotTotal;					// The location's total slots
+	private int slotTotal;							// The location's total slots
 	private int locationX;							// The X coordinate of the location
 	private int locationY;							// The Y coordinate of the location
 	
+	private FACILITY facilityType = FACILITY.PORT_CITY;
+	private FACTION owner;
 	private LOCATIONTYPE locationType = LOCATIONTYPE.LT_TOWN;
 	
-	private double population;
+	private String locationName;					// The location's name.
+	private String locationID;
 	
 	private static SpriteSheet spritesheet = AstroBiz.regionSprites;
 
@@ -50,6 +59,9 @@ public class Location {
 		this.locationY = li.getY();
 		this.population = li.getPopulation();
 		if(this.population > 1.0) locationType = LOCATIONTYPE.LT_CITY;
+		if(population > 5.0) facilityType = FACILITY.PORT_REGION;
+		else if(population > 2.5) facilityType = FACILITY.PORT_METRO;
+		slotTotal = facilityType.getSlots();
 	}
 
 	public BufferedImage getSprite(Scenario s){
@@ -93,26 +105,26 @@ public class Location {
 	public boolean getLocationIsHub(){
 		if(isHqOf != null || isHubOf != null) return true;
 		return false;
-//		for(int i = 0; i < 4; i++){
-//			if(isHub[i]) return isHub[i];
-//		}
-//		return false;
 	}
 	
 	public String getLocationName(){
 		return locationName;
 	}	
 
-	public int getLocationSlotAvailable(){
-		return locationSlotAvailable;
+	public int getSlotAvailable(){
+		int count = 0;
+		for(int i = 0; i < 4; i++){
+			count += slotAllocated[i];
+		}
+		return slotTotal - count;
 	}
 
 	public int getLocationSlotCost(){
 		return locationSlotCost;
 	}
 
-	public int getLocationSlotTotal(){
-		return locationSlotTotal;
+	public int getSlotTotal(){
+		return slotTotal;
 	}
 
 	public LOCATIONTYPE getLocationType(){
@@ -151,7 +163,7 @@ public class Location {
 		isHqOf = b;
 		isHubOf = b;
 	}
-	
+	@Deprecated
 	public void setLocationIsHub(boolean tf, int business){
 		this.isHub[business] = tf;
 	}
@@ -160,14 +172,11 @@ public class Location {
 		locationName = name;
 	}
 
-	void setLocationSlotAvailable(int slots){
-		locationSlotAvailable = slots;
-	}
 	void setLocationSlotCost(int cost){
 		locationSlotCost = cost;
 	}
 	void setLocationSlotTotal(int slot){
-		locationSlotTotal = slot;
+		slotTotal = slot;
 	}
 	
 	void setLocationX(int x){

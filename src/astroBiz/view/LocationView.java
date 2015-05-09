@@ -46,7 +46,7 @@ public class LocationView {
 		Font slotfont = new Font("arial", Font.BOLD, 15);
 		g.setFont(slotfont);
 		g.drawString("Total Slots:", 64, 288);
-		g.drawString(location.getLocationSlotAvailable() + " / " + location.getLocationSlotTotal(), 64, 320);
+		g.drawString(location.getSlotAvailable() + " / " + location.getSlotTotal(), 64, 320);
 		g.dispose();
 	}
 	public void tick(){

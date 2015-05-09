@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.util.Vector;
 
 import astroBiz.AstroBiz;
+import astroBiz.info.ENTITY_TYPE;
 import astroBiz.info.FontInformation;
 import astroBiz.lib.Business;
 import astroBiz.lib.Manufacturer;
@@ -19,7 +20,7 @@ import astroBiz.util.Confirmation;
 import astroBiz.util.ImageUtilities;
 import astroBiz.util.textUtilities;
 
-public class RegionView implements Manager {
+public class RegionView implements Manager{
 	private static final int REGIONWIDTH = 736;
 	private static final int REGIONHEIGHT = 288;
 	private static final int BUTTONHEIGHT = 64;
@@ -43,7 +44,6 @@ public class RegionView implements Manager {
 	}
 
 	private REGIONVM regionVm = REGIONVM.VM_REGION;
-//	private Vector<Location> mapLocations = new Vector<Location>();
 	private Vector<Manufacturer> manufacturersAvailable = new Vector<Manufacturer>();
 	private Manufacturer selectedManufacturer;
 	private Scenario scenario;
@@ -53,6 +53,9 @@ public class RegionView implements Manager {
 	private int previousOption = selectedOption;
 	private Confirmation c = new Confirmation();
 	private TextWindow textWin;
+	
+	private boolean isActive = false;
+	private ENTITY_TYPE type = ENTITY_TYPE.VIEW_MANAGER;
 
 	private AstroBiz ab;
 	private BufferedImage[] buttons;	// Contains the buttons displayed on the regional map.
@@ -733,6 +736,21 @@ public class RegionView implements Manager {
 	@Override
 	public void setVM(VM vm) {
 		this.regionVm = (REGIONVM)vm;
+	}
+
+	@Override
+	public boolean isActive() {
+		return this.isActive;
+	}
+
+	@Override
+	public void setActive(boolean b) {
+		this.isActive = b;
+	}
+
+	@Override
+	public ENTITY_TYPE getType() {
+		return type;
 	}
 
 }

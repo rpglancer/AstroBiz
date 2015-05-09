@@ -1,5 +1,7 @@
 package astroBiz.view;
 
+import astroBiz.lib.Entity;
+
 /**
  * An interface for all view mode managers located in astroBiz.view. This allows the manager to be passed through to
  * Confirmation so that the VM can be updated depending upon the outcome of the confirmation. A single abstract method
@@ -7,8 +9,6 @@ package astroBiz.view;
  * @author Matt Bangert
  *
  */
-public interface Manager {
-
+public interface Manager extends Entity{
 	public void setVM(VM vm);
-	
 }

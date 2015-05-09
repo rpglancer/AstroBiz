@@ -2,12 +2,12 @@ package astroBiz.lib;
 
 import java.awt.Graphics;
 
-public interface Entity {
-	
+import astroBiz.info.ENTITY_TYPE;
+
+public abstract interface Entity {
+	public boolean isActive();
+	public ENTITY_TYPE getType();
 	public void tick();
 	public void render(Graphics g);
-	
-	public void getX();
-	public void getY();
-
+	public void setActive(boolean b);
 }

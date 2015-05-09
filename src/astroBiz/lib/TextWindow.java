@@ -4,11 +4,13 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
+import astroBiz.info.ENTITY_TYPE;
 import astroBiz.info.FontInformation;
 import astroBiz.util.textUtilities;
 
 
 public class TextWindow implements Entity {
+	private boolean isActive = true;
 	private Boolean doesTick = false;
 	private Boolean hasSprite = false;
 	
@@ -20,6 +22,8 @@ public class TextWindow implements Entity {
 	private int width;
 	private int x;
 	private int y;
+	
+	private ENTITY_TYPE type = ENTITY_TYPE.TEXT_WINDOW;
 	
 	private String text = "";
 	private String textOutput = "";
@@ -41,6 +45,7 @@ public class TextWindow implements Entity {
 	}
 	
 	public TextWindow(String text, BufferedImage sprite){
+		this.type = ENTITY_TYPE.TEXT_WINDOW;
 		this.x = 96;
 		this.y = 352;
 		this.width = 672;
@@ -81,15 +86,17 @@ public class TextWindow implements Entity {
 	}
 
 	@Override
-	public void getX() {
-		// TODO Auto-generated method stub
-		
+	public boolean isActive() {
+		return isActive;
 	}
 
 	@Override
-	public void getY() {
-		// TODO Auto-generated method stub
-		
+	public void setActive(boolean b) {
+		isActive = b;
 	}
 
+	@Override
+	public ENTITY_TYPE getType() {
+		return type;
+	}
 }

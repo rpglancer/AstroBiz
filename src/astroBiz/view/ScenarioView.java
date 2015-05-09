@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import astroBiz.AstroBiz;
 import astroBiz.AstroBiz.STATE;
+import astroBiz.info.ENTITY_TYPE;
 import astroBiz.info.FontInformation;
 import astroBiz.info.ScenarioInformation.SI;
 import astroBiz.lib.AI;
@@ -73,8 +74,10 @@ public class ScenarioView implements Manager{
 	private BufferedImage employeeSprite;
 	private BufferedImage region;
 	private BufferedImage selectSprite;
+//	private Confirmation c = new Confirmation();
 	private Confirmation c = new Confirmation();
 	private boolean yesNo = true;
+	private boolean isActive = false;
 	private Font sbfont = new Font("sans", Font.BOLD, 16);
 	private Font sbconf	= new Font("sans", Font.BOLD, 32);
 	private int businessSelect = 0;
@@ -90,6 +93,7 @@ public class ScenarioView implements Manager{
 	private TextWindow textWin;
 
 	private BUSICONFIGOPTIONS busiConfigOptions = BUSICONFIGOPTIONS.EXIT;			//	Active business configuration option
+	private ENTITY_TYPE type = ENTITY_TYPE.VIEW_MANAGER;
 	private HQPLACEMENTVIEW hqPlacementView = HQPLACEMENTVIEW.WORLD;				//	Active placement view for HQ selection
 	private SCENARIOVIEWMODE scenarioViewMode = SCENARIOVIEWMODE.VM_SCEN_SELECT;	//	Active view mode for scenario selection and setup
 	private Vector<Location> availableHqLocations;									//	Locations available to be selected as a HQ.
@@ -348,6 +352,8 @@ public class ScenarioView implements Manager{
 		textUtilities.drawStringMultiLine(g, FontInformation.briefing, 32, 32, 736, 5, ab.getScenario().getScenarioDescription());
 		if(!c.getIsActive()){
 			c.setConfirmVM(this, SCENARIOVIEWMODE.VM_SCEN_SELECT, SCENARIOVIEWMODE.VM_PLYR_SELECT, employeeSprite, "Is this scenario OK?");
+			c.setActive(true);
+			AstroBiz.getController().addEntity(c);
 		}
 		g.setFont(sbconf);
 	}
@@ -705,7 +711,7 @@ public class ScenarioView implements Manager{
 			break;
 			
 		case KeyEvent.VK_ESCAPE:
-			AstroBiz.getController().purge();
+			AstroBiz.getController().purge(ENTITY_TYPE.TEXT_WINDOW);
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR) scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_CONFIG;
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME) scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_CONFIG;
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ){
@@ -734,7 +740,7 @@ public class ScenarioView implements Manager{
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_SELECT) cycleOptionNext();
 			break;
 		case KeyEvent.VK_ENTER:
-			AstroBiz.getController().purge();
+			AstroBiz.getController().purge(ENTITY_TYPE.TEXT_WINDOW);
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR){
 				businessSelect = optionSelect;
 				System.out.println(businessSelect);
@@ -751,6 +757,7 @@ public class ScenarioView implements Manager{
 					scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_NAME;
 				}
 				else if(busiConfigOptions == BUSICONFIGOPTIONS.EXIT){
+					this.setActive(false);
 					AstroBiz.State = STATE.REGIONVIEW;
 				}
 			}
@@ -963,6 +970,23 @@ public class ScenarioView implements Manager{
 	@Override
 	public void setVM(VM vm) {
 		this.scenarioViewMode = (SCENARIOVIEWMODE)vm;	
+	}
+
+	@Override
+	public boolean isActive() {
+		return this.isActive;
+	}
+
+	@Override
+	public void setActive(boolean b) {
+		isActive = b;
+		
+	}
+
+	@Override
+	public ENTITY_TYPE getType() {
+		return type;
+		// TODO Auto-generated method stub
 	}
 
 }

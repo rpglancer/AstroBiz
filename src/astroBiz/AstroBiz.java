@@ -81,7 +81,9 @@ public class AstroBiz extends Canvas implements Runnable{
 		activeScenario = new Scenario();
 		locationView = new LocationView(null);
 		regionView = new RegionView(this, activeScenario);
-		scenarioView = new ScenarioView(this);
+		scenarioView = new ScenarioView(this);	
+		c.addEntity(regionView);
+		c.addEntity(scenarioView);
 	}
 	
 	private synchronized void start(){
@@ -159,7 +161,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		Graphics g = bs.getDrawGraphics();
 		
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
-		c.render(g);
+
 		switch(State){
 		case LOCATIONVIEW:
 			locationView.render(g, this);
@@ -170,12 +172,13 @@ public class AstroBiz extends Canvas implements Runnable{
 		case REGIONVIEW:
 			regionView.render(g);
 			break;
-		case SCENARIOSETUP:
-			scenarioView.render(g);
-			break;
+//		case SCENARIOSETUP:
+//			scenarioView.render(g);
+//			break;
 		default:
 			break;
 		}
+		c.render(g);
 		g.dispose();
 		bs.show();
 	}
@@ -202,8 +205,10 @@ public class AstroBiz extends Canvas implements Runnable{
 				mainMenu.cycleMenuNext();
 				break;
 			case KeyEvent.VK_ENTER:
-				if(mainMenu.getMenuStatus() == MENUSELECT.NEWGAME)
+				if(mainMenu.getMenuStatus() == MENUSELECT.NEWGAME){
 					AstroBiz.State = AstroBiz.STATE.SCENARIOSETUP;
+					scenarioView.setActive(true);
+				}	
 				if(mainMenu.getMenuStatus() == MENUSELECT.LOADGAME)
 					break;
 				if(mainMenu.getMenuStatus() == MENUSELECT.QUITGAME)
@@ -237,6 +242,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		astrobiz.requestFocus();
 		
 		JFrame frame = new JFrame(astrobiz.TITLE);
+		
 		frame.add(astrobiz);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
