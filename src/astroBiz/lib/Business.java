@@ -1,13 +1,22 @@
 package astroBiz.lib;
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.Vector;
+
+import astroBiz.info.FACTION;
+import astroBiz.info.STANDING;
 
 /**
  * Contains all the necessary information for a space transport company.
  * @author Matt Bangert
  *
  */
-public class Business {
+public class Business implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -404228488998039409L;
+
 	private boolean isPlayerOwned = false;
 	
 	private int advertisingCosts = 0;
@@ -15,13 +24,15 @@ public class Business {
 	private int serviceCosts = 0;
 	
 	private Color businessColor;
-	private Integer accountBalance = 0;
+	private Faction affiliation;						// Contains the Faction this Business is a part of / incorporated in
+	private Integer accountBalance = 0;	
 	private Location headQuarters = null;
 	private String businessName = "Untitled Company";
 	
 	private Vector<Location> regionalHubs = new Vector<Location>();
 	private Vector<Route> businessRoutes = new Vector<Route>();
 	private	Vector<SpaceCraft> spaceCraftHangar = new Vector<SpaceCraft>();
+	private Vector<STANDING> standings = new Vector<STANDING>();				//	Current standings with other factions, defaulted to the STANDINGs of affiliation.
 	
 	public void addCraft(SpaceCraft sc){
 		this.spaceCraftHangar.addElement(sc);
@@ -31,7 +42,6 @@ public class Business {
 		accountBalance += amount;
 	}
 
-	
 	public Color getColor(){
 		return businessColor;
 	}
@@ -42,6 +52,10 @@ public class Business {
 
 	public int getAdCosts(){
 		return this.advertisingCosts;
+	}
+	
+	public Faction getAffiliation(){
+		return affiliation;
 	}
 	
 	SpaceCraft getCraft(int index){
@@ -117,6 +131,11 @@ public class Business {
 		if(this.regionalHubs == null) this.regionalHubs = new Vector<Location>();
 		this.regionalHubs.addElement(hq);
 		this.headQuarters = hq;
+		affiliation = hq.getOwner();
+		for(int i = 0; i < FACTION.values().length; i++){
+			standings.addElement(affiliation.getStanding(i));
+			System.out.println(businessName + " standing with Faction" + i + " set to " + affiliation.getStanding(i) ); 
+		}
 		hq.setHQ(this);
 	}
 
@@ -127,7 +146,11 @@ public class Business {
 	public void setPlayerOwned(boolean p){
 		this.isPlayerOwned = p;
 	}
-		
+	
+	public void setAccountBalance(int balance){
+		accountBalance = balance;
+	}
+	
 	public void subFromAccount(int amount){
 		accountBalance -= amount;
 	}

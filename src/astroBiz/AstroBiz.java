@@ -6,7 +6,10 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 import javax.swing.JFrame;
 
@@ -85,6 +88,24 @@ public class AstroBiz extends Canvas implements Runnable{
 		c.addEntity(regionView);
 		c.addEntity(scenarioView);
 	}
+	
+    public static byte[] serialize(Object obj) throws IOException {
+        ByteArrayOutputStream b = new ByteArrayOutputStream();
+        ObjectOutputStream o = new ObjectOutputStream(b);
+        o.writeObject(obj);
+        return b.toByteArray();
+    }
+    
+    public void save(){
+    	try{
+    		byte data[] = serialize(activeScenario.getLocations());
+    		FileOutputStream out = new FileOutputStream("test.sav");
+    		out.write(data);
+    		out.close();
+    	}catch(IOException e){
+    		e.printStackTrace();
+    	}
+    }
 	
 	private synchronized void start(){
 		if(running){
@@ -179,6 +200,7 @@ public class AstroBiz extends Canvas implements Runnable{
 			break;
 		}
 		c.render(g);
+		
 		g.dispose();
 		bs.show();
 	}

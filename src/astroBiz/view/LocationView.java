@@ -3,13 +3,18 @@ package astroBiz.view;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.io.Serializable;
 
 import astroBiz.AstroBiz;
 import astroBiz.info.FontInformation;
 import astroBiz.lib.Location;
 import astroBiz.util.textUtilities;
 
-public class LocationView {
+public class LocationView  implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7890944489953335201L;
 	private Location location;
 	
 	public LocationView(Location l){

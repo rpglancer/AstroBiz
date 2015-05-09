@@ -1,9 +1,9 @@
 package astroBiz.lib;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 
 import astroBiz.AstroBiz;
 import astroBiz.info.FACILITY;
-import astroBiz.info.FACTION;
 import astroBiz.info.LOCINFO;
 
 /**
@@ -11,12 +11,17 @@ import astroBiz.info.LOCINFO;
  * @author Matt Bangert
  *
  */
-public class Location {	
+public class Location implements Serializable{	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2298445659460937295L;
 
 	@Deprecated
 	private Boolean[] isHub = {false, false, false, false};
 	
-	private BufferedImage factionFlag;
+	private BufferedImage factionFlag = null;
 	
 	private Business isHqOf = null;
 	private Business isHubOf = null;
@@ -35,7 +40,7 @@ public class Location {
 	private int locationY;							// The Y coordinate of the location
 	
 	private FACILITY facilityType = FACILITY.PORT_CITY;
-	private FACTION owner;
+	private Faction owner;
 	private LOCATIONTYPE locationType = LOCATIONTYPE.LT_TOWN;
 	
 	private String locationName;					// The location's name.
@@ -48,7 +53,7 @@ public class Location {
 		LT_CITY;
 	}
 	
-	public Location(LOCINFO li){
+	public Location(LOCINFO li, Scenario s){
 		this.locationName = li.getName();
 		this.locationID = li.getID();
 		this.locationRegion = li.getRegion();
@@ -62,6 +67,32 @@ public class Location {
 		if(population > 5.0) facilityType = FACILITY.PORT_REGION;
 		else if(population > 2.5) facilityType = FACILITY.PORT_METRO;
 		slotTotal = facilityType.getSlots();
+		switch(li.getOwner()){
+		case FAC00:
+			owner = s.getFactions().elementAt(0);
+			break;
+		case FAC01:
+			owner = s.getFactions().elementAt(1);
+			break;
+		case FAC02:
+			owner = s.getFactions().elementAt(2);
+			break;
+		case FAC03:
+			owner = s.getFactions().elementAt(3);
+			break;
+		case FAC04:
+			owner = s.getFactions().elementAt(4);
+			break;
+		case FAC05:
+			owner = s.getFactions().elementAt(5);
+			break;
+		case FAC06:
+			owner = s.getFactions().elementAt(6);
+			break;
+		case FAC07:
+			owner = s.getFactions().elementAt(7);
+			break;
+		}
 	}
 
 	public BufferedImage getSprite(Scenario s){
@@ -111,6 +142,10 @@ public class Location {
 		return locationName;
 	}	
 
+	public Faction getOwner(){
+		return owner;
+	}
+	
 	public int getSlotAvailable(){
 		int count = 0;
 		for(int i = 0; i < 4; i++){
@@ -119,6 +154,10 @@ public class Location {
 		return slotTotal - count;
 	}
 
+	public int getSlotAllocatedFor(int business){
+		return slotAllocated[business];
+	}
+	
 	public int getLocationSlotCost(){
 		return locationSlotCost;
 	}
@@ -185,4 +224,9 @@ public class Location {
 	void setLocationY(int y){
 		locationY = y;
 	}
+	
+	void setSlotAllocation(int business, int amount){
+		slotAllocated[business] = amount;
+	}
+	
 }

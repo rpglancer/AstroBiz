@@ -1,7 +1,13 @@
 package astroBiz.lib;
 
+import java.io.Serializable;
 
-public class Message {
+
+public class Message implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9033134393548233628L;
 	private MSGTYPE msgType;
 	private Business msgBusiness;
 	private Location msgLocation;

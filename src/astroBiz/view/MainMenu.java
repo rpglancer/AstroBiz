@@ -5,13 +5,19 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.io.Serializable;
 
 /**
  * Displays the Main Menu at the start of the game.
  * @author Matt Bangert
  *
  */
-public class MainMenu {
+public class MainMenu implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9122175924331276861L;
+
 	public static enum MENUSELECT {
 		NEWGAME,
 		LOADGAME,

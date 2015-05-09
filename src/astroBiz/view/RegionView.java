@@ -6,6 +6,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.util.Vector;
 
 import astroBiz.AstroBiz;
@@ -20,7 +21,11 @@ import astroBiz.util.Confirmation;
 import astroBiz.util.ImageUtilities;
 import astroBiz.util.textUtilities;
 
-public class RegionView implements Manager{
+public class RegionView implements Manager, Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5748594383657019059L;
 	private static final int REGIONWIDTH = 736;
 	private static final int REGIONHEIGHT = 288;
 	private static final int BUTTONHEIGHT = 64;
@@ -396,12 +401,14 @@ public class RegionView implements Manager{
 		g.setFont(sectorfont);
 		g.setColor(Color.WHITE);
 		// Prototype Render Locations
-//		for(int i = 0; i < mapLocations.size(); i++){
 		for(int i = 0; i < scenario.getLocations().size(); i++){
-//			if(mapLocations.elementAt(i).getLocationRegion() == activeRegion){
 			if(scenario.getLocations().elementAt(i).getLocationRegion() == activeRegion){
-//				g.drawImage(mapLocations.elementAt(i).getSprite(ab.getScenario()) , mapLocations.elementAt(i).getLocationX(), mapLocations.elementAt(i).getLocationY(), null);
 				g.drawImage(scenario.getLocations().elementAt(i).getSprite(scenario), scenario.getLocations().elementAt(i).getLocationX(), scenario.getLocations().elementAt(i).getLocationY(), null);
+				if(scenario.getLocations().elementAt(i).getSlotAllocatedFor(scenario.getActiveBusiness()) > 0){
+					g.setFont(FontInformation.modelstat);
+					g.setColor(Color.white);
+					g.drawString(scenario.getLocations().elementAt(i).getSlotAllocatedFor(scenario.getActiveBusiness()) + "", scenario.getLocations().elementAt(i).getLocationX() + 16, scenario.getLocations().elementAt(i).getLocationY() + 16);
+				}
 			}
 		}
 		
@@ -751,6 +758,11 @@ public class RegionView implements Manager{
 	@Override
 	public ENTITY_TYPE getType() {
 		return type;
+	}
+
+	@Override
+	public VM getVM() {
+		return regionVm;
 	}
 
 }

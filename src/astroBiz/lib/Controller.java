@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.util.LinkedList;
 
 import astroBiz.info.ENTITY_TYPE;
+import astroBiz.view.Manager;
 
 /**
  * Linked List Controller
@@ -35,8 +36,8 @@ public class Controller{
 	public void render(Graphics g) {
 		for(int i = 0; i < e.size(); i++){
 			ent = e.get(i);
-			if(ent.isActive()){
-				ent.render(g);
+			if(ent.isActive()){	
+				ent.render(g);				
 			}
 		}
 	}
@@ -45,7 +46,7 @@ public class Controller{
 			e.push(block);
 		}
 		else if(block.getType() == ENTITY_TYPE.TEXT_WINDOW){
-			int i = this.lastIndexOf(ENTITY_TYPE.VIEW_MANAGER);
+			int i = e.lastIndexOf(Manager.class);
 			if(i == -1)e.push(block);
 			else e.add(i+1, block);
 		}
@@ -54,13 +55,13 @@ public class Controller{
 		}
 	}
 	
-	private int lastIndexOf(ENTITY_TYPE type){
-		int index = -1;
-		for(int i = 0; i < e.size(); i++){
-			if(e.get(i).getType() == type) index = i;
-		}
-		return index;
-	}
+//	private int lastIndexOf(ENTITY_TYPE type){
+//		int index = -1;
+//		for(int i = 0; i < e.size(); i++){
+//			if(e.get(i).getType() == type) index = i;
+//		}
+//		return index;
+//	}
 
 	public boolean containsEntity(Entity block){
 		for(int i = 0; i < e.size(); i++){

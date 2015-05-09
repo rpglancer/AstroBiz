@@ -20,4 +20,6 @@ public class FontInformation {
 	public static final Font modelheader = new Font("modern", Font.BOLD, 20);
 	
 	public static final Font modelstat = new Font("Courier New", Font.BOLD, 16);
+	
+	public static final Font regionselect = new Font("Courier New", Font.BOLD, 10);
 }

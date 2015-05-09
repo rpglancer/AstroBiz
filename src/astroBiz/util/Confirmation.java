@@ -38,7 +38,7 @@ public class Confirmation implements Entity{
 	int x, y;
 	private byte opt = 0;
 	private Boolean isActive = false;
-	private Boolean doesTick = false;
+//	private Boolean doesTick = false;
 	private Boolean withCoords = false;
 	private Boolean withText = false;
 	
@@ -131,7 +131,7 @@ public class Confirmation implements Entity{
 		this.next = next;
 		this.opt = 0;
 		this.withCoords = true;
-		this.doesTick = true;
+//		this.doesTick = true;
 		this.isActive = true;
 	}
 	
@@ -147,7 +147,7 @@ public class Confirmation implements Entity{
 		this.opt = 0;
 		this.withCoords = false;
 		this.withText = true;
-		this.doesTick = false;
+//		this.doesTick = false;
 		this.isActive = true;
 	}
 	

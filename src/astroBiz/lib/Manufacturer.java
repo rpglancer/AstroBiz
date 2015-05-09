@@ -1,11 +1,16 @@
 package astroBiz.lib;
 
+import java.io.Serializable;
 import java.util.Vector;
 
 import astroBiz.info.CRAFTINFO;
 import astroBiz.info.ManufacturerInformation.MI;
 
-public class Manufacturer {
+public class Manufacturer implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1295916427609105506L;
 	private String name = "Untitled MFG";
 	private String symbol = "NONE";
 	private Vector<SpaceCraft> models = new Vector<SpaceCraft>();

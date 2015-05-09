@@ -1,7 +1,10 @@
 package astroBiz.lib;
 
+import java.io.Serializable;
+import java.util.Random;
 import java.util.Vector;
 
+import astroBiz.info.FACTION;
 import astroBiz.info.LOCINFO;
 import astroBiz.info.ManufacturerInformation.MI;
 import astroBiz.info.ScenarioInformation.SI;
@@ -11,7 +14,12 @@ import astroBiz.info.ScenarioInformation.SI;
  * @author Matt Bangert
  *
  */
-public class Scenario {
+public class Scenario implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7293537749085029522L;
+
 	private AI ai = new AI();
 
 	private String scenarioDescription;
@@ -31,6 +39,7 @@ public class Scenario {
 	private Vector<Location> mapLocations = new Vector<Location>();
 	private Vector<Manufacturer> scenarioManufacturers = new Vector<Manufacturer>();
 	private Vector<Manufacturer> scenarioManufacturersAvailable = new Vector<Manufacturer>();
+	private Vector<Faction> scenarioFactions = new Vector<Faction>();
 		
 	public Scenario(){
 		for(int i = 0; i < 4; i++){
@@ -42,8 +51,11 @@ public class Scenario {
 			b.addToAccount(1500000);
 			scenarioBusinesses.addElement(b);
 		}
+		for(FACTION f : FACTION.values()){
+			scenarioFactions.addElement(new Faction(f));
+		}
 		for(LOCINFO li : LOCINFO.values()){
-			mapLocations.addElement(new Location(li));
+			mapLocations.addElement(new Location(li, this));
 		}
 		for(MI mi : MI.values()){
 			scenarioManufacturers.addElement(new Manufacturer(mi));
@@ -85,6 +97,10 @@ public class Scenario {
 		return this.scenarioHubsRequired;
 	}
 	
+	public Vector<Faction> getFactions(){
+		return scenarioFactions;
+	}
+
 	public Vector<Location> getLocations(){
 		return mapLocations;
 	}
@@ -189,14 +205,51 @@ public class Scenario {
 		}
 	}
 	
+	public void allocateStartingSlots(){
+		int slotsForAllocation = 0;
+		for(int i = 0; i < scenarioBusinesses.size(); i++){
+			if(scenarioBusinesses.elementAt(i).getIsPlayerOwned()){
+				if(scenarioDifficultyLevel == 1) slotsForAllocation = 20;
+				if(scenarioDifficultyLevel == 2) slotsForAllocation = 15;
+				if(scenarioDifficultyLevel == 3) slotsForAllocation = 10;
+				if(scenarioDifficultyLevel == 4) slotsForAllocation = 5;
+			}
+			else{
+				if(scenarioDifficultyLevel == 1) slotsForAllocation = 15;
+				if(scenarioDifficultyLevel == 2) slotsForAllocation = 20;
+				if(scenarioDifficultyLevel == 3) slotsForAllocation = 25;
+				if(scenarioDifficultyLevel == 4) slotsForAllocation = 30;
+			}
+			scenarioBusinesses.elementAt(i).getHQ().setSlotAllocation(i, 15);
+			Vector<Location> loc = new Vector<Location>();
+			for(int l = 0; l < mapLocations.size(); l++){
+				if(mapLocations.elementAt(l).getLocationRegion() == scenarioBusinesses.elementAt(i).getHQ().getLocationRegion() && mapLocations.elementAt(l) != scenarioBusinesses.elementAt(i).getHQ()){
+					loc.addElement(mapLocations.elementAt(l));
+					System.out.println("Added " + mapLocations.elementAt(l).getID() + " to slot location possibilities!");
+				}
+			}
+			do{
+				System.out.println(slotsForAllocation);
+				if(loc.size() == 1){
+					loc.elementAt(0).setSlotAllocation(i, slotsForAllocation);
+					slotsForAllocation = 0;
+					break;
+				}
+				Random rand = new Random();
+				int r = rand.nextInt(loc.size() - 1);
+				int a = rand.nextInt(slotsForAllocation);
+				loc.elementAt(r).setSlotAllocation(i, a);
+				loc.removeElementAt(r);
+				slotsForAllocation -= a;
+			}while(slotsForAllocation > 0);
+		}
+	}
+	
 	public void setScenarioDifficulty(int difficulty){
 		if(difficulty < 1 || difficulty > 4)
 			this.scenarioDifficultyLevel = 1;
 		else
 			this.scenarioDifficultyLevel = difficulty;
-		for(int i = 0; i < 4; i++){
-			scenarioBusinesses.elementAt(i).subFromAccount((int)(scenarioBusinesses.elementAt(i).getAccountBalance() * (scenarioDifficultyLevel * 0.1)));
-		}
 	}
 	
 	public void setScenarioPlayers(int players){

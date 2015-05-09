@@ -6,6 +6,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.util.Vector;
 
 import astroBiz.AstroBiz;
@@ -27,7 +28,12 @@ import astroBiz.util.textUtilities;
  * @author Matt Bangert
  *
  */
-public class ScenarioView implements Manager{
+public class ScenarioView implements Manager, Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -448015264491459422L;
+
 	public static enum BUSICONFIGOPTIONS {
 		NAME,
 		COLOR,
@@ -74,7 +80,6 @@ public class ScenarioView implements Manager{
 	private BufferedImage employeeSprite;
 	private BufferedImage region;
 	private BufferedImage selectSprite;
-//	private Confirmation c = new Confirmation();
 	private Confirmation c = new Confirmation();
 	private boolean yesNo = true;
 	private boolean isActive = false;
@@ -124,10 +129,6 @@ public class ScenarioView implements Manager{
  * @param g (Graphics) The active graphics buffer
  */
 	public void render(Graphics g){
-		int x = 0;
-		int y = 0;
-		g.setColor(Color.white);
-		textUtilities.drawStringMultiLine(g, FontInformation.debug, x, y, 800, scenarioViewMode.toString());
 		switch(this.scenarioViewMode){
 		case VM_BUSI_COLOR:
 			scenarioBusiConfig(g);
@@ -171,11 +172,13 @@ public class ScenarioView implements Manager{
 			
 		default:
 			break;
-		}
-		if(c.getIsActive()){
-			c.render(g);
-		}
+		}		
+		int x = 0;
+		int y = 0;
+		g.setColor(Color.white);
+		textUtilities.drawStringMultiLine(g, FontInformation.debug, x, y, 800, scenarioViewMode.toString());
 	}
+	
 	/**
 	 * Method for drawing all things related to business configuration based upon the selected view mode.
 	 * @param g	The graphics buffer to be drawn to.
@@ -351,7 +354,7 @@ public class ScenarioView implements Manager{
 		g.drawRect(32, 32, 736, 272);
 		textUtilities.drawStringMultiLine(g, FontInformation.briefing, 32, 32, 736, 5, ab.getScenario().getScenarioDescription());
 		if(!c.getIsActive()){
-			c.setConfirmVM(this, SCENARIOVIEWMODE.VM_SCEN_SELECT, SCENARIOVIEWMODE.VM_PLYR_SELECT, employeeSprite, "Is this scenario OK?");
+			c.setConfirmVM(this, SCENARIOVIEWMODE.VM_SCEN_SELECT, SCENARIOVIEWMODE.VM_DIFF_SELECT, employeeSprite, "Is this scenario OK?");
 			c.setActive(true);
 			AstroBiz.getController().addEntity(c);
 		}
@@ -418,7 +421,7 @@ public class ScenarioView implements Manager{
 			}
 			
 			g.setColor(Color.green);
-			
+			g.setFont(FontInformation.regionselect);
 			if(this.availableHqLocations.size() > 0){
 				g.drawString(this.availableHqLocations.elementAt(optionSelect).getLocationName(),
 							this.availableHqLocations.elementAt(optionSelect).getLocationX() + 16,
@@ -429,9 +432,8 @@ public class ScenarioView implements Manager{
 							16, 16);
 			}
 			
-			g.setFont(sbfont);
+			g.setFont(FontInformation.chitchat);
 			g.setColor(Color.white);
-			
 			if(!AstroBiz.getController().containsEntity(textWin)){
 				textWin = new TextWindow("Select headquarters location for " + s + ".", this.employeeSprite);
 				AstroBiz.getController().addEntity(textWin);
@@ -440,6 +442,7 @@ public class ScenarioView implements Manager{
 			break;	//	End	REGION
 			
 		case WORLD:
+			g.setFont(FontInformation.regionselect);
 			if(this.optionSelect == 0){
 				g.setColor(Color.green);
 				g.drawString("Mercury", 96+15, 177+15);
@@ -521,7 +524,7 @@ public class ScenarioView implements Manager{
 			}
 			g.fillOval(676, 96, 64, 64);		// Neptune
 			
-			g.setFont(sbfont);
+			g.setFont(FontInformation.chitchat);
 			g.setColor(Color.white);
 			if(!AstroBiz.getController().containsEntity(textWin)){
 				textWin = new TextWindow("Select headquarters region for " + s + ".", this.employeeSprite);
@@ -727,9 +730,10 @@ public class ScenarioView implements Manager{
 			break;
 			
 		case KeyEvent.VK_DOWN:
+			cycleOptionNext();
+			/*
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR){
 				cycleOptionNext();
-//				cycleBusinessNext();
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT){
 				cycleOptionNext();
@@ -738,6 +742,7 @@ public class ScenarioView implements Manager{
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_DIFF_SELECT) cycleOptionNext();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_PLYR_SELECT) cycleOptionNext();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_SELECT) cycleOptionNext();
+			*/
 			break;
 		case KeyEvent.VK_ENTER:
 			AstroBiz.getController().purge(ENTITY_TYPE.TEXT_WINDOW);
@@ -795,7 +800,6 @@ public class ScenarioView implements Manager{
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ){
 				if(hqPlacementView == HQPLACEMENTVIEW.WORLD){
 					loadRegionMap(AstroBiz.worldMap);
-					//loadLocationVector(ab.getRegion().getLocationVector());
 					loadLocationVector(ab.getScenario().getLocations());
 					previousOption = optionSelect;
 					hqPlacementView = HQPLACEMENTVIEW.REGION;
@@ -825,6 +829,7 @@ public class ScenarioView implements Manager{
 					else{
 						//??
 					}
+					ab.getScenario().allocateStartingSlots();
 				}
 			}
 			resetOptionSelect();
@@ -917,13 +922,13 @@ public class ScenarioView implements Manager{
 			ab.getScenario().setScenarioDifficulty(1);
 			break;
 		case 1:
-			ab.getScenario().setScenarioDifficulty(1);
+			ab.getScenario().setScenarioDifficulty(2);
 			break;
 		case 2:
-			ab.getScenario().setScenarioDifficulty(1);
+			ab.getScenario().setScenarioDifficulty(3);
 			break;
 		case 3:
-			ab.getScenario().setScenarioDifficulty(1);
+			ab.getScenario().setScenarioDifficulty(4);
 			break;
 		}
 	}
@@ -987,6 +992,11 @@ public class ScenarioView implements Manager{
 	public ENTITY_TYPE getType() {
 		return type;
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public VM getVM() {
+		return scenarioViewMode;
 	}
 
 }

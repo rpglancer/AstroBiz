@@ -4,7 +4,7 @@ import java.awt.Graphics;
 
 import astroBiz.info.ENTITY_TYPE;
 
-public abstract interface Entity {
+public abstract interface Entity{
 	public boolean isActive();
 	public ENTITY_TYPE getType();
 	public void tick();

@@ -1,6 +1,7 @@
 package astroBiz.lib;
 
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 
 import astroBiz.info.CRAFTINFO;
 
@@ -9,8 +10,13 @@ import astroBiz.info.CRAFTINFO;
  * @author Matt Bangert
  *
  */
-public class SpaceCraft{
+public class SpaceCraft implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8804768627180604957L;
+
 	private BufferedImage sprite;
 	
 	private double range = 0;				// Range of craft

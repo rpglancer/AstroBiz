@@ -118,10 +118,12 @@ public class textUtilities{
 	}
 	
 	public static void drawStringCenterV(Graphics g, Font f, int x, int y, int height, String text){
+		Font oldfont = g.getFont();
 		FontMetrics m = g.getFontMetrics(f);
 		y += (height - getTextHeight(g,f,text)) / 2 + m.getAscent();
 		g.setFont(f);
 		g.drawString(text, x, y);
+		g.setFont(oldfont);
 	}
 
 	/**
@@ -135,6 +137,7 @@ public class textUtilities{
 	 * @param text	The actual string.
 	 */
 	public static void drawStringMultiLine(Graphics g, Font f, int x, int y, int lineWidth, String text){
+		Font oldfont = g.getFont();
 		g.setFont(f);
 		FontMetrics m = g.getFontMetrics(f);
 		y += m.getAscent();
@@ -158,6 +161,7 @@ public class textUtilities{
 				g.drawString(currentLine, x, y);
 			}
 		}
+		g.setFont(oldfont);
 	}
 
 	/**
@@ -172,6 +176,7 @@ public class textUtilities{
 	 * @param text			The actual string.
 	 */
 	public static void drawStringMultiLine(Graphics g, Font f, int x, int y, int lineWidth, int padding, String text){
+		Font oldfont = g.getFont();
 		FontMetrics m = g.getFontMetrics(f);
 		g.setFont(f);
 		y+=m.getAscent();
@@ -197,11 +202,12 @@ public class textUtilities{
 				g.drawString(currentLine, x, y);
 			}
 		}
+		g.setFont(oldfont);
 	}	
 	
 	public static void drawStringToBox(Graphics g, Font f, Rectangle box, HALIGN ha, VALIGN va, String text){
 		int lc = getLineCount(g, f, (int)(box.getWidth() - box.getY()), text);
-		g.drawString(lc + "", 790, 480);
+//		g.drawString(lc + "", 790, 480);
 		if(lc == 1){
 			drawStringAligned(g, f, (int)box.getX(), (int)box.getY(), (int)(box.getWidth() - box.getX()),
 					(int)(box.getHeight() - box.getY()), ha, text);
