@@ -20,9 +20,7 @@ public class Location implements Serializable{
 
 	@Deprecated
 	private Boolean[] isHub = {false, false, false, false};
-	
-	private BufferedImage factionFlag = null;
-	
+
 	private Business isHqOf = null;
 	private Business isHubOf = null;
 	
@@ -144,6 +142,10 @@ public class Location implements Serializable{
 
 	public Faction getOwner(){
 		return owner;
+	}
+	
+	public double getPopulation(){
+		return population;
 	}
 	
 	public int getSlotAvailable(){

@@ -39,6 +39,7 @@ public class AstroBiz extends Canvas implements Runnable{
 	public static final int MINOR = 3;
 	public static final int PATCH = 0;
 	public static SpriteSheet employeeSprites = null;
+	public static SpriteSheet factionFlags = null;
 	public static SpriteSheet regionButtons = null;
 	public static SpriteSheet regionSprites = null;
 	public static SpriteSheet textSheet = null;
@@ -71,6 +72,8 @@ public class AstroBiz extends Canvas implements Runnable{
 			regionSprites = new SpriteSheet(temp);
 			temp = loader.loadImage("../../data/astrobizmap.png");
 			worldMap = new SpriteSheet(temp);
+			temp = loader.loadImage("../../data/astrobizflags.png");
+			factionFlags = new SpriteSheet(temp);
 			temp = loader.loadImage("../../data/astrobiztext.png");
 			textSheet = new SpriteSheet(temp);
 			textUtilities.init();

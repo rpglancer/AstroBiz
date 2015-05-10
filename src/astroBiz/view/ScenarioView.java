@@ -77,9 +77,9 @@ public class ScenarioView implements Manager, Serializable{
 
 	
 	private astroBiz.AstroBiz ab;
-	private BufferedImage employeeSprite;
-	private BufferedImage region;
-	private BufferedImage selectSprite;
+	private BufferedImage employeeSprite;			//	Buffered Images should be accessed in another manner ouside of this class
+	private BufferedImage region;					//	Buffered Images should be accessed in another manner ouside of this class	
+	private BufferedImage selectSprite;				//	Buffered Images should be accessed in another manner ouside of this class
 	private Confirmation c = new Confirmation();
 	private boolean yesNo = true;
 	private boolean isActive = false;
@@ -426,6 +426,14 @@ public class ScenarioView implements Manager, Serializable{
 				g.drawString(this.availableHqLocations.elementAt(optionSelect).getLocationName(),
 							this.availableHqLocations.elementAt(optionSelect).getLocationX() + 16,
 							this.availableHqLocations.elementAt(optionSelect).getLocationY() + 16);
+				
+				g.drawString(this.availableHqLocations.elementAt(optionSelect).getOwner().getName(),
+						this.availableHqLocations.elementAt(optionSelect).getLocationX() + 16,
+						this.availableHqLocations.elementAt(optionSelect).getLocationY() + 24);
+				
+				g.drawString("Pop: " + this.availableHqLocations.elementAt(optionSelect).getPopulation()+"M",
+						this.availableHqLocations.elementAt(optionSelect).getLocationX() + 16,
+						this.availableHqLocations.elementAt(optionSelect).getLocationY() + 32);
 				
 				g.drawOval(this.availableHqLocations.elementAt(optionSelect).getLocationX(),
 							this.availableHqLocations.elementAt(optionSelect).getLocationY(),
