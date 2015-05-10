@@ -1,8 +1,5 @@
 package astroBiz.info;
 
-import astroBiz.lib.Faction;
-
-
 public enum LOCINFO {
 //	  enum		  name		  	 id	    r  bus  ind  tou    x    y   pop        owner
 //----------------------------------------------------------------------------------------------

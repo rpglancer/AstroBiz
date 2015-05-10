@@ -19,7 +19,7 @@ public class Business implements Serializable {
 
 	private boolean isPlayerOwned = false;
 	
-	private int advertisingCosts = 0;
+	private int advertisingCosts = 0;			
 	private int maintenanceCosts = 0;
 	private int serviceCosts = 0;
 	
@@ -29,9 +29,9 @@ public class Business implements Serializable {
 	private Location headQuarters = null;
 	private String businessName = "Untitled Company";
 	
-	private Vector<Location> regionalHubs = new Vector<Location>();
-	private Vector<Route> businessRoutes = new Vector<Route>();
-	private	Vector<SpaceCraft> spaceCraftHangar = new Vector<SpaceCraft>();
+	private Vector<Location> regionalHubs = new Vector<Location>();				// 	Vector of all this businesses regional Hubs
+	private Vector<Route> businessRoutes = new Vector<Route>();					// 	Vector of all this businesses routes
+	private	Vector<SpaceCraft> spaceCraftHangar = new Vector<SpaceCraft>();		//	Business Hangar, contains all idle Business SpaceCraft.
 	private Vector<STANDING> standings = new Vector<STANDING>();				//	Current standings with other factions, defaulted to the STANDINGs of affiliation.
 	
 	public void addCraft(SpaceCraft sc){
@@ -117,6 +117,17 @@ public class Business implements Serializable {
 	public int getServiceCosts(){
 		return this.serviceCosts;
 	}
+
+	public Vector<STANDING> getStandings(){
+		return standings;
+	}
+	
+	public boolean regionContainsHub(int regionID){
+		for(int i = 0; i < regionalHubs.size(); i++){
+			if(regionalHubs.elementAt(i).getLocationRegion() == regionID) return true;
+		}
+		return false;
+	}
 	
 	public void setColor(int r, int g, int b){
 		this.businessColor = new Color(r,g,b);
@@ -134,8 +145,8 @@ public class Business implements Serializable {
 		affiliation = hq.getOwner();
 		for(int i = 0; i < FACTION.values().length; i++){
 			standings.addElement(affiliation.getStanding(i));
-			System.out.println(businessName + " standing with Faction" + i + " set to " + affiliation.getStanding(i) ); 
 		}
+		System.out.println("Business Standings Vector Size: " + standings.size());
 		hq.setHQ(this);
 	}
 

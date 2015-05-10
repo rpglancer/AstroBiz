@@ -22,6 +22,7 @@ public class Faction implements Serializable{
 	private String abrv;
 	private String name;
 	
+	//	Holds defaulted STANDING values toward the other Factions.
 	private STANDING[] standing = new STANDING[8];
 	
 	public Faction(FACTION f){

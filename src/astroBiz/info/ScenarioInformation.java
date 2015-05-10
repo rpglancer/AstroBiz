@@ -50,7 +50,15 @@ public class ScenarioInformation {
 	};
 	
 	private static final String[] scenarioInfoDescription = {
-			"After a century of conflict the human race once again sets its eyes upon the stars. Offworld mining and trading begins to flourish as the demand for resources vastly outpaces the ability of the Earth to provide them. The empires of humanity once again embark on campaigns of conquest to determine which of them will control the vast resources of the solar system.",
+			"After a century of conflict the human race once again "
+			+ "sets its eyes upon the stars. Offworld mining and "
+			+ "trading begins to flourish as the demand for "
+			+ "resources vastly outpaces the ability of the Earth "
+			+ "to provide them. The empires of humanity once again "
+			+ "embark on campaigns of conquest to determine which "
+			+ "of them will control the vast resources of the solar "
+			+ "system.",
+			
 			"Description 2",
 			"Description 3",
 			"Description 4"

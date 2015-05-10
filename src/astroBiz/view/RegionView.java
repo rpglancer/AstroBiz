@@ -134,34 +134,77 @@ public class RegionView implements Manager, Serializable{
 		int pheight = 128;
 		int pwidth = 128;
 		
+		Business b = ab.getScenario().getBusinesses().elementAt(ab.getScenario().getActiveBusiness());
+		
 		g.setColor(Color.black);
 		g.fillRect(sx, sy, width, height);
 		
 		//	Draw Planet Orbit Lines
 		g.setColor(Color.DARK_GRAY);
+		//	Region Neptune
 		g.drawOval(px, py, pwidth, pheight);
 		px+=6; py+=6; pwidth-=12; pheight-=12;
+		//	Region Uranus
 		g.drawOval(px, py, pwidth, pheight);
 		px+=6; py+=6; pwidth-=12; pheight-=12;
+		//	Region Saturn
 		g.drawOval(px, py, pwidth, pheight);
 		px+=6; py+=6; pwidth-=12; pheight-=12;
+		//	Region Jupiter
 		g.drawOval(px, py, pwidth, pheight);
 		px+=10; py+=10; pwidth-=20; pheight-=20;
+		//	Region Mars
 		g.drawOval(px, py, pwidth, pheight);
 		px+=6; py+=6; pwidth-=12; pheight-=12;
+		//	Region Earth
+		if(b.regionContainsHub(2))g.setColor(b.getColor());
+		else g.setColor(Color.darkGray);
 		g.drawOval(px, py, pwidth, pheight);
 		px+=6; py+=6; pwidth-=12; pheight-=12;
+		//	Region Venus
+		if(b.regionContainsHub(1))g.setColor(b.getColor());
+		else g.setColor(Color.darkGray);
 		g.drawOval(px, py, pwidth, pheight);
 		px+=6; py+=6; pwidth-=12; pheight-=12;
+		//	Region Mercury
+		if(b.regionContainsHub(0))g.setColor(b.getColor());
+		else g.setColor(Color.darkGray);
 		g.drawOval(px, py, pwidth, pheight);
 		px+=6; py+=6; pwidth-=12; pheight-=12;
 		
 		// Draw Planets
+		//	Neptune
 		g.setColor(Color.darkGray);
 		g.fillOval(40, 368, 17, 17);
 		g.setColor(Color.BLACK);
 		g.fillOval(41, 369, 15, 15);
-		
+		//	Uranus
+		g.setColor(Color.darkGray);
+		g.fillOval(73, 424, 17, 17);
+		g.setColor(Color.BLACK);
+		g.fillOval(74, 425, 15, 15);
+		//	Saturn
+		g.setColor(Color.darkGray);
+		g.fillOval(148, 400, 17, 17);
+		g.setColor(Color.BLACK);
+		g.fillOval(149, 401, 15, 15);
+		//	Jupiter
+		g.setColor(Color.darkGray);
+		g.fillOval(117, 331, 22, 22);
+		g.setColor(Color.BLACK);
+		g.fillOval(118, 332, 20, 20);
+		//	Mars
+		g.setColor(Color.darkGray);
+		g.fillOval(75, 395, 8, 8);
+		g.setColor(Color.BLACK);
+		g.fillOval(76, 396, 6, 6);
+		//	Earth
+		if(b.regionContainsHub(2))g.setColor(Color.white);
+		else g.setColor(Color.darkGray);
+		g.fillOval(135, 367, 8, 8);
+		if(b.regionContainsHub(2))g.setColor(b.getColor());
+		else g.setColor(Color.black);
+		g.fillOval(136, 368, 6, 6);
 	}
 	
 	private void drawBuySelectModel(Graphics g){
@@ -696,10 +739,6 @@ public class RegionView implements Manager, Serializable{
 		else if(this.activeRegion == 7) return AstroBiz.worldMap.grabImage(2, 3, REGIONWIDTH, REGIONHEIGHT);
 		else return AstroBiz.worldMap.grabImage(3, 3, REGIONWIDTH, REGIONHEIGHT);
 	}
-	
-//	public Vector<Location> getLocationVector(){
-//		return this.mapLocations;
-//	}
 	
 	private void processButton(){
 		previousOption = selectedOption;

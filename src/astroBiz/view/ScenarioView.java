@@ -771,6 +771,7 @@ public class ScenarioView implements Manager, Serializable{
 				}
 				else if(busiConfigOptions == BUSICONFIGOPTIONS.EXIT){
 					this.setActive(false);
+					ab.getRegion().setActive(true);
 					AstroBiz.State = STATE.REGIONVIEW;
 				}
 			}
@@ -838,6 +839,8 @@ public class ScenarioView implements Manager, Serializable{
 						//??
 					}
 					ab.getScenario().allocateStartingSlots();
+					ab.getScenario().allocateStartingCraft();
+					// allocate starting craft
 				}
 			}
 			resetOptionSelect();

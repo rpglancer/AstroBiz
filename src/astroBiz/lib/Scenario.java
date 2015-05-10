@@ -6,7 +6,8 @@ import java.util.Vector;
 
 import astroBiz.info.FACTION;
 import astroBiz.info.LOCINFO;
-import astroBiz.info.ManufacturerInformation.MI;
+import astroBiz.info.MFGINFO;
+import astroBiz.info.STANDING;
 import astroBiz.info.ScenarioInformation.SI;
 
 /**
@@ -57,8 +58,8 @@ public class Scenario implements Serializable{
 		for(LOCINFO li : LOCINFO.values()){
 			mapLocations.addElement(new Location(li, this));
 		}
-		for(MI mi : MI.values()){
-			scenarioManufacturers.addElement(new Manufacturer(mi));
+		for(MFGINFO mfg : MFGINFO.values()){
+			scenarioManufacturers.addElement(new Manufacturer(mfg, this));
 		}
 	}
 	
@@ -205,6 +206,47 @@ public class Scenario implements Serializable{
 		}
 	}
 	
+	public void allocateStartingCraft(){
+		int craftForAllocation = 0;
+		for(int i = 0; i < scenarioBusinesses.size(); i++){
+			if(scenarioBusinesses.elementAt(i).getIsPlayerOwned()){
+				if(scenarioDifficultyLevel == 1) craftForAllocation = 8;
+				if(scenarioDifficultyLevel == 2) craftForAllocation = 5;
+				if(scenarioDifficultyLevel == 3) craftForAllocation = 3;
+				if(scenarioDifficultyLevel == 4) craftForAllocation = 0;
+			}
+			else{
+				if(scenarioDifficultyLevel == 1) craftForAllocation = 3;
+				if(scenarioDifficultyLevel == 2) craftForAllocation = 5;
+				if(scenarioDifficultyLevel == 3) craftForAllocation = 8;
+				if(scenarioDifficultyLevel == 4) craftForAllocation = 10;
+			}
+			System.out.println("Allocation: " + craftForAllocation);
+			
+			Vector<Manufacturer> mfg = new Vector<Manufacturer>();
+			for(int bfs = 0; bfs < scenarioBusinesses.elementAt(i).getStandings().size(); bfs++){
+				if(scenarioBusinesses.elementAt(i).getStandings().elementAt(bfs) == STANDING.ALLY ||
+					scenarioBusinesses.elementAt(i).getStandings().elementAt(bfs) == STANDING.WARM){
+					mfg.addElement(scenarioManufacturersAvailable.elementAt(bfs));
+					System.out.println("Added " + scenarioManufacturersAvailable.elementAt(bfs).getName() +
+							" with standing " + scenarioBusinesses.elementAt(i).getStandings().elementAt(bfs) + ".");
+				}
+			}
+			do{
+				if(mfg.size() == 0){
+					System.out.println("ERR: allocatedStartingCraft() mfg Vector size of 0 ... Skipping.");
+					break;
+				}
+				Random rng = new Random();
+				int m = 0;
+				if(mfg.size() > 1) m = rng.nextInt(mfg.size());
+				int c = rng.nextInt(mfg.elementAt(m).getModeslAvailable(this).size());
+				scenarioBusinesses.elementAt(i).addCraft(mfg.elementAt(m).getModeslAvailable(this).elementAt(c));
+				craftForAllocation--;
+			}while(craftForAllocation > 0);
+		}
+	}
+	
 	public void allocateStartingSlots(){
 		int slotsForAllocation = 0;
 		for(int i = 0; i < scenarioBusinesses.size(); i++){
@@ -220,16 +262,20 @@ public class Scenario implements Serializable{
 				if(scenarioDifficultyLevel == 3) slotsForAllocation = 25;
 				if(scenarioDifficultyLevel == 4) slotsForAllocation = 30;
 			}
+			//	Allocate Slots at the Businesses HQ
 			scenarioBusinesses.elementAt(i).getHQ().setSlotAllocation(i, 15);
+			
 			Vector<Location> loc = new Vector<Location>();
 			for(int l = 0; l < mapLocations.size(); l++){
 				if(mapLocations.elementAt(l).getLocationRegion() == scenarioBusinesses.elementAt(i).getHQ().getLocationRegion() && mapLocations.elementAt(l) != scenarioBusinesses.elementAt(i).getHQ()){
 					loc.addElement(mapLocations.elementAt(l));
-					System.out.println("Added " + mapLocations.elementAt(l).getID() + " to slot location possibilities!");
 				}
 			}
 			do{
-				System.out.println(slotsForAllocation);
+				if(loc.size() == 0){
+					System.out.println("ERR: allocateStartingSlots() loc Vector size of 0 ... Skipping.");
+					break;
+				}
 				if(loc.size() == 1){
 					loc.elementAt(0).setSlotAllocation(i, slotsForAllocation);
 					slotsForAllocation = 0;

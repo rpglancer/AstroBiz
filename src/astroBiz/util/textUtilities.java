@@ -217,7 +217,7 @@ public class textUtilities{
 			int y = (int)box.getY();
 			int h = (int)(box.getHeight() - box.getY());
 			int w = (int)(box.getWidth() - box.getX());
-			if(va == VALIGN.MIDDLE) y += (h - getTextHeight(g,f,text) * lc) / 2 + fm.getAscent();
+			if(va == VALIGN.MIDDLE) y += (h - getTextHeight(g,f,text) * lc) / 2 + fm.getDescent();
 			if(va == VALIGN.BOTTOM) y += h - fm.getAscent() * lc - fm.getDescent();
 			String[] words = text.split(" ");
 			String currentLine = words[0];
