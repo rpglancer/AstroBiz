@@ -106,6 +106,17 @@ public class Scenario implements Serializable{
 		return mapLocations;
 	}
 	
+	public Vector<Location> getLocationsAvailable(int region){
+		Vector<Location> available = new Vector<Location>();
+		for(int i = 0; i < mapLocations.size(); i++){
+			if(mapLocations.elementAt(i).getSlotAllocatedFor(activeBusiness) > 0 && 
+			!scenarioBusinesses.elementAt(activeBusiness).getHubs().contains(mapLocations.elementAt(i))){
+				available.addElement(mapLocations.elementAt(i));
+			}
+		}
+		return available;
+	}
+	
 	public Vector<Manufacturer> getManufacturers(){
 		return this.scenarioManufacturers;
 	}

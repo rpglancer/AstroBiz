@@ -90,6 +90,14 @@ public class Business implements Serializable {
 		return this.spaceCraftHangar;
 	}
 
+	public Location getHub(int regionID){
+		for(int i = 0; i < regionalHubs.size(); i++){
+			if(regionalHubs.elementAt(i).getLocationRegion() == regionID)
+				return regionalHubs.elementAt(i);
+		}
+		return null;
+	}
+
 	public Vector<Location> getHubs(){
 		return this.regionalHubs;
 	}

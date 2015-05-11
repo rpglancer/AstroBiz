@@ -193,9 +193,9 @@ public class AstroBiz extends Canvas implements Runnable{
 		case MENU:
 			mainMenu.render(g);
 			break;
-		case REGIONVIEW:
-			regionView.render(g);
-			break;
+//		case REGIONVIEW:
+//			regionView.render(g);
+//			break;
 //		case SCENARIOSETUP:
 //			scenarioView.render(g);
 //			break;

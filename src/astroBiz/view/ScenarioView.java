@@ -52,8 +52,8 @@ public class ScenarioView implements Manager, Serializable{
 	 *
 	 */
 	public static enum SCENARIOVIEWMODE implements VM{
-		VM_BUSI_NAME			(0),
-		VM_BUSI_NAME_SELECT		(3),	
+		VM_BUSI_NAME			(3),
+		VM_BUSI_NAME_SELECT		(0),	
 		VM_BUSI_COLOR			(3),
 		VM_BUSI_COLOR_SELECT	(2),
 		VM_BUSI_CONFIG			(2),
@@ -206,7 +206,6 @@ public class ScenarioView implements Manager, Serializable{
 				g.drawRoundRect(x+1, y+1, width-1, height-1, 8, 8);
 				g.setColor(Color.white);
 				textUtilities.drawStringCenterV(g, FontInformation.modelheader, x + 8, y, 32, ab.getScenario().getBusinesses().elementAt(i).getName());
-		//		textUtilities.drawString(g, x, y+8, ab.getScenario().getBusinesses().elementAt(i).getName(), Color.white);
 				y += height + 5;
 			}
 			if(!AstroBiz.getController().containsEntity(textWin)){
@@ -250,21 +249,21 @@ public class ScenarioView implements Manager, Serializable{
 				textUtilities.drawStringCenterV(g, FontInformation.modelheader, x + 8, y, 32, ab.getScenario().getBusinesses().elementAt(i).getName());
 				y += height + 5;
 			}
-			if(busiConfigOptions == BUSICONFIGOPTIONS.COLOR){
+			if(optionSelect == 1){
 				FontMetrics fm = g.getFontMetrics(FontInformation.modelheader);
 				int strlen = fm.stringWidth("COLOR");
 				g.setColor(Color.green);
 				textUtilities.drawStringMultiLine(g, FontInformation.modelheader, 400 - (strlen / 2), 300, strlen, "COLOR");
 				
 			}
-			if(busiConfigOptions == BUSICONFIGOPTIONS.EXIT){
+			if(optionSelect == 0){
 				FontMetrics fm = g.getFontMetrics(FontInformation.modelheader);
 				int strlen = fm.stringWidth("EXIT");
 				g.setColor(Color.green);
 				textUtilities.drawStringMultiLine(g, FontInformation.modelheader, 400 - (strlen / 2), 300, strlen, "EXIT");
 				
 			}
-			if(busiConfigOptions == BUSICONFIGOPTIONS.NAME){
+			if(optionSelect == 2){
 				FontMetrics fm = g.getFontMetrics(FontInformation.modelheader);
 				int strlen = fm.stringWidth("NAME");
 				g.setColor(Color.green);
@@ -282,10 +281,10 @@ public class ScenarioView implements Manager, Serializable{
 			g.fillRoundRect(x-8, y-8, width+16, height * 4 + 3 * 5 + 16, 16, 16);
 			g.setColor(Color.lightGray);
 			g.fillRoundRect(x-4, y-4, width+8, height * 4 + 3 * 5 + 8, 8, 8);
-			if(businessSelect == 0) g.drawImage(selectSprite, x-24, 72, null);
-			else if(businessSelect == 1) g.drawImage(selectSprite, x-24, 110, null);
-			else if(businessSelect == 2) g.drawImage(selectSprite, x-24, 148, null);
-			else if(businessSelect == 3) g.drawImage(selectSprite, x-24, 186, null);
+			if(optionSelect == 0) g.drawImage(selectSprite, x-24, 72, null);
+			else if(optionSelect == 1) g.drawImage(selectSprite, x-24, 110, null);
+			else if(optionSelect == 2) g.drawImage(selectSprite, x-24, 148, null);
+			else if(optionSelect == 3) g.drawImage(selectSprite, x-24, 186, null);
 			for(int i = 0; i < ab.getScenario().getBusinesses().size(); i++){
 				g.setColor(ab.getScenario().getBusinesses().elementAt(i).getColor());
 				g.fillRoundRect(x, y, width, height, 8, 8);
@@ -577,25 +576,6 @@ public class ScenarioView implements Manager, Serializable{
 			AstroBiz.getController().addEntity(textWin);
 		}
 	}
-
-@Deprecated	
-	private void cycleBcoNext(){
-		if(busiConfigOptions == BUSICONFIGOPTIONS.NAME)
-			busiConfigOptions = BUSICONFIGOPTIONS.EXIT;
-		else if(busiConfigOptions == BUSICONFIGOPTIONS.COLOR)
-			busiConfigOptions = BUSICONFIGOPTIONS.NAME;
-		else if(busiConfigOptions == BUSICONFIGOPTIONS.EXIT)
-			busiConfigOptions = BUSICONFIGOPTIONS.COLOR;
-	}
-@Deprecated	
-	private void cycleBcoPrev(){
-		if(busiConfigOptions == BUSICONFIGOPTIONS.NAME)
-			busiConfigOptions = BUSICONFIGOPTIONS.COLOR;
-		else if(busiConfigOptions == BUSICONFIGOPTIONS.COLOR)
-			busiConfigOptions = BUSICONFIGOPTIONS.EXIT;
-		else if(busiConfigOptions == BUSICONFIGOPTIONS.EXIT)
-			busiConfigOptions = BUSICONFIGOPTIONS.NAME;
-	}
 	
 	private void cycleOptionNext(){
 		int maxOption = scenarioViewMode.getOpt();
@@ -723,8 +703,14 @@ public class ScenarioView implements Manager, Serializable{
 			
 		case KeyEvent.VK_ESCAPE:
 			AstroBiz.getController().purge(ENTITY_TYPE.TEXT_WINDOW);
-			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR) scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_CONFIG;
-			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME) scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_CONFIG;
+			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR){
+				optionSelect = previousOption;
+				scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_CONFIG;
+			}
+			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME){
+				optionSelect = previousOption;
+				scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_CONFIG;
+			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ){
 				if(hqPlacementView == HQPLACEMENTVIEW.WORLD){
 					scenarioViewMode = SCENARIOVIEWMODE.VM_PLYR_SELECT;
@@ -763,20 +749,22 @@ public class ScenarioView implements Manager, Serializable{
 				scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_COLOR;
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_CONFIG){
-				if(busiConfigOptions == BUSICONFIGOPTIONS.COLOR) {
-					scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_COLOR;
-				}
-				else if(busiConfigOptions == BUSICONFIGOPTIONS.NAME){
-					scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_NAME;
-				}
-				else if(busiConfigOptions == BUSICONFIGOPTIONS.EXIT){
+				previousOption = optionSelect;
+				if(optionSelect == 0){
 					this.setActive(false);
 					ab.getRegion().setActive(true);
 					AstroBiz.State = STATE.REGIONVIEW;
 				}
+				else if(optionSelect == 1){
+					scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_COLOR;
+				}
+				else if(optionSelect ==2){
+					scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_NAME;
+				}		
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME){
-				businessNameBuffer = ab.getScenario().getBusinesses().elementAt(businessSelect).getName();
+				previousOption = optionSelect;
+				businessNameBuffer = ab.getScenario().getBusinesses().elementAt(optionSelect).getName();
 				scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_NAME_SELECT;
 			}
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME_SELECT){
@@ -846,13 +834,13 @@ public class ScenarioView implements Manager, Serializable{
 			resetOptionSelect();
 			break;
 		case KeyEvent.VK_LEFT:
-			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_CONFIG) cycleBcoPrev();
+			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_CONFIG) cycleOptionPrev();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT) decreaseColor();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_CONFIRM) yesNo = true;
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ) cycleOptionPrev();
 			break;
 		case KeyEvent.VK_RIGHT:
-			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_CONFIG) cycleBcoNext();
+			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_CONFIG) cycleOptionNext();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT) increaseColor();
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SCEN_CONFIRM) yesNo = false;
 			else if(scenarioViewMode == SCENARIOVIEWMODE.VM_SET_HQ) cycleOptionNext();

@@ -52,7 +52,6 @@ public class LocationView  implements Serializable{
 		g.setFont(slotfont);
 		g.drawString("Total Slots:", 64, 288);
 		g.drawString(location.getSlotAvailable() + " / " + location.getSlotTotal(), 64, 320);
-		g.dispose();
 	}
 	public void tick(){
 		// TODO: Determine if anything in the LV actually needs to tick.

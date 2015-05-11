@@ -1,5 +1,6 @@
 package astroBiz.util;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -104,13 +105,25 @@ public class textUtilities{
 		}
 		return new String(charArray);
 	}
-	
+	/**
+	 * Method to draw a String to a desired Horizontal alignment. This method is probably redundant
+	 * and could be combined with {@link #drawStringToBox(Graphics, Font, Rectangle, HALIGN, VALIGN, String)} but
+	 * it has yet to be depreciated. Nevertheless, do not rely too heavily on this method.
+	 * @param g		Graphics to be drawn to
+	 * @param f		The font to be used
+	 * @param x		The X coordinate of the text
+	 * @param y		The Y coordinate of the text
+	 * @param w		The width of the text
+	 * @param h		The height of the text
+	 * @param ha	The horizontal alignment of the text
+	 * @param text	The actual text
+	 */
 	private static void drawStringAligned(Graphics g, Font f, int x, int y, int w, int h, HALIGN ha, String text){
 		FontMetrics fm = g.getFontMetrics(f);
 		int strlen = fm.stringWidth(text);
-		if(ha == HALIGN.CENTER) x = (w/2) - (strlen / 2);
-		if(ha == HALIGN.RIGHT) x = w - strlen;
-		y+= fm.getAscent();
+		if(ha == HALIGN.CENTER) x = (x + w) - (w / 2) - (strlen / 2);
+		if(ha == HALIGN.RIGHT) x = x + w - strlen;
+		y+= fm.getAscent() - fm.getDescent();
 		Font tempf = g.getFont();
 		g.setFont(f);
 		g.drawString(text, x, y);
@@ -205,38 +218,51 @@ public class textUtilities{
 		g.setFont(oldfont);
 	}	
 	
+	/**
+	 * Method to draw a string to the inside of a Rectangle.
+	 * @param g		Graphics to be drawn to
+	 * @param f		Font to be used
+	 * @param box	Rectangle area to draw inside
+	 * @param ha	Horizontal alignment of the text
+	 * @param va	Vertical alignment of the text
+	 * @param text	Duh, the actual text.
+	 */
 	public static void drawStringToBox(Graphics g, Font f, Rectangle box, HALIGN ha, VALIGN va, String text){
-		int lc = getLineCount(g, f, (int)(box.getWidth() - box.getY()), text);
-//		g.drawString(lc + "", 790, 480);
-		if(lc == 1){
-			drawStringAligned(g, f, (int)box.getX(), (int)box.getY(), (int)(box.getWidth() - box.getX()),
-					(int)(box.getHeight() - box.getY()), ha, text);
+		int lc = getLineCount(g, f, box.x + box.width - box.x, text);
+		FontMetrics fm = g.getFontMetrics(f);
+		int y = box.y;
+		int w = box.width;
+		if(va == VALIGN.TOP) y = box.y;
+		if(va == VALIGN.MIDDLE){
+			if(lc == 1) y = (box.y + box.height / 2) - (getTextHeight(g,f,text) / 2 - fm.getDescent());
+			else y = box.y + box.height/2 - (getTextHeight(g,f,text)/2) * lc + (fm.getDescent()/2 * lc);
 		}
-		else{
-			FontMetrics fm = g.getFontMetrics(f);
-			int y = (int)box.getY();
-			int h = (int)(box.getHeight() - box.getY());
-			int w = (int)(box.getWidth() - box.getX());
-			if(va == VALIGN.MIDDLE) y += (h - getTextHeight(g,f,text) * lc) / 2 + fm.getDescent();
-			if(va == VALIGN.BOTTOM) y += h - fm.getAscent() * lc - fm.getDescent();
-			String[] words = text.split(" ");
-			String currentLine = words[0];
-			for(int i = 1; i < words.length; i++){
-				if(fm.stringWidth(currentLine + " " + words[i]) < (int)(box.getWidth() - box.getX())){
-					currentLine += " " + words[i];
-				}
-				else{
-					drawStringAligned(g, f, (int)box.getX(), y, w, fm.getHeight(), ha, currentLine);
-					y += fm.getAscent();
-					currentLine = words[i];
-				}
+		if(va == VALIGN.BOTTOM) y = box.y + box.height - getTextHeight(g,f,text) * lc + (fm.getDescent() * lc);
+		String[] words = text.split(" ");
+		String currentLine = words[0];
+		for(int i = 1; i < words.length; i++){
+			if(fm.stringWidth(currentLine + " " + words[i]) < box.x + box.width - box.x){
+				currentLine += " " + words[i];
 			}
-			if(currentLine.trim().length() > 0){
-				drawStringAligned(g,f, (int)box.getX(), y, w, fm.getHeight(), ha, currentLine);
+			else{
+				drawStringAligned(g, f, (int)box.getX(), y, w, fm.getHeight(), ha, currentLine);
+				y += fm.getAscent();
+				currentLine = words[i];
 			}
+		}
+		if(currentLine.trim().length() > 0){
+			drawStringAligned(g,f, (int)box.getX(), y, w, fm.getHeight(), ha, currentLine);
 		}
 	}
 	
+	/**
+	 * Method to determine how many lines a string will occupy given a specified width before triggering a new line.
+	 * @param g
+	 * @param f				Font being used by the text
+	 * @param lineWidth		Width of a line before triggering a new line
+	 * @param text			The text
+	 * @return				The total number of lines the text will occupy
+	 */
 	public static int getLineCount(Graphics g, Font f, int lineWidth, String text){
 		int count = 1;
 		FontMetrics m = g.getFontMetrics(f);
@@ -246,7 +272,7 @@ public class textUtilities{
 			String currentLine = words[0];
 			for(int i = 1; i < words.length; i++){
 				if(m.stringWidth(currentLine + " " + words[i]) < lineWidth){
-					currentLine += words[i];
+					currentLine += " " + words[i];
 				}
 				else{
 					count++;
@@ -254,12 +280,19 @@ public class textUtilities{
 				}
 			}
 			if(currentLine.trim().length() > 0){
-			//	count++;
+				
 			}
 		}
 		return count;
 	}
 	
+	/**
+	 * Method to determine precisely the height of a given String.
+	 * @param g		
+	 * @param f		Font being used by the text
+	 * @param text	The text
+	 * @return		The height value of a String's bounds.
+	 */
 	public static int getTextHeight(Graphics g, Font f, String text){
 		Graphics temp = g.create(0, 0, 800, 480);
 		FontMetrics m = g.getFontMetrics(f);
