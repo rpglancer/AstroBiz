@@ -28,7 +28,7 @@ public class TextWindow implements Entity {
 	private String text = "";
 	private String textOutput = "";
 	
-	public TextWindow(int x, int y, int width, int height, String text, boolean doestick){
+	public TextWindow(String text, int x, int y, int width, int height, boolean doestick){
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -57,6 +57,14 @@ public class TextWindow implements Entity {
 		this.hasSprite = true;
 	}
 
+	public void updateText(String text){
+		this.text = text;
+		if(doesTick)
+			textOutput = "";
+		else
+			textOutput = text;
+	}
+	
 	@Override
 	public void tick() {
 		if(doesTick){

@@ -278,7 +278,7 @@ public class Scenario implements Serializable{
 			
 			Vector<Location> loc = new Vector<Location>();
 			for(int l = 0; l < mapLocations.size(); l++){
-				if(mapLocations.elementAt(l).getLocationRegion() == scenarioBusinesses.elementAt(i).getHQ().getLocationRegion() && mapLocations.elementAt(l) != scenarioBusinesses.elementAt(i).getHQ()){
+				if(mapLocations.elementAt(l).getRegion() == scenarioBusinesses.elementAt(i).getHQ().getRegion() && mapLocations.elementAt(l) != scenarioBusinesses.elementAt(i).getHQ()){
 					loc.addElement(mapLocations.elementAt(l));
 				}
 			}

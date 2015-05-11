@@ -24,7 +24,7 @@ public class LocationView  implements Serializable{
 		Font fnt1 = new Font("arial", Font.BOLD, 25);
 		g.setFont(fnt1);
 		g.setColor(Color.WHITE);
-		textUtilities.drawStringMultiLine(g, FontInformation.modelheader, 160, 80, 500, location.getLocationName());
+		textUtilities.drawStringMultiLine(g, FontInformation.modelheader, 160, 80, 500, location.getName());
 		g.setColor(Color.BLACK);				// Exit X Button
 		g.fillRect(736, 32, 32, 32);			// Exit X Button
 		g.setColor(Color.WHITE);				// Exit X Button

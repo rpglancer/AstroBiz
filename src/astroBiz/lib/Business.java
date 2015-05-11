@@ -92,7 +92,7 @@ public class Business implements Serializable {
 
 	public Location getHub(int regionID){
 		for(int i = 0; i < regionalHubs.size(); i++){
-			if(regionalHubs.elementAt(i).getLocationRegion() == regionID)
+			if(regionalHubs.elementAt(i).getRegion() == regionID)
 				return regionalHubs.elementAt(i);
 		}
 		return null;
@@ -132,7 +132,7 @@ public class Business implements Serializable {
 	
 	public boolean regionContainsHub(int regionID){
 		for(int i = 0; i < regionalHubs.size(); i++){
-			if(regionalHubs.elementAt(i).getLocationRegion() == regionID) return true;
+			if(regionalHubs.elementAt(i).getRegion() == regionID) return true;
 		}
 		return false;
 	}
@@ -146,11 +146,11 @@ public class Business implements Serializable {
 	}
 	
 	public void setHQ(Location hq){
-		this.businessName = hq.getLocationName() + " Airlines";
+		this.businessName = hq.getName() + " Airlines";
 		if(this.regionalHubs == null) this.regionalHubs = new Vector<Location>();
 		this.regionalHubs.addElement(hq);
 		this.headQuarters = hq;
-		affiliation = hq.getOwner();
+		affiliation = hq.getFaction();
 		for(int i = 0; i < FACTION.values().length; i++){
 			standings.addElement(affiliation.getStanding(i));
 		}

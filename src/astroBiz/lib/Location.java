@@ -24,25 +24,25 @@ public class Location implements Serializable{
 	private Business isHqOf = null;
 	private Business isHubOf = null;
 	
+	private double au;
 	private double population;
 	
-	private int locationDemandBusiness;				// The location's demand for business [0 - 255]
-	private int locationDemandTourism;				// The location's demand for tourism  [0 - 255]
-	private int locationDemandIndustry;				// The location's demand for industry [0 - 255]
-	private int locationDevelopment;				// The location's developmental level [0 - 255]
-	private int locationRegion;						// The region at which this location is situated
-	private int[] slotAllocated = {0,0,0,0};		// The number of slots allocated to businesses
-	private int locationSlotCost;					// The cost per slot to lease an available slot
-	private int slotTotal;							// The location's total slots
-	private int locationX;							// The X coordinate of the location
-	private int locationY;							// The Y coordinate of the location
+	private int demandBusi;						// The location's demand for business [0 - 255]
+	private int demandTour;						// The location's demand for tourism  [0 - 255]
+	private int demandInd;						// The location's demand for industry [0 - 255]
+	private int region;							// The region at which this location is situated
+	private int[] slotAllocated = {0,0,0,0};	// The number of slots allocated to businesses
+	private int slotCost;						// The cost per slot to lease an available slot
+	private int slotTotal;						// The location's total slots
+	private int x;								// The X coordinate of the location
+	private int y;								// The Y coordinate of the location
 	
-	private FACILITY facilityType = FACILITY.PORT_CITY;
-	private Faction owner;
-	private LOCATIONTYPE locationType = LOCATIONTYPE.LT_TOWN;
+	private FACILITY facility = FACILITY.PORT_CITY;
+	private Faction faction;
+	private LOCATIONTYPE type = LOCATIONTYPE.LT_TOWN;
 	
-	private String locationName;					// The location's name.
-	private String locationID;
+	private String name;					// The location's name.
+	private String id;
 	
 	private static SpriteSheet spritesheet = AstroBiz.regionSprites;
 
@@ -52,43 +52,61 @@ public class Location implements Serializable{
 	}
 	
 	public Location(LOCINFO li, Scenario s){
-		this.locationName = li.getName();
-		this.locationID = li.getID();
-		this.locationRegion = li.getRegion();
-		this.locationDemandBusiness =  li.getDemandBusiness();
-		this.locationDemandIndustry = li.getDemandIndustry();
-		this.locationDemandTourism = li.getDemandTourism();
-		this.locationX = li.getX();
-		this.locationY = li.getY();
+		name = li.getName();
+		id = li.getID();
+		region = li.getRegion();
+		demandBusi =  li.getDemandBusiness();
+		demandInd = li.getDemandIndustry();
+		demandTour = li.getDemandTourism();
+		x = li.getX();
+		y = li.getY();
+		if(region == 0)
+			au = 0.25;
+		if(region == 1)
+			au = 0.5;
+		if(region == 2)
+			au = 1.0;
+		if(region == 3)
+			au = 1.002;
+		if(region == 4)
+			au = 2.0;
+		if(region == 5)
+			au = 8.0;
+		if(region == 6)
+			au = 16.0;
+		if(region == 7)
+			au = 32.0;
+		if(region == 8)
+			au = 64.0;
 		this.population = li.getPopulation();
-		if(this.population > 1.0) locationType = LOCATIONTYPE.LT_CITY;
-		if(population > 5.0) facilityType = FACILITY.PORT_REGION;
-		else if(population > 2.5) facilityType = FACILITY.PORT_METRO;
-		slotTotal = facilityType.getSlots();
+		if(this.population > 1.0) type = LOCATIONTYPE.LT_CITY;
+		if(population > 5.0) facility = FACILITY.PORT_REGION;
+		else if(population > 2.5) facility = FACILITY.PORT_METRO;
+		slotTotal = facility.getSlots();
 		switch(li.getOwner()){
 		case FAC00:
-			owner = s.getFactions().elementAt(0);
+			faction = s.getFactions().elementAt(0);
 			break;
 		case FAC01:
-			owner = s.getFactions().elementAt(1);
+			faction = s.getFactions().elementAt(1);
 			break;
 		case FAC02:
-			owner = s.getFactions().elementAt(2);
+			faction = s.getFactions().elementAt(2);
 			break;
 		case FAC03:
-			owner = s.getFactions().elementAt(3);
+			faction = s.getFactions().elementAt(3);
 			break;
 		case FAC04:
-			owner = s.getFactions().elementAt(4);
+			faction = s.getFactions().elementAt(4);
 			break;
 		case FAC05:
-			owner = s.getFactions().elementAt(5);
+			faction = s.getFactions().elementAt(5);
 			break;
 		case FAC06:
-			owner = s.getFactions().elementAt(6);
+			faction = s.getFactions().elementAt(6);
 			break;
 		case FAC07:
-			owner = s.getFactions().elementAt(7);
+			faction = s.getFactions().elementAt(7);
 			break;
 		}
 	}
@@ -99,36 +117,36 @@ public class Location implements Serializable{
 			if(this == s.getBusinesses().elementAt(s.getActiveBusiness()).getHubs().elementAt(i)) return Location.spritesheet.grabImage(5, 1, 16, 16);
 		}
 		for(int i = 0; i < s.getBusinesses().elementAt(s.getActiveBusiness()).getRoutes().size(); i++){
-			if(this == s.getBusinesses().elementAt(s.getActiveBusiness()).getRoutes().elementAt(i).getRouteDestination() && this.locationType == LOCATIONTYPE.LT_CITY){
+			if(this == s.getBusinesses().elementAt(s.getActiveBusiness()).getRoutes().elementAt(i).getRouteDestination() && type == LOCATIONTYPE.LT_CITY){
 				return Location.spritesheet.grabImage(4, 1, 16, 16);
 			}
-			else if(this == s.getBusinesses().elementAt(s.getActiveBusiness()).getRoutes().elementAt(i).getRouteDestination() && this.locationType == LOCATIONTYPE.LT_TOWN){
+			else if(this == s.getBusinesses().elementAt(s.getActiveBusiness()).getRoutes().elementAt(i).getRouteDestination() && type == LOCATIONTYPE.LT_TOWN){
 				return Location.spritesheet.grabImage(2, 1, 16, 16);
 			}
 		}
-		if(this.locationType == LOCATIONTYPE.LT_TOWN) return Location.spritesheet.grabImage(1, 1, 16, 16);
-		if(this.locationType == LOCATIONTYPE.LT_CITY) return Location.spritesheet.grabImage(3, 1, 16, 16);
+		if(type == LOCATIONTYPE.LT_TOWN) return Location.spritesheet.grabImage(1, 1, 16, 16);
+		if(type == LOCATIONTYPE.LT_CITY) return Location.spritesheet.grabImage(3, 1, 16, 16);
 		return Location.spritesheet.grabImage(1, 1, 16, 16);
 	}
 
-	public int getLocationDemandBusiness(){
-		return locationDemandBusiness;
+	public int getDemandBusi(){
+		return demandBusi;
 	}
 
-	public int getLocationDemandTourism(){
-		return locationDemandTourism;
+	public int getDemandTour(){
+		return demandTour;
 	}
 
-	public int getLocationDemandIndustry(){
-		return locationDemandIndustry;
+	public int getDemandInd(){
+		return demandInd;
 	}
-
-	public int getLocationDevelopment(){
-		return locationDevelopment;
+	
+	public double getAU(){
+		return au;
 	}
 
 	public String getID(){
-		return this.locationID;
+		return id;
 	}
 	
 	public boolean getLocationIsHub(){
@@ -136,12 +154,12 @@ public class Location implements Serializable{
 		return false;
 	}
 	
-	public String getLocationName(){
-		return locationName;
+	public String getName(){
+		return name;
 	}	
 
-	public Faction getOwner(){
-		return owner;
+	public Faction getFaction(){
+		return faction;
 	}
 	
 	public double getPopulation(){
@@ -160,8 +178,8 @@ public class Location implements Serializable{
 		return slotAllocated[business];
 	}
 	
-	public int getLocationSlotCost(){
-		return locationSlotCost;
+	public int getSlotCost(){
+		return slotCost;
 	}
 
 	public int getSlotTotal(){
@@ -169,32 +187,29 @@ public class Location implements Serializable{
 	}
 
 	public LOCATIONTYPE getLocationType(){
-		return this.locationType;
+		return type;
 	}
 	
-	public int getLocationX(){
-		return locationX;
+	public int getX(){
+		return x;
 	}	
 
-	public int getLocationY(){
-		return locationY;
+	public int getY(){
+		return y;
 	}
 	
-	public int getLocationRegion(){
-		return this.locationRegion;
+	public int getRegion(){
+		return region;
 	}
 	
-	void setLocationDemandBusiness(int demand){
-		locationDemandBusiness = demand;
+	void setDemandBusi(int demand){
+		demandBusi = demand;
 	}
-	void setLocationDemandTourism(int demand){
-		locationDemandTourism = demand;
+	void setDemandTour(int demand){
+		demandTour = demand;
 	}
-	void setLocationDemandIndustry(int demand){
-		locationDemandIndustry = demand;
-	}
-	void setLocationDevelopment(int dev){
-		locationDevelopment = dev;
+	void setDemandInd(int demand){
+		demandInd = demand;
 	}
 	public void setHub(Business b){
 		isHubOf = b;
@@ -209,22 +224,22 @@ public class Location implements Serializable{
 		this.isHub[business] = tf;
 	}
 	
-	void setLocationName(String name){
-		locationName = name;
+	void setName(String name){
+		this.name = name;
 	}
 
 	void setLocationSlotCost(int cost){
-		locationSlotCost = cost;
+		slotCost = cost;
 	}
 	void setLocationSlotTotal(int slot){
 		slotTotal = slot;
 	}
 	
-	void setLocationX(int x){
-		locationX = x;
+	void setX(int x){
+		this.x = x;
 	}
-	void setLocationY(int y){
-		locationY = y;
+	void setY(int y){
+		this.y = y;
 	}
 	
 	void setSlotAllocation(int business, int amount){

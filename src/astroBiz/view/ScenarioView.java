@@ -414,28 +414,28 @@ public class ScenarioView implements Manager, Serializable{
 			g.drawImage(region, 32, 32, null);
 			for(int i = 0; i < this.availableHqLocations.size(); i++){
 				g.drawImage(this.availableHqLocations.elementAt(i).getSprite(ab.getScenario()), 
-							this.availableHqLocations.elementAt(i).getLocationX(), 
-							this.availableHqLocations.elementAt(i).getLocationY(), 
+							this.availableHqLocations.elementAt(i).getX(), 
+							this.availableHqLocations.elementAt(i).getY(), 
 							null);
 			}
 			
 			g.setColor(Color.green);
 			g.setFont(FontInformation.regionselect);
 			if(this.availableHqLocations.size() > 0){
-				g.drawString(this.availableHqLocations.elementAt(optionSelect).getLocationName(),
-							this.availableHqLocations.elementAt(optionSelect).getLocationX() + 16,
-							this.availableHqLocations.elementAt(optionSelect).getLocationY() + 16);
+				g.drawString(this.availableHqLocations.elementAt(optionSelect).getName(),
+							this.availableHqLocations.elementAt(optionSelect).getX() + 16,
+							this.availableHqLocations.elementAt(optionSelect).getY() + 16);
 				
-				g.drawString(this.availableHqLocations.elementAt(optionSelect).getOwner().getName(),
-						this.availableHqLocations.elementAt(optionSelect).getLocationX() + 16,
-						this.availableHqLocations.elementAt(optionSelect).getLocationY() + 24);
+				g.drawString(this.availableHqLocations.elementAt(optionSelect).getFaction().getName(),
+						this.availableHqLocations.elementAt(optionSelect).getX() + 16,
+						this.availableHqLocations.elementAt(optionSelect).getY() + 24);
 				
 				g.drawString("Pop: " + this.availableHqLocations.elementAt(optionSelect).getPopulation()+"M",
-						this.availableHqLocations.elementAt(optionSelect).getLocationX() + 16,
-						this.availableHqLocations.elementAt(optionSelect).getLocationY() + 32);
+						this.availableHqLocations.elementAt(optionSelect).getX() + 16,
+						this.availableHqLocations.elementAt(optionSelect).getY() + 32);
 				
-				g.drawOval(this.availableHqLocations.elementAt(optionSelect).getLocationX(),
-							this.availableHqLocations.elementAt(optionSelect).getLocationY(),
+				g.drawOval(this.availableHqLocations.elementAt(optionSelect).getX(),
+							this.availableHqLocations.elementAt(optionSelect).getY(),
 							16, 16);
 			}
 			
@@ -871,7 +871,7 @@ public class ScenarioView implements Manager, Serializable{
 			this.availableHqLocations.clear();
 		}
 		for(int i = 0; i < v.size(); i++){
-			if(v.elementAt(i).getLocationRegion() == optionSelect &&
+			if(v.elementAt(i).getRegion() == optionSelect &&
 				!v.elementAt(i).getLocationIsHub() &&
 				v.elementAt(i).getLocationType() == LOCATIONTYPE.LT_CITY){
 				this.availableHqLocations.addElement(v.elementAt(i));
