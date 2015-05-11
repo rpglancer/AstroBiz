@@ -573,7 +573,17 @@ public class RegionView implements Manager, Serializable{
 		Rectangle r = new Rectangle(64,320,672,128);
 		g.setColor(Color.gray);
 		textUtilities.drawStringToBox(g, FontInformation.modelheader, r, HALIGN.LEFT, VALIGN.TOP, "["+hub.getID()+"] " + hub.getName());
-		textUtilities.drawStringToBox(g, FontInformation.modelheader, r, HALIGN.CENTER, VALIGN.TOP, "<-- "+ route.calcDistance(hub, loc) + "AU" + " -->");
+		double distance = 0;
+		String s = "";
+		if(route.calcDistance(hub, loc) < 150000000 * 0.001){
+			distance = (int)(route.calcDistance(hub, loc) * 150000000);
+			s = "<-- " + distance + "KM" + " -->";
+		}
+		else{
+			distance = route.calcDistance(hub, loc);
+			s = "<-- " + distance + "AU" + " -->";
+		}		
+		textUtilities.drawStringToBox(g, FontInformation.modelheader, r, HALIGN.CENTER, VALIGN.TOP, s);
 		textUtilities.drawStringToBox(g, FontInformation.modelheader, r, HALIGN.RIGHT, VALIGN.TOP, "["+loc.getID()+"] " + loc.getName());
 		
 		textUtilities.drawStringToBox(g, FontInformation.modelheader, r, HALIGN.CENTER, VALIGN.MIDDLE, "Cost: " + route.calcCostToOpen(hub, loc, busi) + "K");
