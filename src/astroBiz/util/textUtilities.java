@@ -1,6 +1,5 @@
 package astroBiz.util;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -17,7 +16,6 @@ import astroBiz.lib.SpriteSheet;
 
 /**
  * All non-standard methods for doing things to Strings go in this class.
- * <br>Now also contains methods to draw sprite based text.
  * @author Matt Bangert
  *
  */

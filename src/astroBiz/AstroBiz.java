@@ -35,10 +35,7 @@ public class AstroBiz extends Canvas implements Runnable{
 	};	
 	public static final int WIDTH = 800;
 	public static final int HEIGHT = 480;
-	public static final int VERSION = 0;
-	public static final int MAJOR = 0;
-	public static final int MINOR = 3;
-	public static final int PATCH = 0;
+	
 	public static SpriteSheet employeeSprites = null;
 	public static SpriteSheet factionFlags = null;
 	public static SpriteSheet regionButtons = null;
@@ -57,12 +54,42 @@ public class AstroBiz extends Canvas implements Runnable{
 	private Scenario activeScenario;
 	private ScenarioView scenarioView = null;
 	private Thread thread;
-	
-	private final String TITLE = "AstroBiz Prototype version " + VERSION + "." + MAJOR + "." + MINOR + "." + PATCH;
 
-	private static final long serialVersionUID = 1477754103243231171L;
 	private static Controller c = new Controller();
+	private static final int VERSION = 0;
+	private static final int MAJOR = 0;
+	private static final int MINOR = 3;
+	private static final int PATCH = 0;
+	private static final long serialVersionUID = 1477754103243231171L;
+	private static final String TITLE = "AstroBiz Prototype version " + VERSION + "." + MAJOR + "." + MINOR + "." + PATCH;
 	
+    public static byte[] serialize(Object obj) throws IOException {
+        ByteArrayOutputStream b = new ByteArrayOutputStream();
+        ObjectOutputStream o = new ObjectOutputStream(b);
+        o.writeObject(obj);
+        return b.toByteArray();
+    }
+	
+	public static Controller getController(){
+		return AstroBiz.c;
+	}
+    
+	public LocationView getLocationView(){
+		return this.locationView;
+	}
+	
+	public MainMenu getMainMenu(){
+		return this.mainMenu;
+	}
+	
+	public RegionView getRegion(){
+		return this.regionView;
+	}
+
+	public Scenario getScenario(){
+		return this.activeScenario;
+	}
+    
 	public void init(){
 		BufferedImageLoader loader = new BufferedImageLoader();
 		try{
@@ -95,122 +122,6 @@ public class AstroBiz extends Canvas implements Runnable{
 		scenarioView = new ScenarioView(this);	
 		c.addEntity(regionView);
 		c.addEntity(scenarioView);
-	}
-	
-    public static byte[] serialize(Object obj) throws IOException {
-        ByteArrayOutputStream b = new ByteArrayOutputStream();
-        ObjectOutputStream o = new ObjectOutputStream(b);
-        o.writeObject(obj);
-        return b.toByteArray();
-    }
-    
-    public void save(){
-    	try{
-    		byte data[] = serialize(activeScenario.getLocations());
-    		FileOutputStream out = new FileOutputStream("test.sav");
-    		out.write(data);
-    		out.close();
-    	}catch(IOException e){
-    		e.printStackTrace();
-    	}
-    }
-	
-	private synchronized void start(){
-		if(running){
-			return;
-		}
-		running = true;
-		thread = new Thread(this);
-		thread.start();
-	}
-	
-	private synchronized void stop(){
-		if(!running){
-			return;
-		}
-		running = false;
-		try {
-			thread.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		System.exit(1);
-	}
-	
-	public void run(){
-		init();
-		long lastTime = System.nanoTime();
-		final double amountOfTicks = 30.0;			//	Keep @ 30 for now, no need to run 60fps, may drop lower.
-		double ns = 1000000000 / amountOfTicks;
-		double delta = 0;
-		long timer = System.currentTimeMillis();
-		
-		while(running){
-			long now = System.nanoTime();
-			delta += (now - lastTime) / ns;
-			lastTime = now;
-			if(delta >= 1){
-				tick();
-				render();		// Tick Limited FPS
-				delta--;
-			}
-			if(System.currentTimeMillis() - timer > 1000){
-				timer += 1000;
-			}
-		}
-		stop();
-	}
-	
-	private void tick(){
-		switch(State){
-		case MENU:
-			break;
-		case LOCATIONVIEW:
-			break;
-		case REGIONVIEW:
-			if(scenarioView != null) scenarioView = null;
-			regionView.tick();
-			break;
-		case SCENARIOSETUP:
-			scenarioView.tick();
-			break;
-		default:
-			break;
-		}
-		c.tick();
-		// Everything updated in the game world is updated on a tick?
-	}
-	
-	private void render(){
-		BufferStrategy bs = this.getBufferStrategy();
-		if(bs == null){
-			createBufferStrategy(3);
-			return;
-		}
-		Graphics g = bs.getDrawGraphics();
-		
-		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
-
-		switch(State){
-		case LOCATIONVIEW:
-			locationView.render(g, this);
-			break;
-		case MENU:
-			mainMenu.render(g);
-			break;
-//		case REGIONVIEW:
-//			regionView.render(g);
-//			break;
-//		case SCENARIOSETUP:
-//			scenarioView.render(g);
-//			break;
-		default:
-			break;
-		}
-		c.render(g);
-		
-		g.dispose();
-		bs.show();
 	}
 	
 	public void keyPressed(KeyEvent e){
@@ -258,10 +169,9 @@ public class AstroBiz extends Canvas implements Runnable{
 		switch(key){
 		default:
 			break;
-		}
-		
+		}	
 	}
-	
+
 	public static void main(String[] args){
 		AstroBiz astrobiz = new AstroBiz();
 		
@@ -271,7 +181,7 @@ public class AstroBiz extends Canvas implements Runnable{
 		astrobiz.setFocusable(true);
 		astrobiz.requestFocus();
 		
-		JFrame frame = new JFrame(astrobiz.TITLE);
+		JFrame frame = new JFrame(TITLE);
 		
 		frame.add(astrobiz);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -281,28 +191,112 @@ public class AstroBiz extends Canvas implements Runnable{
 		frame.setVisible(true);
 		astrobiz.start();
 	}
-
-	public static Controller getController(){
-		return AstroBiz.c;
-	}
+	
+	public void run(){
+		init();
+		long lastTime = System.nanoTime();
+		final double amountOfTicks = 30.0;			//	Keep @ 30 for now, no need to run 60fps, may drop lower.
+		double ns = 1000000000 / amountOfTicks;
+		double delta = 0;
+		long timer = System.currentTimeMillis();
 		
-	public LocationView getLocationView(){
-		return this.locationView;
+		while(running){
+			long now = System.nanoTime();
+			delta += (now - lastTime) / ns;
+			lastTime = now;
+			if(delta >= 1){
+				tick();
+				render();		// Tick Limited FPS
+				delta--;
+			}
+			if(System.currentTimeMillis() - timer > 1000){
+				timer += 1000;
+			}
+		}
+		stop();
 	}
-	
-	public MainMenu getMainMenu(){
-		return this.mainMenu;
-	}
-	
-	public RegionView getRegion(){
-		return this.regionView;
-	}
+  
+	private void render(){
+		BufferStrategy bs = this.getBufferStrategy();
+		if(bs == null){
+			createBufferStrategy(3);
+			return;
+		}
+		Graphics g = bs.getDrawGraphics();
+		
+		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
 
-	public Scenario getScenario(){
-		return this.activeScenario;
+		switch(State){
+		case LOCATIONVIEW:
+			locationView.render(g, this);
+			break;
+		case MENU:
+			mainMenu.render(g);
+			break;
+		default:
+			break;
+		}
+		c.render(g);
+		
+		g.dispose();
+		bs.show();
 	}
 	
 	public void setScenario(Scenario scenario){
 		activeScenario = scenario;
 	}
+
+	public void save(){
+    	try{
+    		byte data[] = serialize(activeScenario.getLocations());
+    		FileOutputStream out = new FileOutputStream("test.sav");
+    		out.write(data);
+    		out.close();
+    	}catch(IOException e){
+    		e.printStackTrace();
+    	}
+    }
+	
+	private void tick(){
+		switch(State){
+		case MENU:
+			break;
+		case LOCATIONVIEW:
+			break;
+		case REGIONVIEW:
+			if(scenarioView != null) scenarioView = null;
+			regionView.tick();
+			break;
+		case SCENARIOSETUP:
+			scenarioView.tick();
+			break;
+		default:
+			break;
+		}
+		c.tick();
+		// Everything updated in the game world is updated on a tick?
+	}
+		
+	private synchronized void start(){
+		if(running){
+			return;
+		}
+		running = true;
+		thread = new Thread(this);
+		thread.start();
+	}
+	
+	private synchronized void stop(){
+		if(!running){
+			return;
+		}
+		running = false;
+		try {
+			thread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		System.exit(1);
+	}
+	
 }

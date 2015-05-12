@@ -2,7 +2,7 @@ package astroBiz.info;
 
 public enum MFGINFO {
 	DEVCO 	("Developer Corporation", 		"DCO", FACTION.FAC00, 2200, 2300, 128, 128),
-	GRUNDER ("Grunder Heavy Industries AG",	"GHI", FACTION.FAC00, 2200, 2250, 240, 64),
+	GRUNDER ("Grunder Heavy Industries AG",	"GHI", FACTION.FAC01, 2200, 2250, 240, 64),
 	SOKOLOV ("Sokolov Design Bureau", 		"SDB", FACTION.FAC00, 2200, 2225, 64, 296);
 	
 	private final String name;

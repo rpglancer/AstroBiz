@@ -891,6 +891,8 @@ public class RegionView implements Manager, Serializable{
 		else if(regionVm == REGIONVM.VM_BUY_SELECT_MODEL){
 			selectedSpaceCraft = selectedManufacturer.getModeslAvailable(scenario).elementAt(selectedOption);
 			c.setConfirmVM(this, REGIONVM.VM_BUY_SELECT_MODEL, REGIONVM.VM_BUY_SELECT_QTY, AstroBiz.employeeSprites.grabImage(1, 1, 128, 128), selectedSpaceCraft.getDesc());
+			c.setActive(true);
+			AstroBiz.getController().addEntity(c);
 			resetSelectedOpt();
 		}
 		else if(regionVm == REGIONVM.VM_BUY_SELECT_QTY){

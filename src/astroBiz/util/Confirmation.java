@@ -13,50 +13,65 @@ import astroBiz.view.Manager;
 import astroBiz.view.VM;
 
 public class Confirmation implements Entity{
+
 	private static final int confW = 64;
 	private static final int confH = 32;
 	
+	private Boolean isActive = false;
+	private Boolean withCoords = false;
+	private Boolean withText = false;
+	
+	private byte opt = 0;
+	/**
+	 * The coordinates to which the Confirmation selection boxes will be drawn provided a {@link #withCoords} value of true.
+	 */
+	private int x, y;
+	private BufferedImage sprite = null;
 	/**
 	 * The Manager from which the Confirmation was requested and for which the VM is changed based upon Confirmation outcome.
 	 */
 	private Manager manager;
 	/**
-	 * The VM to which the Manager will resume upon a negative confirmation.
-	 */
-	private VM prev;
-	/**
 	 * The VM to which the Manager will proceed upon a positive confirmation.
 	 */
 	private VM next;
-	private BufferedImage sprite = null;
-	private String text = null;
 	/**
-	 * The coordinates to which the Confirmation selection boxes will be drawn provided a {@link #withCoords} value of true.
+	 * The VM to which the Manager will resume upon a negative confirmation.
 	 */
-	int x, y;
-	private byte opt = 0;
-	private Boolean isActive = false;
-//	private Boolean doesTick = false;
-	private Boolean withCoords = false;
-	private Boolean withText = false;
+	private VM prev;
+	private String text = null;
 	
 	ENTITY_TYPE type = ENTITY_TYPE.CONFIRMATION;
+
+	/**
+	 * Allows Managers to determine whether a Confirmation is currently taking place or not.
+	 * @return {@link #isActive}
+	 */
+	public boolean getIsActive(){
+		return this.isActive;
+	}
+	
+	public void keyAction(KeyEvent e){
+		switch(e.getKeyCode()){
+		case KeyEvent.VK_LEFT:
+			opt = 0;
+			break;
+		case KeyEvent.VK_RIGHT:
+			opt = 1;
+			break;
+		case KeyEvent.VK_ENTER:
+			confirmOption();
+			break;
+		}
+	}
 
 	public void render(Graphics g){
 		if(withText){
 			if(!AstroBiz.textWin.isActive()){
+				AstroBiz.textWin.updateSprite(sprite);
 				AstroBiz.textWin.updateText(text);
 				AstroBiz.textWin.setActive(true);
-				
-//			if(!textWin.isActive()){
-//				textWin.updateText(text);
-//				textWin.setActive(true);
 			}
-			
-		//	if(!AstroBiz.getController().containsEntity(textWin)){
-		//		textWin = new TextWindow(text, this.sprite);
-		//		AstroBiz.getController().addEntity(textWin);
-		//	}
 		}
 		
 		g.setFont(FontInformation.confirm);
@@ -107,19 +122,6 @@ public class Confirmation implements Entity{
 			}
 		}
 	}
-
-	private void confirmOption(){
-		if(opt == 0){
-			isActive = false;
-			manager.setVM(next);
-			this.flush();
-		}
-		else{
-			isActive = false;
-			manager.setVM(prev);
-			this.flush();
-		}
-	}
 	
 	/**
 	 * Method sets the requisite options for Confirmation.
@@ -157,13 +159,19 @@ public class Confirmation implements Entity{
 		this.isActive = true;
 	}
 	
-	/**
-	 * Allows Managers to determine whether a Confirmation is currently taking place or not.
-	 * @return {@link #isActive}
-	 */
-	public boolean getIsActive(){
-		return this.isActive;
+	private void confirmOption(){
+		if(opt == 0){
+			isActive = false;
+			manager.setVM(next);
+			this.flush();
+		}
+		else{
+			isActive = false;
+			manager.setVM(prev);
+			this.flush();
+		}
 	}
+	
 	/**
 	 * Resets the Confirmation to default values.
 	 */
@@ -181,23 +189,8 @@ public class Confirmation implements Entity{
 		this.withText = false;
 		AstroBiz.getController().purge(ENTITY_TYPE.CONFIRMATION);
 		AstroBiz.textWin.setActive(false);
-//		AstroBiz.getController().purge(ENTITY_TYPE.TEXT_WINDOW);
 	}
 	
-	public void keyAction(KeyEvent e){
-		switch(e.getKeyCode()){
-		case KeyEvent.VK_LEFT:
-			opt = 0;
-			break;
-		case KeyEvent.VK_RIGHT:
-			opt = 1;
-			break;
-		case KeyEvent.VK_ENTER:
-			confirmOption();
-			break;
-		}
-	}
-
 	@Override
 	public boolean isActive() {
 		return isActive;

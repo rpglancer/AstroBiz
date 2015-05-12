@@ -236,12 +236,18 @@ public class Scenario implements Serializable{
 			System.out.println("Allocation: " + craftForAllocation);
 			
 			Vector<Manufacturer> mfg = new Vector<Manufacturer>();
-			for(int bfs = 0; bfs < scenarioBusinesses.elementAt(i).getStandings().size(); bfs++){
-				if(scenarioBusinesses.elementAt(i).getStandings().elementAt(bfs) == STANDING.ALLY ||
-					scenarioBusinesses.elementAt(i).getStandings().elementAt(bfs) == STANDING.WARM){
-					mfg.addElement(scenarioManufacturersAvailable.elementAt(bfs));
-					System.out.println("Added " + scenarioManufacturersAvailable.elementAt(bfs).getName() +
-							" with standing " + scenarioBusinesses.elementAt(i).getStandings().elementAt(bfs) + ".");
+			for(int m = 0; m < scenarioManufacturersAvailable.size(); m++){
+				Business busi = scenarioBusinesses.elementAt(i);
+				Manufacturer man = scenarioManufacturersAvailable.elementAt(m);
+				if(busi.getStandings().elementAt(man.getAffiliation().getfID()) == STANDING.ALLY ||
+				busi.getStandings().elementAt(man.getAffiliation().getfID()) == STANDING.WARM){
+					if(man.getModeslAvailable(this).size() > 0){
+						mfg.addElement(man);
+						System.out.println("Added " + man.getName() + " with standing " + busi.getStandings().elementAt(man.getAffiliation().getfID()));
+					}
+					else{
+						System.out.println("WARN: Manufacturer " + man + " is available but has 0 SpaceCraft available.");
+					}
 				}
 			}
 			do{
