@@ -9,7 +9,6 @@ import astroBiz.AstroBiz;
 import astroBiz.info.ENTITY_TYPE;
 import astroBiz.info.FontInformation;
 import astroBiz.lib.Entity;
-import astroBiz.lib.TextWindow;
 import astroBiz.view.Manager;
 import astroBiz.view.VM;
 
@@ -21,7 +20,6 @@ public class Confirmation implements Entity{
 	 * The Manager from which the Confirmation was requested and for which the VM is changed based upon Confirmation outcome.
 	 */
 	private Manager manager;
-	private TextWindow textWin;
 	/**
 	 * The VM to which the Manager will resume upon a negative confirmation.
 	 */
@@ -46,10 +44,19 @@ public class Confirmation implements Entity{
 
 	public void render(Graphics g){
 		if(withText){
-			if(!AstroBiz.getController().containsEntity(textWin)){
-				textWin = new TextWindow(text, this.sprite);
-				AstroBiz.getController().addEntity(textWin);
+			if(!AstroBiz.textWin.isActive()){
+				AstroBiz.textWin.updateText(text);
+				AstroBiz.textWin.setActive(true);
+				
+//			if(!textWin.isActive()){
+//				textWin.updateText(text);
+//				textWin.setActive(true);
 			}
+			
+		//	if(!AstroBiz.getController().containsEntity(textWin)){
+		//		textWin = new TextWindow(text, this.sprite);
+		//		AstroBiz.getController().addEntity(textWin);
+		//	}
 		}
 		
 		g.setFont(FontInformation.confirm);
@@ -147,7 +154,6 @@ public class Confirmation implements Entity{
 		this.opt = 0;
 		this.withCoords = false;
 		this.withText = true;
-//		this.doesTick = false;
 		this.isActive = true;
 	}
 	
@@ -174,7 +180,8 @@ public class Confirmation implements Entity{
 		this.withCoords = false;
 		this.withText = false;
 		AstroBiz.getController().purge(ENTITY_TYPE.CONFIRMATION);
-		AstroBiz.getController().purge(ENTITY_TYPE.TEXT_WINDOW);
+		AstroBiz.textWin.setActive(false);
+//		AstroBiz.getController().purge(ENTITY_TYPE.TEXT_WINDOW);
 	}
 	
 	public void keyAction(KeyEvent e){

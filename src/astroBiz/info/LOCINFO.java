@@ -11,7 +11,9 @@ public enum LOCINFO {
 	ERTH_BEI ("Beijing", 		"BEI",	2, 220, 200, 101, 640, 115, 17.0, FACTION.FAC00),
 	ERTH_LON ("London", 		"LON",	2, 172,  75, 224, 395,  95,  5.5, FACTION.FAC00),
 	ERTH_SPO ("Sao Paolo", 		"SPO",	2, 100, 131, 197, 300, 230,  7.5, FACTION.FAC00),
-	ERTH_JHB ("Johannesburg", 	"JHB",	2,  75,  50, 100, 445, 240,  0.4, FACTION.FAC00);
+	ERTH_JHB ("Johannesburg", 	"JHB",	2,  75,  50, 100, 445, 240,  0.4, FACTION.FAC00),
+	
+	LUNA_TYP ("Tycho Prime" ,	"TYP",	3,	25,	 40, 125, 333, 225, 0.75, FACTION.FAC01);
 	
 	private FACTION owner;
 	private String name;

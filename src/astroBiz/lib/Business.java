@@ -90,6 +90,16 @@ public class Business implements Serializable {
 		return this.spaceCraftHangar;
 	}
 
+	public Vector<SpaceCraft> getCraftForRoute(double distance){
+		Vector<SpaceCraft> routeCraft = new Vector<SpaceCraft>();
+		for(int i = 0; i < spaceCraftHangar.size(); i++){
+			if(spaceCraftHangar.elementAt(i).getRange() >= distance){
+				routeCraft.addElement(spaceCraftHangar.elementAt(i));
+			}
+		}
+		return routeCraft;
+	}
+	
 	public Location getHub(int regionID){
 		for(int i = 0; i < regionalHubs.size(); i++){
 			if(regionalHubs.elementAt(i).getRegion() == regionID)

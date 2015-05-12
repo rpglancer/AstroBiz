@@ -52,11 +52,15 @@ public class TextWindow implements Entity {
 		this.height = 96;
 		this.sprite = sprite;
 		this.text = text;
-		this.textOutput += this.text.charAt(0);
+//		this.textOutput += this.text.charAt(0);
 		this.doesTick = true;
 		this.hasSprite = true;
 	}
 
+	public void updateSprite(BufferedImage sprite){
+		this.sprite = sprite;
+	}
+	
 	public void updateText(String text){
 		this.text = text;
 		if(doesTick)

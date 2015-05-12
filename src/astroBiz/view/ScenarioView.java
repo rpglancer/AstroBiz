@@ -95,7 +95,7 @@ public class ScenarioView implements Manager, Serializable{
 	 */
 	private String businessNameBuffer = null;
 	
-	private TextWindow textWin;
+	private TextWindow textWin = AstroBiz.textWin;
 
 	private BUSICONFIGOPTIONS busiConfigOptions = BUSICONFIGOPTIONS.EXIT;			//	Active business configuration option
 	private ENTITY_TYPE type = ENTITY_TYPE.VIEW_MANAGER;
@@ -208,11 +208,12 @@ public class ScenarioView implements Manager, Serializable{
 				textUtilities.drawStringCenterV(g, FontInformation.modelheader, x + 8, y, 32, ab.getScenario().getBusinesses().elementAt(i).getName());
 				y += height + 5;
 			}
-			if(!AstroBiz.getController().containsEntity(textWin)){
-				textWin = new TextWindow("Change color for which company?", this.employeeSprite);
-				AstroBiz.getController().addEntity(textWin);
-			}	
+			if(!textWin.isActive()){
+				textWin.updateText("Change color for which company?");
+				textWin.setActive(true);
+			}
 		}
+		
 		else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR_SELECT){
 			g.setColor(ab.getScenario().getBusinesses().elementAt(businessSelect).getColor());
 			g.fillRoundRect(x, y, width, height, 8, 8);
@@ -228,12 +229,12 @@ public class ScenarioView implements Manager, Serializable{
 			if(optionSelect == 2)g.setColor(Color.blue);
 			textUtilities.drawStringMultiLine(g, FontInformation.chitchat, 400 - (strlen/2), 96+64, 400, "B: " + ab.getScenario().getBusinesses().elementAt(businessSelect).getColor().getBlue());
 			g.setColor(Color.white);
-			if(!AstroBiz.getController().containsEntity(textWin)){
-				textWin = new TextWindow("Choose a color for this company", this.employeeSprite);
-				AstroBiz.getController().addEntity(textWin);
+			if(!textWin.isActive()){
+				textWin.updateText("Choose a color for this company");
+				textWin.setActive(true);
 			}	
-			
 		}
+		
 		else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_CONFIG){
 
 			g.setColor(Color.darkGray);
@@ -271,11 +272,12 @@ public class ScenarioView implements Manager, Serializable{
 				
 			}
 			g.setColor(Color.white);
-			if(!AstroBiz.getController().containsEntity(textWin)){
-				textWin = new TextWindow("Customize each company's name and color?", this.employeeSprite);
-				AstroBiz.getController().addEntity(textWin);
-			}	
+			if(!textWin.isActive()){
+				textWin.updateText("Customize each company's name and color?");
+				textWin.setActive(true);
+			}
 		}
+		
 		else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME){
 			g.setColor(Color.darkGray);
 			g.fillRoundRect(x-8, y-8, width+16, height * 4 + 3 * 5 + 16, 16, 16);
@@ -294,21 +296,22 @@ public class ScenarioView implements Manager, Serializable{
 				textUtilities.drawStringCenterV(g, FontInformation.modelheader, x + 8, y, 32, ab.getScenario().getBusinesses().elementAt(i).getName());
 				y += height + 5;
 			}
-			if(!AstroBiz.getController().containsEntity(textWin)){
-				textWin = new TextWindow("Change the name of which company?", this.employeeSprite);
-				AstroBiz.getController().addEntity(textWin);
-			}	
+			if(!textWin.isActive()){
+				textWin.updateText("Change the name of which company?");
+				textWin.setActive(true);
+			}
 		}
+		
 		else if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_NAME_SELECT){
 			FontMetrics fm = g.getFontMetrics(FontInformation.modelheader);
 			int strlen = fm.stringWidth(businessNameBuffer);
 			textUtilities.drawStringMultiLine(g, FontInformation.modelheader, 400 - (strlen/2), 128, 480, businessNameBuffer);
 //			textUtilities.drawString(g, 400 - 10 * 16, 128, businessNameBuffer);
 			g.setColor(Color.white);
-			if(!AstroBiz.getController().containsEntity(textWin)){
-				textWin = new TextWindow("Enter a new name for this company.", this.employeeSprite);
-				AstroBiz.getController().addEntity(textWin);
-			}		
+			if(!textWin.isActive()){
+				textWin.updateText("Enter a new name for this company.");
+				textWin.setActive(true);
+			}	
 		}
 	}
 	/**
@@ -339,10 +342,12 @@ public class ScenarioView implements Manager, Serializable{
 			g.drawImage(this.selectSprite, 48, 256-16, null);
 			break;
 		}
-		
-		g.drawImage(this.employeeSprite, 32, 320, null);
-		g.drawString("Select a difficulty level.", 160, 384);
+		if(!textWin.isActive()){
+			textWin.updateText("Select a difficulty level.");
+			textWin.setActive(true);
+		}
 	}
+	
 	/**
 	 * A method for drawing a player query for confirmation.
 	 * @param g The graphics buffer to be drawn to.
@@ -387,12 +392,12 @@ public class ScenarioView implements Manager, Serializable{
 			g.drawImage(this.selectSprite, 48, 256-16, null);
 			break;
 		}
-		
-		if(!AstroBiz.getController().containsEntity(textWin)){
-			textWin = new TextWindow("Select the number of players.", this.employeeSprite);
-			AstroBiz.getController().addEntity(textWin);
+		if(!textWin.isActive()){
+			textWin.updateText("Select the number of players.");
+			textWin.setActive(true);
 		}
 	}
+	
 	/**
 	 * Method for drawing all things related to player headquarters location selection.
 	 * @param g The graphics buffer to be drawn to.
@@ -441,11 +446,10 @@ public class ScenarioView implements Manager, Serializable{
 			
 			g.setFont(FontInformation.chitchat);
 			g.setColor(Color.white);
-			if(!AstroBiz.getController().containsEntity(textWin)){
-				textWin = new TextWindow("Select headquarters location for " + s + ".", this.employeeSprite);
-				AstroBiz.getController().addEntity(textWin);
-			}	
-			
+			if(!textWin.isActive()){
+				textWin.updateText("Select headquarters location for " + s + ".");
+				textWin.setActive(true);
+			}
 			break;	//	End	REGION
 			
 		case WORLD:
@@ -533,13 +537,14 @@ public class ScenarioView implements Manager, Serializable{
 			
 			g.setFont(FontInformation.chitchat);
 			g.setColor(Color.white);
-			if(!AstroBiz.getController().containsEntity(textWin)){
-				textWin = new TextWindow("Select headquarters region for " + s + ".", this.employeeSprite);
-				AstroBiz.getController().addEntity(textWin);
-			}	
+			if(!textWin.isActive()){
+				textWin.updateText("Select headquarters region for " + s + ".");
+				textWin.setActive(true);
+			}
 			break;	//	End	WORLD
 		}
 	}
+	
 	/**
 	 * Method for drawing all things related to Scenario selection.
 	 * @param g The graphics buffer to be drawn to.
@@ -571,9 +576,9 @@ public class ScenarioView implements Manager, Serializable{
 			g.drawImage(this.selectSprite, 48, 256-16, null);
 			break;
 		}
-		if(!AstroBiz.getController().containsEntity(textWin)){
-			textWin = new TextWindow("Please select a scenario to play.", this.employeeSprite);
-			AstroBiz.getController().addEntity(textWin);
+		if(!textWin.isActive()){
+			textWin.updateText("Please select a scenario to play.");
+			textWin.setActive(true);
 		}
 	}
 	
@@ -702,7 +707,7 @@ public class ScenarioView implements Manager, Serializable{
 			break;
 			
 		case KeyEvent.VK_ESCAPE:
-			AstroBiz.getController().purge(ENTITY_TYPE.TEXT_WINDOW);
+			textWin.setActive(false);
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR){
 				optionSelect = previousOption;
 				scenarioViewMode = SCENARIOVIEWMODE.VM_BUSI_CONFIG;
@@ -739,7 +744,7 @@ public class ScenarioView implements Manager, Serializable{
 			*/
 			break;
 		case KeyEvent.VK_ENTER:
-			AstroBiz.getController().purge(ENTITY_TYPE.TEXT_WINDOW);
+			textWin.setActive(false);
 			if(scenarioViewMode == SCENARIOVIEWMODE.VM_BUSI_COLOR){
 				businessSelect = optionSelect;
 				System.out.println(businessSelect);

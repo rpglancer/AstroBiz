@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import astroBiz.lib.Controller;
 import astroBiz.lib.Scenario;
 import astroBiz.lib.SpriteSheet;
+import astroBiz.lib.TextWindow;
 import astroBiz.util.BufferedImageLoader;
 import astroBiz.util.textUtilities;
 import astroBiz.view.LocationView;
@@ -45,6 +46,7 @@ public class AstroBiz extends Canvas implements Runnable{
 	public static SpriteSheet textSheet = null;
 	public static SpriteSheet worldMap = null;
 	public static STATE State = STATE.MENU;
+	public static TextWindow textWin;
 	
 	private boolean running = false;
 	
@@ -77,6 +79,9 @@ public class AstroBiz extends Canvas implements Runnable{
 			temp = loader.loadImage("../../data/astrobiztext.png");
 			textSheet = new SpriteSheet(temp);
 			textUtilities.init();
+			textWin = new TextWindow("", employeeSprites.grabImage(1, 1, 128, 128));
+			textWin.setActive(false);
+			c.addEntity(textWin);
 		}catch(IOException e){
 			e.printStackTrace();
 		}
