@@ -204,6 +204,10 @@ public class Route{
 		return distance;
 	}
 	
+	public Vector<SpaceCraft> getCraft(){
+		return craft;
+	}
+	
 	public int getCraftCount(){
 		return craft.size();
 	}

@@ -57,11 +57,65 @@ public class Business implements Serializable {
 	public Faction getAffiliation(){
 		return affiliation;
 	}
-	
+	/**
+	 * Method to return SpaceCraft element from this Businesses spaceCraftHangar Vector at specified index.
+	 * @param index Desired element in the hangar.
+	 * @return	The specified SpaceCraft from the spaceCraftHangar.
+	 */
 	SpaceCraft getCraft(int index){
 		return spaceCraftHangar.get(index);
 	}
-
+/**
+ * Method to return all Business SpaceCraft.
+ * @return	Vector of all SpaceCraft belonging to this Business.
+ */
+	public Vector<SpaceCraft> getCraftAll(){
+		Vector<SpaceCraft> craft = new Vector<SpaceCraft>();
+		if(spaceCraftHangar.size() > 0){
+			for(int i = 0; i < spaceCraftHangar.size(); i++){
+				craft.addElement(spaceCraftHangar.elementAt(i));
+			}
+		}
+		if(businessRoutes.size() > 0){
+			for(int i = 0; i < businessRoutes.size(); i++){
+				Route route = businessRoutes.elementAt(i);
+				for(int x = 0; x < route.getCraft().size(); x++){
+					craft.addElement(route.getCraft().elementAt(x));
+				}
+			}
+		}
+		return craft;
+	}
+/**
+ * Method to return all SpaceCraft types owned by a Business.
+ * @return Vector of all SpaceCraft types belonging to a Business.
+ */
+	public Vector<SpaceCraft> getCraftTypes(){
+		Vector<SpaceCraft> craft = new Vector<SpaceCraft>();
+		if(spaceCraftHangar.size() > 0){
+			for(int i = 0; i < spaceCraftHangar.size(); i++){
+				if(!craft.contains(spaceCraftHangar.elementAt(i))){
+					craft.addElement(spaceCraftHangar.elementAt(i));
+				}
+			}
+		}
+		if(businessRoutes.size() > 0){
+			for(int i = 0; i < businessRoutes.size(); i++){
+				Route route = businessRoutes.elementAt(i);
+				for(int x = 0; x < route.getCraft().size(); x++){
+					if(!craft.contains(route.getCraft().elementAt(x))){
+						craft.addElement(route.getCraft().elementAt(x));
+					}
+				}
+			}
+		}
+		return craft;
+	}
+/**
+ * Method to return a count of SpaceCraft elements in the spaceCraftHangar Vector of the specified type.
+ * @param type	The type of SpaceCraft to be counted.
+ * @return	The number of SpaceCraft of the specified type found in the spaceCraftHangar Vector.
+ */
 	public int getCraftInHangar(SpaceCraft type){
 		int count = 0;
 		if(spaceCraftHangar.size() == 0) return count;

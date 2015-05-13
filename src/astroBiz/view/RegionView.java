@@ -163,6 +163,7 @@ public class RegionView implements Manager, Serializable{
 			else if(regionVm == REGIONVM.VM_OPEN_ROUTE_DEST) cycleOptionRight();
 			else if(regionVm == REGIONVM.VM_REGION)cycleOptionRight();
 			else if(regionVm == REGIONVM.VM_REGIONSWAP)cycleOptionRight();
+			else cycleOptionRight();
 			break;
 		default:
 			break;
@@ -232,6 +233,11 @@ public class RegionView implements Manager, Serializable{
 	
 	private void cycleOptionRight(){
 		int maxOpt = 0;
+		if(regionVm == REGIONVM.VM_OPEN_ROUTE_CRAFT){
+			maxOpt = busi.getCraftTypes().size() - 1;
+			if(selectedOption < maxOpt)
+				selectedOption++;
+		}
 		if(regionVm == REGIONVM.VM_OPEN_ROUTE_DEST){
 			maxOpt = locationsAvailable.size() - 1;
 			if(selectedOption < maxOpt) selectedOption++;
@@ -573,6 +579,98 @@ public class RegionView implements Manager, Serializable{
 			drawPlanetMini(g,135,367,8,Color.darkGray,Color.black);
 	}
 	
+	private void drawModel(Graphics g, SpaceCraft model){
+		int x = 160 - 8;
+		int y = 96 - 8;
+		int w = 480 + 16;
+		int h = 128 + 16;
+		Rectangle stat = new Rectangle();
+		Rectangle window = new Rectangle(x, y, w, h);
+		
+		//	This is nice, and will probably be reused, move it to its own function.
+		for(int i = 0; i <= 3; i++){
+			if(i < 3)
+				this.drawWindow(g, window, Color.black, busi.getColor());
+			x+=2;
+			y+=2;
+			w-=4;
+			h-=4;
+			window.setBounds(x, y, w, h);
+			
+		}
+		g.setColor(Color.white);
+		g.drawString(x + ", " + y + ", " + w + ", " + h, 0, 32);
+		
+//		Selected Model Picture Box
+		stat.setBounds(160, 96, 192, 128);
+		this.drawWindow(g, stat, Color.blue, Color.white);
+		textUtilities.drawStringToBox(g, FontInformation.modelstat, stat, HALIGN.LEFT, VALIGN.BOTTOM, model.getName());
+		
+//		Range Box
+		stat.setBounds(384, 96, 96, 32);
+		this.drawWindow(g, stat, Color.gray, Color.white);
+		textUtilities.drawStringToBox(g, FontInformation.modelheader, stat, HALIGN.CENTER, VALIGN.MIDDLE, "Range:");
+		
+		//	Range Value Box
+		stat.setBounds(480, 96, 160, 32);
+		this.drawWindow(g, stat, Color.black, Color.white);
+		textUtilities.drawStringToBox(g, FontInformation.modelstat, stat, HALIGN.CENTER, VALIGN.MIDDLE, model.getRange() + "AU");
+
+		//	Capacity Box
+		stat.setBounds(384, 128, 96, 32);
+		this.drawWindow(g, stat, Color.gray, Color.white);
+		textUtilities.drawStringToBox(g, FontInformation.modelheader, stat, HALIGN.CENTER, VALIGN.MIDDLE, "Seats:");
+		
+		// Capacity Value Box
+		stat.setBounds(480, 128, 160, 32);
+		this.drawWindow(g, stat, Color.black, Color.white);
+		textUtilities.drawStringToBox(g, FontInformation.modelstat, stat, HALIGN.CENTER, VALIGN.MIDDLE, model.getCapacity() + "s");
+		
+		//	Fuel Efficiency
+		stat.setBounds(384, 160, 64, 32);
+		this.drawWindow(g, stat, Color.gray, Color.white);
+		textUtilities.drawStringToBox(g, FontInformation.modelheader, stat, HALIGN.CENTER, VALIGN.MIDDLE, "FuelE:");
+		
+		//	Fuel Efficiency Value Box
+		stat.setBounds(448, 160, 64, 32);
+		this.drawWindow(g, stat, Color.black, Color.white);
+		textUtilities.drawStringToBox(g, FontInformation.modelstat, stat, HALIGN.CENTER, VALIGN.MIDDLE, model.getFuelE() + "");
+		
+		//	Reliability
+		stat.setBounds(512, 160, 64, 32);
+		this.drawWindow(g, stat, Color.gray, Color.white);
+		textUtilities.drawStringToBox(g, FontInformation.modelheader, stat, HALIGN.CENTER, VALIGN.MIDDLE, "Rely:");
+		
+		//	Reliability Value Box
+		stat.setBounds(576, 160, 64, 32);
+		this.drawWindow(g, stat, Color.black, Color.white);
+		textUtilities.drawStringToBox(g, FontInformation.modelstat, stat, HALIGN.CENTER, VALIGN.MIDDLE, model.getMaintR() + "");
+		
+		//	# in Use
+		stat.setBounds(384, 192, 64, 32);
+		this.drawWindow(g, stat, Color.gray, Color.white);
+		textUtilities.drawStringToBox(g, FontInformation.modelheader, stat, HALIGN.CENTER, VALIGN.MIDDLE, "#USE:");
+		
+		//	# in Use Value Box
+		stat.setBounds(448, 192, 64, 32);
+		this.drawWindow(g, stat, Color.black, Color.white);
+		textUtilities.drawStringToBox(g, FontInformation.modelstat, stat, HALIGN.CENTER, VALIGN.MIDDLE, busi.getCraftInService(model) + "");
+		
+		//	# Hangar
+		stat.setBounds(512, 192, 64, 32);
+		this.drawWindow(g, stat, Color.gray, Color.white);
+		textUtilities.drawStringToBox(g, FontInformation.modelheader, stat, HALIGN.CENTER, VALIGN.MIDDLE, "#HGR:");
+		
+		//	# in Hangar Value Box
+		stat.setBounds(576, 192, 64, 32);
+		this.drawWindow(g, stat, Color.black, Color.white);
+		if(busi.getCraftInHangar(model) == 0)
+			g.setColor(Color.red);
+		else
+			g.setColor(Color.white);
+		textUtilities.drawStringToBox(g, FontInformation.modelstat, stat, HALIGN.CENTER, VALIGN.MIDDLE, busi.getCraftInHangar(model) + "");
+	}
+	
 	private void drawOpenDest(Graphics g){
 		if(locationsAvailable.size() == 0){
 			g.drawImage(getActiveRegionMap(), 32, 32, null);
@@ -615,6 +713,28 @@ public class RegionView implements Manager, Serializable{
 	}
 	
 	private void drawOpenSelectCraft(Graphics g){
+		Route route = new Route(hub,loc);
+		double distance;
+		String s = "";
+		if(route.calcDistance(hub, loc) < 0.001){
+			distance = (int)(route.calcDistance(hub, loc) * 150000000);
+			s = "<-- " + distance + "KM" + " -->";
+		}
+		else{
+			distance = route.calcDistance(hub, loc);
+			DecimalFormat df = new DecimalFormat("#.####");
+			String trunc = df.format(distance);
+			s = "<-- " + trunc + "AU -->";
+		}
+		
+		this.drawModel(g, busi.getCraftTypes().elementAt(selectedOption));
+		
+		Rectangle departs = new Rectangle(152,60,496,32);
+		g.setColor(Color.white);
+		textUtilities.drawStringToBox(g, FontInformation.modelheader, departs, HALIGN.LEFT, VALIGN.MIDDLE, hub.getName());
+		textUtilities.drawStringToBox(g, FontInformation.modelheader, departs, HALIGN.CENTER, VALIGN.MIDDLE, s);
+		textUtilities.drawStringToBox(g, FontInformation.modelheader, departs, HALIGN.RIGHT, VALIGN.MIDDLE, loc.getName());
+		
 		if(!textWin.isActive()){
 			textWin.updateText("Which model ship would you like to use for this route?");
 			textWin.setActive(true);
@@ -908,6 +1028,9 @@ public class RegionView implements Manager, Serializable{
 			}
 			else regionVm = REGIONVM.VM_REGION;
 		}
+		else if(regionVm == REGIONVM.VM_OPEN_ROUTE_CRAFT){
+			
+		}
 		else if(regionVm == REGIONVM.VM_OPEN_ROUTE_DEST){
 			if(locationsAvailable.size() == 0){
 				selectedOption = activeRegion;
@@ -916,12 +1039,9 @@ public class RegionView implements Manager, Serializable{
 			else{
 				selectedLocation = selectedOption;
 				previousOption = selectedOption;
-				selectedOption = 1;
+				resetSelectedOpt();
 				regionVm = REGIONVM.VM_OPEN_ROUTE_CRAFT;
 			}
-		}
-		else if(regionVm == REGIONVM.VM_OPEN_ROUTE_LOC){
-
 		}
 		else if(regionVm == REGIONVM.VM_ORDER_CONFIRM){
 			resetSelectedOpt();
