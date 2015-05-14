@@ -34,7 +34,7 @@ public class Business implements Serializable {
 	private	Vector<SpaceCraft> spaceCraftHangar = new Vector<SpaceCraft>();		//	Business Hangar, contains all idle Business SpaceCraft.
 	private Vector<STANDING> standings = new Vector<STANDING>();				//	Current standings with other factions, defaulted to the STANDINGs of affiliation.
 	
-	public void addCraft(SpaceCraft sc){
+	public void addCraftToHangar(SpaceCraft sc){
 		this.spaceCraftHangar.addElement(sc);
 	}
 
@@ -86,7 +86,25 @@ public class Business implements Serializable {
 		}
 		return craft;
 	}
-/**
+
+	public boolean getCraftAvailable(SpaceCraft type){
+		if(spaceCraftHangar.contains(type))
+			return true;
+		else
+			return false;
+	}
+
+	public Vector<SpaceCraft>getCraftAvailableByType(SpaceCraft type){
+		Vector<SpaceCraft> avail = new Vector<SpaceCraft>();
+		for(int i = 0; i < spaceCraftHangar.size(); i++){
+			if(spaceCraftHangar.elementAt(i).getName() == type.getName()){
+				avail.addElement(spaceCraftHangar.elementAt(i));
+			}
+		}
+		return avail;
+	}
+	
+	/**
  * Method to return all SpaceCraft types owned by a Business.
  * @return Vector of all SpaceCraft types belonging to a Business.
  */
@@ -236,5 +254,11 @@ public class Business implements Serializable {
 	
 	public void subFromAccount(int amount){
 		accountBalance -= amount;
+	}
+	public void takeCraftFromHangar(SpaceCraft sc){
+		for(int i = 0; i < spaceCraftHangar.size(); i++){
+			if(spaceCraftHangar.elementAt(i) == sc)
+				spaceCraftHangar.removeElementAt(i);
+		}
 	}
 }

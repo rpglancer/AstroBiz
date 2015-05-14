@@ -85,6 +85,10 @@ public class SpaceCraft implements Serializable{
 		return this.name;
 	}
 	
+	public int getSpeed(){
+		return speed;
+	}
+	
 	public BufferedImage getSprite(){
 		return this.sprite;
 	}

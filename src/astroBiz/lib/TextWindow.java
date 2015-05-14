@@ -2,6 +2,7 @@ package astroBiz.lib;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 import astroBiz.info.ENTITY_TYPE;
@@ -110,5 +111,11 @@ public class TextWindow implements Entity {
 	@Override
 	public ENTITY_TYPE getType() {
 		return type;
+	}
+
+	@Override
+	public void keyAction(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }

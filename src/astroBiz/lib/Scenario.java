@@ -208,7 +208,7 @@ public class Scenario implements Serializable{
 					int qtr = msg.getVar()[2];
 					if(qtr < this.scenarioQuarter || year < this.scenarioCurrentYear){
 						for(int add = 0; add < qty; add++){
-							msg.getBusiness().addCraft(new SpaceCraft(msg.getCraft()));
+							msg.getBusiness().addCraftToHangar(new SpaceCraft(msg.getCraft()));
 						}
 						msgQueue.removeMsg(msg);
 					}
@@ -259,7 +259,7 @@ public class Scenario implements Serializable{
 				int m = 0;
 				if(mfg.size() > 1) m = rng.nextInt(mfg.size());
 				int c = rng.nextInt(mfg.elementAt(m).getModeslAvailable(this).size());
-				scenarioBusinesses.elementAt(i).addCraft(mfg.elementAt(m).getModeslAvailable(this).elementAt(c));
+				scenarioBusinesses.elementAt(i).addCraftToHangar(mfg.elementAt(m).getModeslAvailable(this).elementAt(c));
 				craftForAllocation--;
 			}while(craftForAllocation > 0);
 		}

@@ -127,7 +127,6 @@ public class AstroBiz extends Canvas implements Runnable{
 	public void keyPressed(KeyEvent e){
 		int key = e.getKeyCode();
 		switch(AstroBiz.State){
-
 		case SCENARIOSETUP:
 			scenarioView.keyAction(e);
 			break;

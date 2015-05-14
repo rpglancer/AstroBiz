@@ -232,7 +232,8 @@ public class textUtilities{
 		int w = box.width;
 		if(va == VALIGN.TOP) y = box.y;
 		if(va == VALIGN.MIDDLE){
-			if(lc == 1) y = (box.y + box.height / 2) - (getTextHeight(g,f,text) / 2 - fm.getDescent());
+//			if(lc == 1) y = (box.y + box.height / 2) - (getTextHeight(g,f,text) / 2 - fm.getDescent());
+			if(lc == 1) y = (box.y + box.height / 2) - (fm.getAscent() + fm.getDescent())/2 + fm.getDescent();
 			else y = box.y + box.height/2 - (getTextHeight(g,f,text)/2) * lc + (fm.getDescent()/2 * lc);
 		}
 		if(va == VALIGN.BOTTOM) y = box.y + box.height - getTextHeight(g,f,text) * lc + (fm.getDescent() * lc);

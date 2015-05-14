@@ -97,7 +97,6 @@ public class ScenarioView implements Manager, Serializable{
 	
 	private TextWindow textWin = AstroBiz.textWin;
 
-	private BUSICONFIGOPTIONS busiConfigOptions = BUSICONFIGOPTIONS.EXIT;			//	Active business configuration option
 	private ENTITY_TYPE type = ENTITY_TYPE.VIEW_MANAGER;
 	private HQPLACEMENTVIEW hqPlacementView = HQPLACEMENTVIEW.WORLD;				//	Active placement view for HQ selection
 	private SCENARIOVIEWMODE scenarioViewMode = SCENARIOVIEWMODE.VM_SCEN_SELECT;	//	Active view mode for scenario selection and setup

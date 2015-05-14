@@ -31,17 +31,27 @@ public class Route{
 
 	private int routeFare;
 	private Location routeHome;
-	private Location routeDestination;
+	private Location routeDest;
 	
 	public Route(){
 	}
 	
-	public Route(Location hub, Location dest){
-		routeHome = hub;
-		routeDestination = dest;
-	}
+//	public Route(Location hub, Location dest){
+//		routeHome = hub;
+//		routeDest = dest;
+//	}
 	
-	public Route(Location home, Location dest, SpaceCraft craft, int num, int fare){
+//	public Route(Location hub, Location dest, SpaceCraft craft){
+//		routeHome = hub;
+//		routeDest = dest;
+//		this.craft.addElement(craft);
+//	}
+	
+//	public Route(Location home, Location dest, SpaceCraft craft, int num, int fare){
+//	}
+	
+	public void addCraftToRoute(SpaceCraft sc){
+		craft.addElement(sc);
 	}
 	
 	/**
@@ -137,6 +147,31 @@ public class Route{
 		
 		else return 1;
 	}
+	/**
+	 * Determine weekly flights by distance of route and speed of craft.
+	 * This is an awful way of doing this and a better way must be found.
+	 * @return The number of flights per week per craft that can be made.
+	 */
+	public int calcWeeklyFlights(){
+		if(this.craft.size() < 1)
+			return 0;
+		double baseFPW = 1;
+		double[] range = {0.001, 0.01, 0.1, 0.25, 0.5, 1, 2, 4, 8, 16, 32, 64};
+		double[] dist = {0.001, 0.01, 0.1, 0.25, 0.5, 1, 2, 4, 8, 16, 32, 64};
+		int cr = 0;
+		int rd = 0;
+		for(int i = 0; i < range.length; i++){
+			if(craft.elementAt(0).getRange() > range[i])
+				cr += 1;
+			if(calcDistance(routeHome, routeDest) > dist[i])
+				rd += 1;
+		}
+		for(int i = cr - rd; i > 0; i--){
+			baseFPW *= 1.5;
+		}
+		baseFPW *= craft.size();
+		return (int)(baseFPW);
+	}
 	
 	/**
 	 * Method to calculate the distance between locations in AU.
@@ -218,30 +253,30 @@ public class Route{
 	}
 
 	public Location getRouteDestination(){
-		return routeDestination;
+		return routeDest;
 	}
 	
-	int getRouteFare(){
+	public int getRouteFare(){
 		return routeFare;
 	}
 
-	Location getRouteHome(){
+	public Location getRouteHome(){
 		return routeHome;
 	}
 	
-	void setRouteCraft(SpaceCraft sc){
+	public void setRouteCraft(SpaceCraft sc){
 		craft.addElement(sc);
 	}
-	void setRouteCraftNumber(int number){
+	public void setRouteCraftNumber(int number){
 		routeCraftNumber = number;
 	}
-	void setRouteDestination(Location destination){
-		routeDestination = destination;
+	public void setRouteDestination(Location destination){
+		routeDest = destination;
 	}
-	void setRouteFare(int fare){
+	public void setRouteFare(int fare){
 		routeFare = fare;
 	}
-	void setRouteHome(Location home){
+	public void setRouteHome(Location home){
 		routeHome = home;
 	}
 }
