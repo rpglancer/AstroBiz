@@ -1,6 +1,7 @@
 package astroBiz.lib;
 
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.util.LinkedList;
 
 import astroBiz.info.ENTITY_TYPE;
@@ -54,14 +55,17 @@ public class Controller{
 			e.addLast(block);
 		}
 	}
-	
-//	private int lastIndexOf(ENTITY_TYPE type){
-//		int index = -1;
-//		for(int i = 0; i < e.size(); i++){
-//			if(e.get(i).getType() == type) index = i;
-//		}
-//		return index;
-//	}
+
+	// This should probably work from top down rather than bottom up.
+	public void keyAction(KeyEvent k){
+		for(int i = 0; i < e.size(); i++){
+			ent = e.get(i);
+			if(ent.isActive()){
+				ent.keyAction(k);
+				break;
+			}
+		}
+	}
 
 	public boolean containsEntity(Entity block){
 		for(int i = 0; i < e.size(); i++){

@@ -6,6 +6,8 @@ import java.awt.event.KeyEvent;
 import astroBiz.AstroBiz;
 import astroBiz.info.ENTITY_TYPE;
 import astroBiz.lib.Business;
+import astroBiz.lib.Draw;
+import astroBiz.lib.Scenario;
 
 public class RouteConfig implements Manager {
 	public static enum RCVM implements VM{
@@ -22,6 +24,7 @@ public class RouteConfig implements Manager {
 	
 	private Boolean isActive = false;
 	private Business busi;
+	private Scenario scenario;
 	private RegionView rvm;
 	private ENTITY_TYPE type = ENTITY_TYPE.VIEW_MANAGER;
 	private RCVM rcvm = RCVM.SELECT_DEST;
@@ -29,6 +32,32 @@ public class RouteConfig implements Manager {
 	public RouteConfig(RegionView rvm){
 		this.rvm = rvm;
 		AstroBiz.getController().addEntity(this);
+	}
+	
+	public void setActiveBusi(Business busi){
+		this.busi = busi;
+	}
+	
+	public void setScenario(Scenario scenario){
+		this.scenario = scenario;
+	}
+	
+	private void selectDest(Graphics g){
+		String s = "";
+		Draw.drawRegion(g, rvm.getActiveRegion());
+		Draw.drawRegionLocations(g, scenario, rvm.getActiveRegion());
+		
+		if(busi.regionContainsHub(rvm.getActiveRegion())){
+			s = "Route will depart from " + busi.getHub(rvm.getActiveRegion()).getName() + ". Select a destination for this route.";
+		}
+		else{
+			s = "We currently have no hubs in this region.";
+		}
+		
+		if(!AstroBiz.textWin.isActive()){
+			AstroBiz.textWin.updateText(s);
+			AstroBiz.textWin.setActive(true);
+		}
 	}
 	
 	@Override
@@ -43,8 +72,7 @@ public class RouteConfig implements Manager {
 
 	@Override
 	public void tick() {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub	
 	}
 
 	@Override
@@ -53,6 +81,7 @@ public class RouteConfig implements Manager {
 		case SELECT_CRAFT:
 			break;
 		case SELECT_DEST:
+			selectDest(g);
 			break;
 		case SELECT_FARE:
 			break;

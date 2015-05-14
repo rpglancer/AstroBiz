@@ -50,9 +50,9 @@ public class AstroBiz extends Canvas implements Runnable{
 	private BufferedImage image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
 	private LocationView locationView = null;
 	private MainMenu mainMenu = null;
-	private RegionView regionView = null;
 	private Scenario activeScenario;
-	private ScenarioView scenarioView = null;
+	private static ScenarioView scenarioView = null;
+	private RegionView regionView = null;
 	private Thread thread;
 
 	private static Controller c = new Controller();
@@ -90,6 +90,10 @@ public class AstroBiz extends Canvas implements Runnable{
 		return this.activeScenario;
 	}
     
+	public static ScenarioView getSV(){
+		return scenarioView;
+	}
+	
 	public void init(){
 		BufferedImageLoader loader = new BufferedImageLoader();
 		try{
@@ -116,51 +120,18 @@ public class AstroBiz extends Canvas implements Runnable{
 		this.addMouseListener(new MouseInput(this));
 		this.addMouseMotionListener(new MouseInput(this));
 		mainMenu = new MainMenu();
+		mainMenu.setActive(true);
 		activeScenario = new Scenario();
 		locationView = new LocationView(null);
 		regionView = new RegionView(this, activeScenario);
-		scenarioView = new ScenarioView(this);	
+		scenarioView = new ScenarioView(this);
+		c.addEntity(mainMenu);
 		c.addEntity(regionView);
 		c.addEntity(scenarioView);
 	}
 	
 	public void keyPressed(KeyEvent e){
-		int key = e.getKeyCode();
-		switch(AstroBiz.State){
-		case SCENARIOSETUP:
-			scenarioView.keyAction(e);
-			break;
-			
-		case REGIONVIEW:
-			regionView.keyAction(e);
-
-			break;		// End REGIONVIEW
-			
-		case MENU:
-			switch(key){
-			case KeyEvent.VK_UP:
-				mainMenu.cycleMenuPrev();
-				break;
-			case KeyEvent.VK_DOWN:
-				mainMenu.cycleMenuNext();
-				break;
-			case KeyEvent.VK_ENTER:
-				if(mainMenu.getMenuStatus() == MENUSELECT.NEWGAME){
-					AstroBiz.State = AstroBiz.STATE.SCENARIOSETUP;
-					scenarioView.setActive(true);
-				}	
-				if(mainMenu.getMenuStatus() == MENUSELECT.LOADGAME)
-					break;
-				if(mainMenu.getMenuStatus() == MENUSELECT.QUITGAME)
-					System.exit(1);
-				System.gc();
-				break;
-			}
-			break;
-			
-		default:
-			break;
-		}	
+		c.keyAction(e);
 	}
 	
 	public void keyReleased(KeyEvent e){
@@ -221,22 +192,9 @@ public class AstroBiz extends Canvas implements Runnable{
 			createBufferStrategy(3);
 			return;
 		}
-		Graphics g = bs.getDrawGraphics();
-		
+		Graphics g = bs.getDrawGraphics();	
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
-
-		switch(State){
-		case LOCATIONVIEW:
-			locationView.render(g, this);
-			break;
-		case MENU:
-			mainMenu.render(g);
-			break;
-		default:
-			break;
-		}
 		c.render(g);
-		
 		g.dispose();
 		bs.show();
 	}

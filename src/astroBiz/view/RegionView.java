@@ -283,8 +283,7 @@ public class RegionView implements Manager, Serializable{
 			if(selectedOption < selectedManufacturer.getModeslAvailable(scenario).size() - 1)
 				g.drawImage(AstroBiz.regionSprites.grabImage(2, 4, 16, 16), 672 - 16, 168, null);
 		}
-		
-		this.drawModel(g, temp);
+		Draw.drawSpaceCraftModelStats(g, temp, busi);
 		
 		//	Manufacturer Name Box
 		rect.setBounds(160, 60, 480, 32);
@@ -298,7 +297,7 @@ public class RegionView implements Manager, Serializable{
 		
 		//	Corporate Box
 		rect.setBounds(354, 260, 288, 32);
-		this.drawWindow(g, rect, busi.getColor(), busi.getColor());
+		Draw.drawWindow(g, rect, busi.getColor(), busi.getColor());
 		textUtilities.drawStringToBox(g, FontInformation.modelheader, rect, HALIGN.RIGHT, VALIGN.MIDDLE, "Balance: " + busi.getAccountBalance() + "K");
 		
 		if(!c.isActive()){
@@ -368,188 +367,6 @@ public class RegionView implements Manager, Serializable{
 		}
 	}
 	
-	private void drawMinimap(Graphics g){
-		int sx = 32;
-		int sy = 320;
-		int height = 128;
-		int width = 160;
-		
-		int px = 48;
-		int py = 320;
-		int pheight = 128;
-		int pwidth = 128;
-		
-		Business b = scenario.getBusinesses().elementAt(scenario.getActiveBusiness());
-		
-		g.setColor(Color.black);
-		g.fillRect(sx, sy, width, height);
-		
-		//	Draw Planet Orbit Lines
-		g.setColor(Color.DARK_GRAY);
-		//	Region Neptune
-		g.drawOval(px, py, pwidth, pheight);
-		px+=6; py+=6; pwidth-=12; pheight-=12;
-		//	Region Uranus
-		g.drawOval(px, py, pwidth, pheight);
-		px+=6; py+=6; pwidth-=12; pheight-=12;
-		//	Region Saturn
-		g.drawOval(px, py, pwidth, pheight);
-		px+=6; py+=6; pwidth-=12; pheight-=12;
-		//	Region Jupiter
-		g.drawOval(px, py, pwidth, pheight);
-		px+=10; py+=10; pwidth-=20; pheight-=20;
-		//	Region Mars
-		g.drawOval(px, py, pwidth, pheight);
-		px+=6; py+=6; pwidth-=12; pheight-=12;
-		//	Region Earth
-		if(b.regionContainsHub(2))g.setColor(b.getColor());
-		else g.setColor(Color.darkGray);
-		g.drawOval(px, py, pwidth, pheight);
-		px+=6; py+=6; pwidth-=12; pheight-=12;
-		//	Region Venus
-		if(b.regionContainsHub(1))g.setColor(b.getColor());
-		else g.setColor(Color.darkGray);
-		g.drawOval(px, py, pwidth, pheight);
-		px+=6; py+=6; pwidth-=12; pheight-=12;
-		//	Region Mercury
-		if(b.regionContainsHub(0))g.setColor(b.getColor());
-		else g.setColor(Color.darkGray);
-		g.drawOval(px, py, pwidth, pheight);
-		px+=6; py+=6; pwidth-=12; pheight-=12;
-		
-		// Draw Planets
-		//	Neptune
-		if(b.regionContainsHub(8))
-			drawPlanetMini(g,40,368,17,Color.white,b.getColor());
-		else
-			drawPlanetMini(g,40,368,17,Color.darkGray,Color.black);
-		
-		//	Uranus
-		if(b.regionContainsHub(7))
-			drawPlanetMini(g,73,424,17,Color.white,b.getColor());
-		else
-			drawPlanetMini(g,73,424,17,Color.darkGray,Color.black);
-		
-		//	Saturn
-		if(b.regionContainsHub(6))
-			drawPlanetMini(g,148,400,17,Color.white,b.getColor());
-		else
-			drawPlanetMini(g,148,400,17,Color.darkGray,Color.black);
-		
-		//	Jupiter
-		if(b.regionContainsHub(5))
-			drawPlanetMini(g,117,331,22,Color.white,b.getColor());
-		else
-			drawPlanetMini(g,117,331,22,Color.darkGray,Color.black);
-		
-		//	Mars
-		if(b.regionContainsHub(4))
-			drawPlanetMini(g,75,395,8,Color.white,b.getColor());
-		else
-			drawPlanetMini(g,75,395,8,Color.darkGray,Color.black);
-		
-		//	Luna
-		// ...
-		
-		//	Earth
-		if(b.regionContainsHub(2))
-			drawPlanetMini(g,135,367,8,Color.white,b.getColor());
-		else
-			drawPlanetMini(g,135,367,8,Color.darkGray,Color.black);
-	}
-	
-	private void drawModel(Graphics g, SpaceCraft model){
-		int x = 160 - 8;
-		int y = 96 - 8;
-		int w = 480 + 16;
-		int h = 128 + 16;
-		Rectangle stat = new Rectangle();
-		Rectangle window = new Rectangle(x, y, w, h);
-		
-		//	This is nice, and will probably be reused, move it to its own function.
-		for(int i = 0; i <= 3; i++){
-			if(i < 3)
-				drawWindow(g, window, Color.black, busi.getColor());
-			x+=2;
-			y+=2;
-			w-=4;
-			h-=4;
-			window.setBounds(x, y, w, h);
-			
-		}
-		g.setColor(Color.white);
-		g.drawString(x + ", " + y + ", " + w + ", " + h, 0, 32);
-		
-//		Selected Model Picture Box
-		stat.setBounds(160, 96, 192, 128);
-		this.drawWindow(g, stat, Color.blue, Color.white);
-		textUtilities.drawStringToBox(g, FontInformation.modelstat, stat, HALIGN.LEFT, VALIGN.BOTTOM, model.getName());
-		
-//		Range Box
-		stat.setBounds(384, 96, 96, 32);
-		this.drawWindow(g, stat, Color.gray, Color.white);
-		textUtilities.drawStringToBox(g, FontInformation.modelheader, stat, HALIGN.CENTER, VALIGN.MIDDLE, "Range:");
-		
-		//	Range Value Box
-		stat.setBounds(480, 96, 160, 32);
-		this.drawWindow(g, stat, Color.black, Color.white);
-		textUtilities.drawStringToBox(g, FontInformation.modelstat, stat, HALIGN.CENTER, VALIGN.MIDDLE, model.getRange() + "AU");
-
-		//	Capacity Box
-		stat.setBounds(384, 128, 96, 32);
-		this.drawWindow(g, stat, Color.gray, Color.white);
-		textUtilities.drawStringToBox(g, FontInformation.modelheader, stat, HALIGN.CENTER, VALIGN.MIDDLE, "Seats:");
-		
-		// Capacity Value Box
-		stat.setBounds(480, 128, 160, 32);
-		this.drawWindow(g, stat, Color.black, Color.white);
-		textUtilities.drawStringToBox(g, FontInformation.modelstat, stat, HALIGN.CENTER, VALIGN.MIDDLE, model.getCapacity() + "s");
-		
-		//	Fuel Efficiency
-		stat.setBounds(384, 160, 64, 32);
-		this.drawWindow(g, stat, Color.gray, Color.white);
-		textUtilities.drawStringToBox(g, FontInformation.modelheader, stat, HALIGN.CENTER, VALIGN.MIDDLE, "FuelE:");
-		
-		//	Fuel Efficiency Value Box
-		stat.setBounds(448, 160, 64, 32);
-		this.drawWindow(g, stat, Color.black, Color.white);
-		textUtilities.drawStringToBox(g, FontInformation.modelstat, stat, HALIGN.CENTER, VALIGN.MIDDLE, model.getFuelE() + "");
-		
-		//	Reliability
-		stat.setBounds(512, 160, 64, 32);
-		this.drawWindow(g, stat, Color.gray, Color.white);
-		textUtilities.drawStringToBox(g, FontInformation.modelheader, stat, HALIGN.CENTER, VALIGN.MIDDLE, "Rely:");
-		
-		//	Reliability Value Box
-		stat.setBounds(576, 160, 64, 32);
-		this.drawWindow(g, stat, Color.black, Color.white);
-		textUtilities.drawStringToBox(g, FontInformation.modelstat, stat, HALIGN.CENTER, VALIGN.MIDDLE, model.getMaintR() + "");
-		
-		//	# in Use
-		stat.setBounds(384, 192, 64, 32);
-		this.drawWindow(g, stat, Color.gray, Color.white);
-		textUtilities.drawStringToBox(g, FontInformation.modelheader, stat, HALIGN.CENTER, VALIGN.MIDDLE, "#USE:");
-		
-		//	# in Use Value Box
-		stat.setBounds(448, 192, 64, 32);
-		this.drawWindow(g, stat, Color.black, Color.white);
-		textUtilities.drawStringToBox(g, FontInformation.modelstat, stat, HALIGN.CENTER, VALIGN.MIDDLE, busi.getCraftInService(model) + "");
-		
-		//	# Hangar
-		stat.setBounds(512, 192, 64, 32);
-		this.drawWindow(g, stat, Color.gray, Color.white);
-		textUtilities.drawStringToBox(g, FontInformation.modelheader, stat, HALIGN.CENTER, VALIGN.MIDDLE, "#HGR:");
-		
-		//	# in Hangar Value Box
-		stat.setBounds(576, 192, 64, 32);
-		this.drawWindow(g, stat, Color.black, Color.white);
-		if(busi.getCraftInHangar(model) == 0)
-			g.setColor(Color.red);
-		else
-			g.setColor(Color.white);
-		textUtilities.drawStringToBox(g, FontInformation.modelstat, stat, HALIGN.CENTER, VALIGN.MIDDLE, busi.getCraftInHangar(model) + "");
-	}
-	
 	private void drawModelRoute(Graphics g){
 		int x = 160 - 8;
 		int y = 96 - 8;
@@ -561,7 +378,7 @@ public class RegionView implements Manager, Serializable{
 		//	This is nice, and will probably be reused, move it to its own function.
 		for(int i = 0; i <= 3; i++){
 			if(i < 3)
-				drawWindow(g, window, Color.black, busi.getColor());
+				Draw.drawWindow(g, window, Color.black, busi.getColor());
 			x+=2;
 			y+=2;
 			w-=4;
@@ -571,21 +388,21 @@ public class RegionView implements Manager, Serializable{
 		
 //		Selected Model Picture Box
 		stat.setBounds(160, 96, 192, 128);
-		this.drawWindow(g, stat, Color.blue, Color.white);
+		Draw.drawWindow(g, stat, Color.blue, Color.white);
 		textUtilities.drawStringToBox(g, FontInformation.modelstat, stat, HALIGN.LEFT, VALIGN.BOTTOM, selectedSpaceCraft.getName());
 		textUtilities.drawStringToBox(g, FontInformation.modelstat, stat, HALIGN.RIGHT, VALIGN.BOTTOM, "x" + route.getCraftCount());
 
 //		Hangar Counts
 		stat.setBounds(160, 236, 96, 64);
-		this.drawWindow(g, stat, Color.darkGray, Color.gray);
+		Draw.drawWindow(g, stat, Color.darkGray, Color.gray);
 		textUtilities.drawStringToBox(g, FontInformation.modelstat, stat, HALIGN.RIGHT, VALIGN.BOTTOM, busi.getCraftAvailableByType(selectedSpaceCraft).size()+ "");
 		
 		//	# FLIGHTS
 		stat.setBounds(384, 192, 64, 32);
-		this.drawWindow(g, stat, Color.gray, Color.white);
+		Draw.drawWindow(g, stat, Color.gray, Color.white);
 		textUtilities.drawStringToBox(g, FontInformation.modelheader, stat, HALIGN.CENTER, VALIGN.MIDDLE, "Flight");
 		stat.setBounds(448, 192, 192, 32);
-		this.drawWindow(g, stat, Color.black, Color.white);
+		Draw.drawWindow(g, stat, Color.black, Color.white);
 		x = 488;
 		y = 192;
 		g.drawString(route.calcDistance(hub, loc) + "", 32, 96);
@@ -600,7 +417,6 @@ public class RegionView implements Manager, Serializable{
 				x = 488;
 			}
 		}
-		
 	}
 	
 	private void drawOpenDest(Graphics g){
@@ -661,8 +477,7 @@ public class RegionView implements Manager, Serializable{
 		if(!textWin.isActive()){
 			textWin.updateText(s);
 			textWin.setActive(true);
-		}
-		
+		}	
 	}
 	
 	private void drawOrderConfirm(Graphics g){
@@ -671,25 +486,6 @@ public class RegionView implements Manager, Serializable{
 			textWin.updateText(s);
 			textWin.setActive(true);
 		}
-	}
-
-	private void drawPlanetMini(Graphics g, int x, int y, int size, Color border, Color fill){
-		Color old = g.getColor();
-		g.setColor(border);
-		g.fillOval(x, y, size, size);
-		g.setColor(fill);
-		g.fillOval(x+1, y+1, size-2, size-2);
-		g.setColor(old);
-	}
-	
-	private void drawWindow(Graphics g, Rectangle r, Color bg, Color border){
-		Graphics2D g2d = (Graphics2D)g;
-		Color prev = g2d.getColor();
-		g2d.setColor(bg);
-		g2d.fill(r);
-		g2d.setColor(border);
-		g2d.draw(r);
-		g2d.setColor(prev);
 	}
 	
 	private void drawRegion(Graphics g){
@@ -711,7 +507,8 @@ public class RegionView implements Manager, Serializable{
 		
 		// TODO: Render Routes.
 		
-		drawMinimap(g);
+		Draw.drawMinimap(g, busi);
+		//drawMinimap(g);
 		
 		// Prototype Render Buttons
 		int x = 192;
@@ -829,9 +626,9 @@ public class RegionView implements Manager, Serializable{
 		//	Total Slots
 		Rectangle totslot = new Rectangle(64,256, 144, 40);
 		Rectangle slotcnt = new Rectangle(64,296, 144, 24);
-		drawWindow(g, totslot, Color.darkGray, Color.gray);
+		Draw.drawWindow(g, totslot, Color.darkGray, Color.gray);
 		textUtilities.drawStringToBox(g, FontInformation.modelheader, totslot, HALIGN.CENTER, VALIGN.MIDDLE, "Total Slots");
-		drawWindow(g, slotcnt, Color.darkGray, Color.gray);
+		Draw.drawWindow(g, slotcnt, Color.darkGray, Color.gray);
 		textUtilities.drawStringToBox(g, FontInformation.modelheader, slotcnt, HALIGN.CENTER, VALIGN.MIDDLE, l.getSlotAvailable() + " / " + l.getSlotTotal());
 		
 		g.setColor(scenario.getBusinesses().elementAt(0).getColor());
@@ -852,12 +649,12 @@ public class RegionView implements Manager, Serializable{
 		Rectangle indRating = new Rectangle(352,64,64,32);
 		
 		g.setColor(Color.gray);
-		drawWindow(g, pop, Color.darkGray, Color.gray);
+		Draw.drawWindow(g, pop, Color.darkGray, Color.gray);
 		textUtilities.drawStringToBox(g, FontInformation.chitchat, pop, HALIGN.CENTER, VALIGN.MIDDLE, "POP");
 		textUtilities.drawStringToBox(g, FontInformation.modelstat, popamt, HALIGN.CENTER, VALIGN.MIDDLE, l.getPopulation() + "M");
 
 
-		drawWindow(g, busi, Color.darkGray, Color.gray);
+		Draw.drawWindow(g, busi, Color.darkGray, Color.gray);
 		textUtilities.drawStringToBox(g, FontInformation.chitchat, busi, HALIGN.CENTER, VALIGN.MIDDLE, "BUSI");
 		textUtilities.drawStringToBox(g, FontInformation.modelstat, busiRating, HALIGN.CENTER, VALIGN.MIDDLE, l.getDemandBusi()+"");
 		
@@ -911,6 +708,8 @@ public class RegionView implements Manager, Serializable{
 		if(selectedOption == 0){
 			resetSelectedOpt();
 			this.setActive(false);
+			rc.setActiveBusi(busi);
+			rc.setScenario(scenario);
 			rc.setActive(true);
 		}
 		//	Adjust Routes

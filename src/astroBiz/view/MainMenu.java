@@ -5,17 +5,20 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.io.Serializable;
+
+import astroBiz.AstroBiz;
+import astroBiz.info.ENTITY_TYPE;
 
 /**
  * Displays the Main Menu at the start of the game.
  * @author Matt Bangert
  *
  */
-public class MainMenu implements Serializable{
-	/**
-	 * 
-	 */
+public class MainMenu implements Serializable,Manager{
+	private Boolean isActive = false;
+	private ENTITY_TYPE type = ENTITY_TYPE.VIEW_MANAGER;
 	private static final long serialVersionUID = 9122175924331276861L;
 
 	public static enum MENUSELECT {
@@ -96,6 +99,63 @@ public class MainMenu implements Serializable{
 	
 	public Rectangle getQuitGameButton(){
 		return this.quitGameButton;
+	}
+
+	@Override
+	public boolean isActive() {
+		return isActive;
+	}
+
+	@Override
+	public ENTITY_TYPE getType() {
+		return type;
+	}
+
+	@Override
+	public void tick() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setActive(boolean b) {
+		isActive = b;
+	}
+
+	@Override
+	public void keyAction(KeyEvent e) {
+		switch(e.getKeyCode()){
+		case KeyEvent.VK_DOWN:
+			cycleMenuNext();
+			break;
+		case KeyEvent.VK_ENTER:
+			if(getMenuStatus() == MENUSELECT.NEWGAME){
+				isActive = false;
+				AstroBiz.getSV().setActive(true);
+			}	
+			if(getMenuStatus() == MENUSELECT.LOADGAME)
+				break;
+			if(getMenuStatus() == MENUSELECT.QUITGAME)
+				System.exit(1);
+				break;
+		case KeyEvent.VK_UP:
+			cycleMenuPrev();
+			break;
+			
+		}
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public VM getVM() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setVM(VM vm) {
+		// TODO Auto-generated method stub		
 	}
 	
 }
