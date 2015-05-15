@@ -173,6 +173,28 @@ public class Route{
 		return (int)(baseFPW);
 	}
 	
+	public int calcWeeklyFlights(SpaceCraft sc, int qty){
+		if(qty < 1)
+			return 0;
+		int cr = 0;
+		int rd = 0;
+		double baseFPW = qty;
+		double[] range = {0.001, 0.01, 0.1, 0.25, 0.5, 1, 2, 4, 8, 16, 32, 64};
+		double[] dist = {0.001, 0.01, 0.1, 0.25, 0.5, 1, 2, 4, 8, 16, 32, 64};
+		for(int i = 0; i < range.length; i++){
+			if(sc.getRange() >= range[i])
+				cr++;
+			if(this.calcDistance(routeHome, routeDest) >= dist[i])
+				rd++;
+		}
+		for(int i = cr - rd; i > 0; i--){
+			baseFPW *= 1.5;
+		}
+		if(baseFPW > 14)
+			return 14;
+		return (int)baseFPW;
+	}
+	
 	/**
 	 * Method to calculate the distance between locations in AU.
 	 * @param begin	The departing Location
@@ -237,6 +259,23 @@ public class Route{
 		}
 		System.out.println("ERR: calcDistance() returned 0.0 value.");
 		return distance;
+	}
+	
+	public int calcBaseFare(){
+		double dist = calcDistance(routeHome, routeDest);
+		int baseFare = 1200;
+		double adj = 0.2;
+		if(dist >= 0.002)	adj = 0.26;
+		if(dist >= 0.005)	adj = 0.33;
+		if(dist >= 0.01)	adj = 0.41;
+		if(dist >= 0.5)		adj = 0.64;
+		if(dist >= 1)		adj = 1;
+		if(dist >= 5)		adj = 1.3;
+		if(dist >= 10)		adj = 1.58;
+		if(dist >= 25)		adj = 1.90;
+		if(dist >= 50)		adj = 2.40;
+		if(dist >= 100)		adj = 3.0;
+		return (int)(baseFare * adj);
 	}
 	
 	public Vector<SpaceCraft> getCraft(){

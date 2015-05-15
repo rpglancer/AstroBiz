@@ -15,6 +15,7 @@ import astroBiz.info.ENTITY_TYPE;
 import astroBiz.info.FontInformation;
 import astroBiz.info.ScenarioInformation.SI;
 import astroBiz.lib.AI;
+import astroBiz.lib.Draw;
 import astroBiz.lib.Location;
 import astroBiz.lib.Location.LOCATIONTYPE;
 import astroBiz.lib.Scenario;
@@ -452,95 +453,7 @@ public class ScenarioView implements Manager, Serializable{
 			break;	//	End	REGION
 			
 		case WORLD:
-			g.setFont(FontInformation.regionselect);
-			if(this.optionSelect == 0){
-				g.setColor(Color.green);
-				g.drawString("Mercury", 96+15, 177+15);
-			}
-			else{
-				g.setColor(Color.white);
-			}
-			g.fillOval(96, 177, 15, 15);		// Mercury
-			
-			if(this.optionSelect == 1){
-				g.setColor(Color.green);
-				g.drawString("Venus", 160+32, 160+32);
-			}
-			else{
-				g.setColor(Color.white);
-			}
-			g.fillOval(160, 160, 32, 32);		// Venus
-			
-			if(this.optionSelect == 2){
-				g.setColor(Color.green);
-				g.drawString("Earth", 224+32, 64+32);
-			}
-			else{
-				g.setColor(Color.white);
-			}
-			g.fillOval(224, 64, 32, 32);		// Earth
-			
-			if(this.optionSelect == 3){
-				g.setColor(Color.green);
-				g.drawString("Luna", 256+10, 54+10);
-			}
-			else{
-				g.setColor(Color.white);
-			}
-			g.fillOval(256, 54, 10, 10);		// Luna
-			
-			if(this.optionSelect == 4){
-				g.setColor(Color.green);
-				g.drawString("Mars", 288+24, 160+24);
-			}
-			else{
-				g.setColor(Color.white);
-			}
-			g.fillOval(288, 160, 24, 24);		// Mars
-			
-			if(this.optionSelect == 5){
-				g.setColor(Color.green);
-				g.drawString("Jupiter", 352+96, 192+96);
-			}
-			else{
-				g.setColor(Color.white);
-			}
-			g.fillOval(352, 192, 96, 96);		// Jupiter
-			
-			if(this.optionSelect == 6){
-				g.setColor(Color.green);
-				g.drawString("Saturn", 480+64, 128+64);
-			}
-			else{
-				g.setColor(Color.white);
-			}
-			g.fillOval(480, 128, 64, 64);		// Saturn
-			
-			if(this.optionSelect == 7){
-				g.setColor(Color.green);
-				g.drawString("Uranus", 576+64, 192+64);
-			}
-			else{
-				g.setColor(Color.white);
-			}
-			g.fillOval(576, 192, 64, 64);		// Uranus
-			
-			if(this.optionSelect == 8){
-				g.setColor(Color.green);
-				g.drawString("Neptune", 676+64, 96+64);
-			}
-			else{
-				g.setColor(Color.white);
-			}
-			g.fillOval(676, 96, 64, 64);		// Neptune
-			
-			g.setFont(FontInformation.chitchat);
-			g.setColor(Color.white);
-			if(!textWin.isActive()){
-				textWin.updateText("Select headquarters region for " + s + ".");
-				textWin.setActive(true);
-			}
-			break;	//	End	WORLD
+			Draw.drawSolarSystem(g, optionSelect);
 		}
 	}
 	

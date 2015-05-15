@@ -29,6 +29,10 @@ public class TextWindow implements Entity {
 	private String text = "";
 	private String textOutput = "";
 	
+	public boolean getTick(){
+		return doesTick;
+	}
+	
 	public TextWindow(String text, int x, int y, int width, int height, boolean doestick){
 		this.x = x;
 		this.y = y;
@@ -58,16 +62,35 @@ public class TextWindow implements Entity {
 		this.hasSprite = true;
 	}
 
+	public String getCurrentText(){
+		return text;
+	}
+	
+	public String getCurrentOutput(){
+		return textOutput;
+	}
+	
 	public void updateSprite(BufferedImage sprite){
 		this.sprite = sprite;
 	}
 	
 	public void updateText(String text){
-		this.text = text;
-		if(doesTick)
-			textOutput = "";
-		else
-			textOutput = text;
+		if(!this.text.equals(text)){
+			this.text = text;
+			if(doesTick)
+				textOutput = "";
+			else
+				textOutput = this.text;
+		}
+		
+		
+//		this.text = text;
+//		if(doesTick){
+//			textOutput = "";
+//		}
+//			
+//		else
+//			textOutput = text;
 	}
 	
 	@Override

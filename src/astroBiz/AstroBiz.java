@@ -52,7 +52,7 @@ public class AstroBiz extends Canvas implements Runnable{
 	private MainMenu mainMenu = null;
 	private Scenario activeScenario;
 	private static ScenarioView scenarioView = null;
-	private RegionView regionView = null;
+	private static RegionView regionView = null;
 	private Thread thread;
 
 	private static Controller c = new Controller();
@@ -82,8 +82,8 @@ public class AstroBiz extends Canvas implements Runnable{
 		return this.mainMenu;
 	}
 	
-	public RegionView getRegion(){
-		return this.regionView;
+	public static RegionView getRegion(){
+		return regionView;
 	}
 
 	public Scenario getScenario(){

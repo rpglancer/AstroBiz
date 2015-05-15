@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.geom.RoundRectangle2D;
 
 import astroBiz.AstroBiz;
 import astroBiz.info.FontInformation;
@@ -11,7 +12,42 @@ import astroBiz.info.HALIGN;
 import astroBiz.info.VALIGN;
 import astroBiz.util.textUtilities;
 
+/**
+ * Anything drawn that requires multiple steps or needs to be accessible from any class goes here.
+ * @author Matt Bangert
+ *
+ */
 public class Draw {
+	public static void drawFareSelect(Graphics g, Route route, int setting, int x, int y){
+		String[] values = {"50%", "55%", "60%", "65%", "70%", "75%", "80%", "85%", "90%", "95%", "100%", "105%", "110%", "115%", "120%", "125%", "130%", "135%", "140%", "145%", "150%"};
+		Graphics2D g2d = (Graphics2D)g;
+		Color prevColor = g2d.getColor();
+		
+		Rectangle fare = new Rectangle();
+		fare.setBounds(x + 184/2 - (184/2/2), y, 184/2, 32);
+		
+		RoundRectangle2D.Float rect = new RoundRectangle2D.Float();
+		rect.setRoundRect(x, y, 184, 32, 16, 16);
+		g2d.setColor(Color.white);
+		g2d.draw(rect);
+		x+=5;
+		y+=4;
+		for(int i = 0; i <= setting; i++){
+			rect.setRoundRect(x, y, 6, 24, 8, 8);
+			g2d.setColor(Color.blue);
+			if(i > 7) g2d.setColor(Color.green);
+			if(i > 13) g2d.setColor(Color.yellow);
+			if(i > 16) g2d.setColor(Color.red);
+			g2d.fill(rect);
+			g2d.setColor(Color.white);
+			g2d.draw(rect);
+			x+=8;
+		}
+		g2d.setColor(Color.black);
+//		g2d.fill(fare);
+		g2d.setColor(Color.white);
+//		textUtilities.drawStringToBox(g, FontInformation.modelstat, fare, HALIGN.CENTER, VALIGN.TOP, route.calcBaseFare()+ "");
+	}
 	public static void drawMinimap(Graphics g, Business b){
 		int sx = 32;
 		int sy = 320;
@@ -99,8 +135,11 @@ public class Draw {
 		else
 			drawPlanetMini(g,135,367,8,Color.darkGray,Color.black);
 	}
+	
+	public static void drawSpaceCraftModelRoute(Graphics g, SpaceCraft model, Business busi){
 
-
+		
+	}
 	
 	public static void drawSpaceCraftModelStats(Graphics g, SpaceCraft model, Business busi){
 		int x = 160 - 8;
@@ -119,10 +158,9 @@ public class Draw {
 			w-=4;
 			h-=4;
 			window.setBounds(x, y, w, h);
-			
-		}
+			}
 		g.setColor(Color.white);
-		g.drawString(x + ", " + y + ", " + w + ", " + h, 0, 32);
+//		g.drawString(x + ", " + y + ", " + w + ", " + h, 0, 32);
 		
 //		Selected Model Picture Box
 		stat.setBounds(160, 96, 192, 128);
@@ -222,6 +260,90 @@ public class Draw {
 		}
 	}
 
+	public static void drawSolarSystem(Graphics g, int selection){
+		g.setFont(FontInformation.regionselect);
+		if(selection == 0){
+			g.setColor(Color.green);
+			g.drawString("Mercury", 96+15, 177+15);
+		}
+		else{
+			g.setColor(Color.white);
+		}
+		g.fillOval(96, 177, 15, 15);		// Mercury
+		
+		if(selection == 1){
+			g.setColor(Color.green);
+			g.drawString("Venus", 160+32, 160+32);
+		}
+		else{
+			g.setColor(Color.white);
+		}
+		g.fillOval(160, 160, 32, 32);		// Venus
+		
+		if(selection == 2){
+			g.setColor(Color.green);
+			g.drawString("Earth", 224+32, 64+32);
+		}
+		else{
+			g.setColor(Color.white);
+		}
+		g.fillOval(224, 64, 32, 32);		// Earth
+		
+		if(selection == 3){
+			g.setColor(Color.green);
+			g.drawString("Luna", 256+10, 54+10);
+		}
+		else{
+			g.setColor(Color.white);
+		}
+		g.fillOval(256, 54, 10, 10);		// Luna
+		
+		if(selection == 4){
+			g.setColor(Color.green);
+			g.drawString("Mars", 288+24, 160+24);
+		}
+		else{
+			g.setColor(Color.white);
+		}
+		g.fillOval(288, 160, 24, 24);		// Mars
+		
+		if(selection == 5){
+			g.setColor(Color.green);
+			g.drawString("Jupiter", 352+96, 192+96);
+		}
+		else{
+			g.setColor(Color.white);
+		}
+		g.fillOval(352, 192, 96, 96);		// Jupiter
+		
+		if(selection == 6){
+			g.setColor(Color.green);
+			g.drawString("Saturn", 480+64, 128+64);
+		}
+		else{
+			g.setColor(Color.white);
+		}
+		g.fillOval(480, 128, 64, 64);		// Saturn
+		
+		if(selection == 7){
+			g.setColor(Color.green);
+			g.drawString("Uranus", 576+64, 192+64);
+		}
+		else{
+			g.setColor(Color.white);
+		}
+		g.fillOval(576, 192, 64, 64);		// Uranus
+		
+		if(selection == 8){
+			g.setColor(Color.green);
+			g.drawString("Neptune", 676+64, 96+64);
+		}
+		else{
+			g.setColor(Color.white);
+		}
+		g.fillOval(676, 96, 64, 64);		// Neptune
+	}
+	
 	public static void drawWindow(Graphics g, Rectangle r, Color bg, Color border){
 		Graphics2D g2d = (Graphics2D)g;
 		Color prev = g2d.getColor();
