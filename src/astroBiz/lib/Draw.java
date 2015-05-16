@@ -5,11 +5,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.RoundRectangle2D;
+import java.awt.image.BufferedImage;
 
 import astroBiz.AstroBiz;
 import astroBiz.info.FontInformation;
 import astroBiz.info.HALIGN;
 import astroBiz.info.VALIGN;
+import astroBiz.lib.Employee.EMPTASK;
+import astroBiz.util.ImageUtilities;
 import astroBiz.util.textUtilities;
 
 /**
@@ -18,6 +21,14 @@ import astroBiz.util.textUtilities;
  *
  */
 public class Draw {
+	public static final Color swapColor = new Color(AstroBiz.regionSprites.grabImage(2, 3, 16, 16).getRGB(5, 5));
+	
+	public static void drawEmployees(Graphics g, Business busi){
+		for(int i = 0; i < busi.getEmployees().length; i++){
+			
+		}
+	}
+
 	public static void drawFareSelect(Graphics g, Route route, int setting, int x, int y){
 		Graphics2D g2d = (Graphics2D)g;
 		Color prevColor = g2d.getColor();
@@ -53,8 +64,20 @@ public class Draw {
 		int pheight = 128;
 		int pwidth = 128;
 		
+
+		
 		g.setColor(Color.black);
 		g.fillRect(sx, sy, width, height);
+		
+		int ex = sx;	// employee spite x
+		for(int i = 0; i < b.getEmployees().length; i++){
+			if(b.getEmployees()[i].queryTask() == EMPTASK.IDLE){
+				BufferedImage emp = ImageUtilities.colorizeImage(AstroBiz.regionSprites.grabImage(7, 1, 16, 16), swapColor, b.getColor());
+				g.drawImage(emp, ex, sy, null);
+				ex+=4;
+			}
+		}
+		
 		
 		//	Draw Planet Orbit Lines
 		g.setColor(Color.DARK_GRAY);
@@ -248,13 +271,37 @@ public class Draw {
 //				if(l.getSlotAllocatedFor(s.getActiveBusiness()) > 0){
 				if(l.getSlotAvailableFor(s.getActiveBusiness()) > 0){
 					g.setFont(FontInformation.modelstat);
+					g.setColor(Color.darkGray);
+					g.drawString(l.getSlotAvailableFor(s.getActiveBusiness()) + "", l.getX() + 17, l.getY() + 17);
 					g.setColor(Color.white);
 					g.drawString(l.getSlotAvailableFor(s.getActiveBusiness()) + "", l.getX() + 16, l.getY() + 16);
+
 				}
 			}
 		}
 	}
 
+	public static void drawRegionRoutes(Graphics g, Scenario s, byte region){
+		for(int i = 0; i < s.getBusinesses().size(); i++){
+			Business busi = s.getBusinesses().elementAt(i);
+			for(int r = 0; r < busi.getRoutes().size(); r++){
+				Route route = busi.getRoutes().elementAt(r);
+				if(route.getRouteHome().getRegion() == region || route.getRouteDestination().getRegion() == region){
+					Location home = route.getRouteHome();
+					Location dest = route.getRouteDestination();
+					if(busi.equals(s.getBusinesses().elementAt(s.getActiveBusiness()))){
+						g.setColor(Color.white);
+						g.drawLine(home.getX()+8, home.getY()+8, dest.getX()+8, dest.getY()+8);
+					}
+					else{
+						g.setColor(Color.darkGray);
+						g.drawLine(home.getX()+8, home.getY()+8, dest.getX()+8, dest.getY()+8);				
+					}
+				}
+			}
+		}
+	}
+	
 	public static void drawSolarSystem(Graphics g, int selection){
 		g.setFont(FontInformation.regionselect);
 		if(selection == 0){

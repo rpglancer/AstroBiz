@@ -24,6 +24,7 @@ public class Business implements Serializable {
 	private int serviceCosts = 0;
 	
 	private Color businessColor;
+	private Employee[] employees = {new Employee(), new Employee(), new Employee(), new Employee()};
 	private Faction affiliation;						// Contains the Faction this Business is a part of / incorporated in
 	private Integer accountBalance = 0;	
 	private Location headQuarters = null;
@@ -188,6 +189,10 @@ public class Business implements Serializable {
 		return this.headQuarters;
 	}
 
+	public Employee[] getEmployees(){
+		return employees;
+	}
+	
 	public boolean getIsPlayerOwned(){
 		return this.isPlayerOwned;
 	}

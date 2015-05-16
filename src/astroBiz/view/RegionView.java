@@ -499,7 +499,9 @@ public class RegionView implements Manager, Serializable{
 		textUtilities.drawStringToBox(g, FontInformation.modelstat, rect, HALIGN.CENTER, VALIGN.MIDDLE, "Q" + scenario.getQuarter() + " - " +scenario.getCurrentYear());
 		
 		Draw.drawRegion(g, activeRegion);
+		Draw.drawRegionRoutes(g, scenario, activeRegion);
 		Draw.drawRegionLocations(g, scenario, activeRegion);
+		
 		
 		g.setFont(sectorfont);
 		g.setColor(Color.WHITE);

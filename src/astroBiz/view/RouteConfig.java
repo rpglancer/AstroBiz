@@ -76,8 +76,6 @@ public class RouteConfig implements Manager {
 			route.addCraftToRoute(busi.getHangar().elementAt(busi.getHangar().indexOf(selectedCraft)));
 			busi.getHangar().removeElement(selectedCraft);
 		}
-//		route.setRouteHome(scenario.seekLocation(route.getRouteHome()));
-//		route.setRouteDestination(scenario.seekLocation(route.getRouteDestination()));
 		route.getRouteHome().useSlots(scenario.getActiveBusiness(), selectedFlights);
 		route.getRouteDestination().useSlots(scenario.getActiveBusiness(), selectedFlights);
 		route.setRouteFare(selectedFare);
