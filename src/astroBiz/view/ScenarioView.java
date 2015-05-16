@@ -915,4 +915,10 @@ public class ScenarioView implements Manager, Serializable{
 		return scenarioViewMode;
 	}
 
+	@Override
+	public void setVMDefault() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

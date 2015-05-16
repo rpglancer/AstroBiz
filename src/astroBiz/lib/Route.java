@@ -278,6 +278,11 @@ public class Route{
 		return (int)(baseFare * adj);
 	}
 	
+	public int calcAdjustedFare(int adj){
+		double[] adjust = {0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0, 1.05, 1.10, 1.15, 1.20, 1.25, 1.30, 1.35, 1.40, 1.45, 1.50};
+		return (int)(calcBaseFare() * adjust[adj]);
+	}
+	
 	public Vector<SpaceCraft> getCraft(){
 		return craft;
 	}
@@ -291,6 +296,26 @@ public class Route{
 		else return craft.elementAt(0).getName();
 	}
 
+	public int getMaxFlights(Scenario scen, SpaceCraft craft, int qty){
+		if(routeHome == null || routeDest == null)
+			return 0;
+		if(craft == null)
+			return 0;
+		
+		int maxFPW = calcWeeklyFlights(craft, qty);
+		int saH = routeHome.getSlotAllocatedFor(scen.getActiveBusiness());
+		int saD = routeDest.getSlotAllocatedFor(scen.getActiveBusiness());
+		
+		if(maxFPW <= saH && maxFPW <= saD)
+			return maxFPW;
+		
+		else if(saH >= saD)
+			return saD;
+		
+		else
+			return saH;	
+	}
+	
 	public Location getRouteDestination(){
 		return routeDest;
 	}

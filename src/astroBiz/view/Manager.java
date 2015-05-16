@@ -12,4 +12,5 @@ import astroBiz.lib.Entity;
 public interface Manager extends Entity{
 	public VM getVM();
 	public void setVM(VM vm);
+	public void setVMDefault();
 }

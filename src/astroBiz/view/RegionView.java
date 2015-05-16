@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -774,6 +773,11 @@ public class RegionView implements Manager, Serializable{
 	@Override
 	public VM getVM() {
 		return regionVm;
+	}
+
+	@Override
+	public void setVMDefault() {
+		this.regionVm = REGIONVM.VM_REGION;
 	}
 
 }

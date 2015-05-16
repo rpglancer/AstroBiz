@@ -30,7 +30,8 @@ public class Confirmation implements Entity{
 	/**
 	 * The Manager from which the Confirmation was requested and for which the VM is changed based upon Confirmation outcome.
 	 */
-	private Manager manager;
+	private Manager manager = null;
+	private Manager managerNext = null;
 	/**
 	 * The VM to which the Manager will proceed upon a positive confirmation.
 	 */
@@ -159,10 +160,30 @@ public class Confirmation implements Entity{
 		this.isActive = true;
 	}
 	
+	public void setConfirmVM(Manager from, Manager to, VM prev, VM next, BufferedImage sprite, String text){
+		manager = from;
+		managerNext = to;
+		this.prev = prev;
+		this.next = next;
+		this.sprite = sprite;
+		this.text = text;
+		opt = 0;
+		this.withCoords = false;
+		this.withText = true;
+		this.isActive = true;
+	}
+	
 	private void confirmOption(){
 		if(opt == 0){
 			isActive = false;
-			manager.setVM(next);
+			if(managerNext != null){
+				manager.setActive(false);
+				managerNext.setVM(next);
+				managerNext.setActive(true);
+			}
+			else{
+				manager.setVM(next);
+			}
 			this.flush();
 		}
 		else{

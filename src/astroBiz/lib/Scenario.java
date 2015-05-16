@@ -321,6 +321,18 @@ public class Scenario implements Serializable{
 			this.scenarioBusinesses.elementAt(i).setPlayerOwned(true);
 		}
 	}
+
+	public Location seekLocation(Location l){
+		for(int i = 0; i < mapLocations.size(); i++){
+			if(mapLocations.elementAt(i).equals(l)){
+				System.out.println("Seeking " + l + " found at " + mapLocations.elementAt(i));
+				return mapLocations.elementAt(i);
+			}
+				
+		}
+		return null;
+	}
+	
 	/**
 	 * Updates the Vector of available manufacturers, as some incorporate and some become insolvent during the course of the game.
 	 * <br><br>

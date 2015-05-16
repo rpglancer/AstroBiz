@@ -19,35 +19,29 @@ import astroBiz.util.textUtilities;
  */
 public class Draw {
 	public static void drawFareSelect(Graphics g, Route route, int setting, int x, int y){
-		String[] values = {"50%", "55%", "60%", "65%", "70%", "75%", "80%", "85%", "90%", "95%", "100%", "105%", "110%", "115%", "120%", "125%", "130%", "135%", "140%", "145%", "150%"};
 		Graphics2D g2d = (Graphics2D)g;
 		Color prevColor = g2d.getColor();
-		
-		Rectangle fare = new Rectangle();
-		fare.setBounds(x + 184/2 - (184/2/2), y, 184/2, 32);
 		
 		RoundRectangle2D.Float rect = new RoundRectangle2D.Float();
 		rect.setRoundRect(x, y, 184, 32, 16, 16);
 		g2d.setColor(Color.white);
-		g2d.draw(rect);
-		x+=5;
+//		g2d.draw(rect);
+		x+=9;
 		y+=4;
 		for(int i = 0; i <= setting; i++){
-			rect.setRoundRect(x, y, 6, 24, 8, 8);
+			rect.setRoundRect(x, y, 6, 24, 0, 0);
 			g2d.setColor(Color.blue);
 			if(i > 7) g2d.setColor(Color.green);
 			if(i > 13) g2d.setColor(Color.yellow);
 			if(i > 16) g2d.setColor(Color.red);
 			g2d.fill(rect);
 			g2d.setColor(Color.white);
-			g2d.draw(rect);
+//			g2d.draw(rect);
 			x+=8;
 		}
-		g2d.setColor(Color.black);
-//		g2d.fill(fare);
-		g2d.setColor(Color.white);
-//		textUtilities.drawStringToBox(g, FontInformation.modelstat, fare, HALIGN.CENTER, VALIGN.TOP, route.calcBaseFare()+ "");
+		g2d.setColor(prevColor);
 	}
+
 	public static void drawMinimap(Graphics g, Business b){
 		int sx = 32;
 		int sy = 320;
@@ -251,10 +245,11 @@ public class Draw {
 			if(s.getLocations().elementAt(i).getRegion() == region){
 				Location l = s.getLocations().elementAt(i);
 				g.drawImage(l.getSprite(s), l.getX(), l.getY(), null);
-				if(l.getSlotAllocatedFor(s.getActiveBusiness()) > 0){
+//				if(l.getSlotAllocatedFor(s.getActiveBusiness()) > 0){
+				if(l.getSlotAvailableFor(s.getActiveBusiness()) > 0){
 					g.setFont(FontInformation.modelstat);
 					g.setColor(Color.white);
-					g.drawString(l.getSlotAllocatedFor(s.getActiveBusiness()) + "", l.getX() + 16, l.getY() + 16);
+					g.drawString(l.getSlotAvailableFor(s.getActiveBusiness()) + "", l.getX() + 16, l.getY() + 16);
 				}
 			}
 		}

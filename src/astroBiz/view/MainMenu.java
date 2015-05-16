@@ -157,5 +157,11 @@ public class MainMenu implements Serializable,Manager{
 	public void setVM(VM vm) {
 		// TODO Auto-generated method stub		
 	}
+
+	@Override
+	public void setVMDefault() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

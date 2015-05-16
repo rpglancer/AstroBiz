@@ -21,7 +21,6 @@ import astroBiz.util.BufferedImageLoader;
 import astroBiz.util.textUtilities;
 import astroBiz.view.LocationView;
 import astroBiz.view.MainMenu;
-import astroBiz.view.MainMenu.MENUSELECT;
 import astroBiz.view.RegionView;
 import astroBiz.view.ScenarioView;
 

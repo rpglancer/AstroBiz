@@ -19,6 +19,7 @@ import astroBiz.lib.Location;
 import astroBiz.lib.Route;
 import astroBiz.lib.Scenario;
 import astroBiz.lib.SpaceCraft;
+import astroBiz.util.Confirmation;
 import astroBiz.util.textUtilities;
 
 /**
@@ -28,9 +29,11 @@ import astroBiz.util.textUtilities;
  */
 public class RouteConfig implements Manager {
 	public static enum RCVM implements VM{
+		CONFIM_ROUTE,
 		SELECT_DEPART,
 		SELECT_DEST,
 		SELECT_CRAFT,
+		SELECT_FLIGHTS,
 		SELECT_QTY,
 		SELECT_FARE;
 
@@ -39,18 +42,19 @@ public class RouteConfig implements Manager {
 			return 0;
 		}
 	}
-	
-	private double selectedFare = 1.0;
+	private double[] adjust = {0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0, 1.05, 1.10, 1.15, 1.20, 1.25, 1.30, 1.35, 1.40, 1.45, 1.50};
+	private int selectedFare = 0;
+	private int selectedFlights = 0;
 	private int previousOption = 0;
 	private int selectedOption = 0;
 	private int selectedQty = 0;
 	
 	private Boolean isActive = false;
-	private Business busi;
-	private Scenario scenario;
-	private SpaceCraft selectedCraft;
+	private Business busi = null;
+	private Scenario scenario = null;
+	private SpaceCraft selectedCraft = null;
 	private RegionView rvm;
-	private Route route;
+	private Route route = null;
 	private ENTITY_TYPE type = ENTITY_TYPE.VIEW_MANAGER;
 	private RCVM rcvm = RCVM.SELECT_DEPART;
 	
@@ -67,8 +71,26 @@ public class RouteConfig implements Manager {
 		this.scenario = scenario;
 	}
 	
+	private void commitRoute(){
+		for(int i = 0; i < selectedQty; i++){
+			route.addCraftToRoute(busi.getHangar().elementAt(busi.getHangar().indexOf(selectedCraft)));
+			busi.getHangar().removeElement(selectedCraft);
+		}
+//		route.setRouteHome(scenario.seekLocation(route.getRouteHome()));
+//		route.setRouteDestination(scenario.seekLocation(route.getRouteDestination()));
+		route.getRouteHome().useSlots(scenario.getActiveBusiness(), selectedFlights);
+		route.getRouteDestination().useSlots(scenario.getActiveBusiness(), selectedFlights);
+		route.setRouteFare(selectedFare);
+		busi.getRoutes().add(route);
+		resetConfig();
+	}
+	
 	private void cycleLeft(){
-		if(selectedOption > 0)
+		int minOpt;
+		if(rcvm == RCVM.SELECT_FLIGHTS) minOpt = 1;
+		else if(rcvm == RCVM.SELECT_QTY) minOpt = 1;
+		else minOpt = 0;
+		if(selectedOption > minOpt)
 			selectedOption--;
 	}
 	
@@ -79,7 +101,9 @@ public class RouteConfig implements Manager {
 		if(rcvm == RCVM.SELECT_DEST)
 			maxOpt = scenario.getLocationsAvailable(rvm.getActiveRegion()).size() - 1;
 		if(rcvm == RCVM.SELECT_FARE)
-			maxOpt = 22;
+			maxOpt = 20;
+		if(rcvm == RCVM.SELECT_FLIGHTS)
+			maxOpt = route.getMaxFlights(scenario, selectedCraft, selectedQty);		// This should really be reworked to pass the business instead of the scenario.
 		if(rcvm == RCVM.SELECT_QTY)
 			maxOpt = busi.getCraftInHangar(selectedCraft);	
 		if(selectedOption < maxOpt)
@@ -95,6 +119,21 @@ public class RouteConfig implements Manager {
 			Draw.drawSpaceCraftModelStats(g, avail.elementAt(selectedOption), busi);
 			AstroBiz.textWin.updateText("Select a vehicle to use for this route.");
 		}
+	}
+	
+	private void resetConfig(){
+		selectedFare = 0;
+		selectedFlights = 0;
+		previousOption = 0;
+		selectedOption = 0;
+		selectedQty = 0;
+		busi = null;
+		scenario = null;
+		selectedCraft = null;
+		route = null;
+		AstroBiz.textWin.setActive(false);
+		this.setVMDefault();
+		isActive = false;
 	}
 	
 	private void selectDepart(Graphics g){
@@ -181,7 +220,12 @@ public class RouteConfig implements Manager {
 		stat.setBounds(160, 96, 192, 128);
 		Draw.drawWindow(g, stat, Color.blue, Color.white);
 		textUtilities.drawStringToBox(g, FontInformation.modelstat, stat, HALIGN.LEFT, VALIGN.BOTTOM, selectedCraft.getName());
-		textUtilities.drawStringToBox(g, FontInformation.modelstat, stat, HALIGN.RIGHT, VALIGN.BOTTOM, "x"+selectedOption);
+		if(rcvm == RCVM.SELECT_FARE)
+			textUtilities.drawStringToBox(g, FontInformation.modelstat, stat, HALIGN.RIGHT, VALIGN.BOTTOM, "Fare: $"+route.calcAdjustedFare(selectedOption));
+		if(rcvm == RCVM.SELECT_FLIGHTS)
+			textUtilities.drawStringToBox(g, FontInformation.modelstat, stat, HALIGN.RIGHT, VALIGN.BOTTOM, "Flights: x"+selectedOption);
+		if(rcvm == RCVM.SELECT_QTY)
+			textUtilities.drawStringToBox(g, FontInformation.modelstat, stat, HALIGN.RIGHT, VALIGN.BOTTOM, "Vehicles: x"+selectedOption);
 //		Sales		
 		stat.setBounds(384, 96, 64, 32);
 		Draw.drawWindow(g, stat, Color.magenta, Color.green);
@@ -204,14 +248,31 @@ public class RouteConfig implements Manager {
 		if(rcvm == RCVM.SELECT_FARE){
 			Draw.drawFareSelect(g, route,selectedOption, 454, 160);
 			for(int i = 0; i < route.calcWeeklyFlights(selectedCraft, selectedQty); i++){
-				g.drawImage(AstroBiz.regionSprites.grabImage(3, 4, w, h), x, y, null);
+				if(i < selectedFlights)
+					g.drawImage(AstroBiz.regionSprites.grabImage(4, 4, w, h), x, y, null);
+				else
+					g.drawImage(AstroBiz.regionSprites.grabImage(3, 4, w, h), x, y, null);
 				x+=w;
 				if(i == 6){
 					x = 448;
 					y += h;
 				}
 			}
-			AstroBiz.textWin.updateText("Select the fare for this route.");
+			AstroBiz.textWin.updateText("Set the fare for this route.");
+		}
+		else if(rcvm == RCVM.SELECT_FLIGHTS){
+			for(int i = 0; i < route.calcWeeklyFlights(selectedCraft, selectedQty); i++){
+				if(i < selectedOption)
+					g.drawImage(AstroBiz.regionSprites.grabImage(4, 4, w, h), x, y, null);
+				else
+					g.drawImage(AstroBiz.regionSprites.grabImage(3, 4, w, h), x, y, null);
+				x+=w;
+				if(i == 6){
+					x = 448;
+					y += h;
+				}
+			}
+			AstroBiz.textWin.updateText("How many flights per week?");
 		}
 		else if(rcvm == RCVM.SELECT_QTY){
 			for(int i = 0; i < route.calcWeeklyFlights(selectedCraft, selectedOption); i++){
@@ -260,6 +321,9 @@ public class RouteConfig implements Manager {
 		case SELECT_DEST:
 			selectDest(g);
 			break;
+		case SELECT_FLIGHTS:
+			selectQty(g);
+			break;
 		case SELECT_FARE:
 			selectQty(g);
 			break;
@@ -305,16 +369,31 @@ public class RouteConfig implements Manager {
 					rcvm = RCVM.SELECT_CRAFT;
 				}
 			}
+			else if(rcvm == RCVM.SELECT_FARE){
+				selectedFare = route.calcAdjustedFare(selectedOption);
+				selectedOption = 0;
+				commitRoute();
+				rvm.setVMDefault();
+//				this.setVMDefault();
+//				setActive(false);
+				rvm.setActive(true);
+			}
+			else if(rcvm == RCVM.SELECT_FLIGHTS){
+				selectedFlights = selectedOption;
+				selectedOption = 10;
+				rcvm = RCVM.SELECT_FARE;
+			}
 			else if(rcvm == RCVM.SELECT_QTY){
 				selectedQty = selectedOption;
-				selectedOption = 4;
-				rcvm = RCVM.SELECT_FARE;
+				selectedOption = 1;
+				rcvm = RCVM.SELECT_FLIGHTS;
 			}
 			break;
 		case KeyEvent.VK_ESCAPE:
-			if(rcvm == RCVM.SELECT_QTY)
+			if(rcvm == RCVM.SELECT_QTY){
 				selectedOption = previousOption;
 				rcvm = RCVM.SELECT_CRAFT;
+			}
 				break;
 		case KeyEvent.VK_LEFT:
 			cycleLeft();
@@ -333,5 +412,10 @@ public class RouteConfig implements Manager {
 	@Override
 	public void setVM(VM vm) {
 		rcvm = (RCVM)vm;
+	}
+
+	@Override
+	public void setVMDefault() {
+		rcvm = RCVM.SELECT_DEPART;
 	}
 }

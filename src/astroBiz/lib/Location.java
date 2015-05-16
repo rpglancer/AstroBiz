@@ -32,6 +32,7 @@ public class Location implements Serializable{
 	private int demandInd;						// The location's demand for industry [0 - 255]
 	private int region;							// The region at which this location is situated
 	private int[] slotAllocated = {0,0,0,0};	// The number of slots allocated to businesses
+	private int[] slotUsed = {0,0,0,0};
 	private int slotCost;						// The cost per slot to lease an available slot
 	private int slotTotal;						// The location's total slots
 	private int x;								// The X coordinate of the location
@@ -174,6 +175,10 @@ public class Location implements Serializable{
 		return slotTotal - count;
 	}
 
+	public int getSlotAvailableFor(int business){
+		return slotAllocated[business] - slotUsed[business];
+	}
+	
 	public int getSlotAllocatedFor(int business){
 		return slotAllocated[business];
 	}
@@ -219,6 +224,15 @@ public class Location implements Serializable{
 		isHqOf = b;
 		isHubOf = b;
 	}
+	
+	public void freeSlots(int business, int qty){
+		slotUsed[business] -= qty;
+	}
+	
+	public void useSlots(int business, int qty){
+		slotUsed[business]+=qty;
+	}
+	
 	@Deprecated
 	public void setLocationIsHub(boolean tf, int business){
 		this.isHub[business] = tf;
